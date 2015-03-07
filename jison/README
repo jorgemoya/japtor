@@ -1,0 +1,59 @@
+Jorge Moya
+
+Lexico/Sintaxis usando Jison
+
+Gramatica:
+
+%lex
+
+%%
+\s+                 	{/* ignore whitespace */;}
+"program"				{return 'TOKPROGRAM'; }
+"var"					{return 'TOKVAR'; }
+"int"					{return 'TOKINT';}
+"float"					{return 'TOKFLOAT';}
+"String"				{return 'TOKSTRING';}
+"print"					{return 'TOKPRINT';}
+"if" 					{return 'TOKIF';}
+"else"					{return 'TOKELSE';}
+"while"					{return 'TOKWHILE';}
+"or"					{return 'TOKOR';}
+"and"					{return 'TOKAND';}
+[a-zA-Z][a-zA-Z0-9]*	{return 'ID';}
+[0-9]+					{return 'INT';}
+^[-+]?[0-9]*\.[0-9]+$	{return 'FLOAT';}
+\"[^\"]*\"|\'[^\']*\' 	{return 'STRING';}
+";"						{return 'SEMICOLON';}
+":"						{return 'COLON';}
+","						{return 'COMMA';}
+"{"						{return 'OBRACE';}
+"}"						{return 'EBRACE';}
+"="						{return 'EQUAL';}
+"("						{return 'OPARENT';}
+")"						{return 'EPARENT';}
+"<"						{return 'LBRACE';}
+">"						{return 'RBRACE';}
+"+"						{return 'PLUS';}
+"-"						{return 'MINUS';}
+"*"						{return 'ASTERISK';}
+"/"						{return 'SLASH';}
+"!"						{return 'EMARK';}
+
+/lex
+
+El raptor-for-web.jison contiene las reglas y gramatica. raptor-for-web.js es el código en js que sigue esas reglas.
+
+Forma de ejecución:
+
+Reglas de instalacion en http://zaach.github.io/jison/docs/
++ instalar npm
++ instalar node
++ npm install jison -g
+
+Reglas de ejecución
++ jison raptor-for-web.jison (genera el js que se usa para correr, si ya existe ese js no es necesario este paso)
++ node raptor-for-web.js <nombre de archivo> (recibe un input de archivo)
+
+Si el archivo esta bien, no marca nada, de lo contrario marca un error.
+
+Nota: Se puede probar el código sin instalar npm/jison/node en http://zaach.github.io/jison/try/ solo se requiere ingresar la información en los archivos.
