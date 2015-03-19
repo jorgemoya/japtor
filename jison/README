@@ -8,11 +8,11 @@ Gramatica:
 
 %%
 \s+                 	{/* ignore whitespace */;}
-"program"				{return 'TOKPROGRAM'; }
-"var"					{return 'TOKVAR'; }
+"program"				{return 'TOKPROGRAM';}
+"function"				{return 'TOKFUNCTION';}
+"var"					{return 'TOKVAR';}
 "int"					{return 'TOKINT';}
 "float"					{return 'TOKFLOAT';}
-"String"				{return 'TOKSTRING';}
 "print"					{return 'TOKPRINT';}
 "if" 					{return 'TOKIF';}
 "else"					{return 'TOKELSE';}

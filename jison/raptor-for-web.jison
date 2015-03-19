@@ -2,11 +2,11 @@
 
 %%
 \s+                 	{/* ignore whitespace */;}
-"program"				{return 'TOKPROGRAM'; }
-"var"					{return 'TOKVAR'; }
+"program"				{return 'TOKPROGRAM';}
+"function"				{return 'TOKFUNCTION';}
+"var"					{return 'TOKVAR';}
 "int"					{return 'TOKINT';}
 "float"					{return 'TOKFLOAT';}
-"String"				{return 'TOKSTRING';}
 "print"					{return 'TOKPRINT';}
 "if" 					{return 'TOKIF';}
 "else"					{return 'TOKELSE';}
@@ -38,12 +38,12 @@
 %%
 
 program
-	: TOKPROGRAM bloque
-	| TOKPROGRAM vars bloque
+	: TOKPROGRAM ID SEMICOLON vars funcion bloque
 	;
 
 vars
 	: TOKVAR ID ids COLON tipo SEMICOLON recvars
+	|
 	;
 
 recvars
@@ -52,14 +52,18 @@ recvars
 	;
 
 ids
-	: ids COMMA ID
+	: COMMA ID ids
 	|
 	;
 
 tipo
 	: TOKINT
 	| TOKFLOAT
-	| TOKSTRING
+	;
+
+funcion
+	: TOKFUNCTION ID OPARENT recvars EPARENT vars bloque SEMICOLON
+	|
 	;
 
 bloque
@@ -92,7 +96,7 @@ else
 	;
 
 ciclo
-	: TOKWHILE OPARENT expresion EPARENT bloque
+	: TOKWHILE OPARENT expresion EPARENT bloque SEMICOLON
 	;
 
 escritura
@@ -112,19 +116,10 @@ expresion
 	;
 
 comparacion
-	: LBRACE exp
-	| RBRACE exp
-	| negativo EQUAL exp
-	;
-
-igual
-	: EQUAL
-	|
-	;
-
-negativo
-	: EMARK
-	|
+	: LBRACE EQUAL exp
+	| RBRACE EQUAL exp
+	| EMARK EQUAL exp
+	| EQUAL EQUAL exp
 	;
 
 exp
@@ -152,8 +147,14 @@ opmultdiv
 factor
 	: OPARENT expresion EPARENT
 	| varcte
+	| ID params
 	;
 
 varcte:
-	INT | FLOAT | ID
+	INT | FLOAT
+	;
+
+params:
+	OPARENT EXP EPARENT
+	|
 	;
