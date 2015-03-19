@@ -1,0 +1,11 @@
+program test; 
+	var test2: int; 
+
+	function prueba(test3, test4: float;)
+	{
+		test3 = test3 / 5;	
+	};
+
+	{
+		print("Hola");
+	}

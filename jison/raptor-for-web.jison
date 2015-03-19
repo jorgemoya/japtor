@@ -150,11 +150,11 @@ factor
 	| ID params
 	;
 
-varcte:
-	INT | FLOAT
+varcte
+	: INT | FLOAT
 	;
 
-params:
-	OPARENT EXP EPARENT
+params
+	: OPARENT EXP EPARENT
 	|
 	;
