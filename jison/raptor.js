@@ -72,12 +72,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o};
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,12],$V3=[17,19,20];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"VAR":9,"type":10,"INT":11,"FLOAT":12,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",9:"VAR",11:"INT",12:"FLOAT"},
-productions_: [0,[3,1],[3,5],[8,3],[8,0],[10,1],[10,1]],
+symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,":":12,"type":13,"INT":14,"FLOAT":15,"STRING":16,"FUNCTION":17,"(":18,")":19,"{":20,"}":21,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",12:":",14:"INT",15:"FLOAT",16:"STRING",17:"FUNCTION",18:"(",19:")",20:"{",21:"}"},
+productions_: [0,[3,1],[3,8],[8,6],[8,0],[13,1],[13,1],[13,1],[9,8],[9,0],[10,2]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -87,26 +87,29 @@ case 1:
 return null;
 break;
 case 2:
-
-					var vars = yy.vars;
-					yy.vars = [];
-					return vars;
-				
+return yy;
 break;
 case 3:
 
 					var variable = {
-						id: $$[$0-1],
-						type: $$[$0]
+						id: $$[$0-4],
+						type: $$[$0-2]
 					}
-					this.$ = yy.vars.length;
 					yy.vars.push(variable);
+				
+break;
+case 8:
+
+					var funct = {
+						id: $$[$0-6]
+					}
+					yy.functs.push(funct);
 				
 break;
 }
 },
-table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},{4:[2,4],8:6,9:[1,7]},{4:[1,8]},{6:[1,9]},{1:[2,2]},{10:10,11:[1,11],12:[1,12]},{4:[2,3]},{4:[2,5]},{4:[2,6]}],
-defaultActions: {2:[2,1],8:[2,2],10:[2,3],11:[2,5],12:[2,6]},
+table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([17,20],$V0,{8:6,11:$V1}),{9:8,17:[1,9],20:[2,9]},{6:[1,10]},{10:11,20:$V2},{6:[1,13]},{12:[1,14]},{7:[1,15]},{21:[1,16]},{18:[1,17]},{13:18,14:[1,19],15:[1,20],16:[1,21]},{4:[1,22]},{7:[2,10]},{8:23,11:$V1,19:$V0},{7:[1,24]},{7:[2,5]},{7:[2,6]},{7:[2,7]},{1:[2,2]},{19:[1,25]},o($V3,$V0,{8:26,11:$V1}),{8:27,11:$V1,20:$V0},o($V3,[2,3]),{10:28,20:$V2},{7:[1,29]},{20:[2,8]}],
+defaultActions: {2:[2,1],16:[2,10],19:[2,5],20:[2,6],21:[2,7],22:[2,2],29:[2,8]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -261,6 +264,7 @@ var Raptor = function() {
 		this.lexer = new raptorLexer();
 		this.yy = {
 			vars: [],
+			functs: [],
 			escape: function(value) {
 				return value
 					.replace(/&/gi, '&amp;')
@@ -619,26 +623,38 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* ignore whitespace */;
 break;
-case 1:return 5
+case 1:return 5;
 break;
-case 2:return 7
+case 2:return 17;
 break;
-case 3:return ':'
+case 3:return 7;
 break;
-case 4:return 9
+case 4:return 12;
 break;
-case 5:return 11;
+case 5:return 20;
 break;
-case 6:return 12;
+case 6:return 21;
 break;
-case 7:return 6;
+case 7:return 18;
 break;
-case 8:return 4;
+case 8:return 19;
+break;
+case 9:return 11;
+break;
+case 10:return 14;
+break;
+case 11:return 15;
+break;
+case 12:return 16;
+break;
+case 13:return 6;
+break;
+case 14:return 4;
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:program\b)/,/^(?:;)/,/^(?::)/,/^(?:var\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:([a-zA-Z][a-zA-Z0-9]*))/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:program\b)/,/^(?:function\b)/,/^(?:;)/,/^(?::)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:var\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:string\b)/,/^(?:([a-zA-Z][a-zA-Z0-9]*))/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],"inclusive":true}}
 });
 return lexer;
 })();

@@ -3,8 +3,15 @@
   <script src="jison/raptor.js"></script>
   <script>
     // var test = raptorParser.parse("program test; var test2 float");
-    var raptorParser = Raptor();
-    var test = raptorParser.parse("program test; var test2 float");
+    var parse = function() {
+      var raptorParser = Raptor();
+      var test = raptorParser.parse("program test;" +
+                                    "var test2: float; var test1: int; var test3: string;" +
+                                    "function test (var test4: float; var test5: string;) var test6: int; {};" +
+                                    "{};");
+      alert(test);
+    }
+    parse();
   </script>
 </head>
 <body>

@@ -2,12 +2,18 @@
 
 %%
 \s+          						{/* ignore whitespace */;}
-"program"								{return 'PROGRAM'}
-";"											{return ';'}
-":"											{return ':'}
-"var"										{return 'VAR'}
+"program"								{return 'PROGRAM';}
+"function"							{return 'FUNCTION';}
+";"											{return ';';}
+":"											{return ':';}
+"{"											{return '{';}
+"}"											{return '}';}
+"("											{return '(';}
+")"											{return ')';}
+"var"										{return 'VAR';}
 "int"										{return 'INT';}
 "float"									{return 'FLOAT';}
+"string"								{return 'STRING';}
 ([a-zA-Z][a-zA-Z0-9]*)	{return 'ID';}
 <<EOF>>									{return 'EOF';}
 
@@ -20,22 +26,17 @@
 program
 	: EOF
 				{return null;}
-	| PROGRAM ID ';' vars EOF
-				{
-					var vars = yy.vars;
-					yy.vars = [];
-					return vars;
-				}
+	| PROGRAM ID ';' vars funct block ';' EOF
+				{return yy;}
 	;
 
 vars
-	: VAR ID type
+	: VAR ID ':' type ';' vars
 				{
 					var variable = {
 						id: $2,
-						type: $3
+						type: $4
 					}
-					$$ = yy.vars.length;
 					yy.vars.push(variable);
 				}
 	|
@@ -44,6 +45,22 @@ vars
 type
 	: INT
 	| FLOAT
+	| STRING
+	;
+
+funct
+	: FUNCTION ID '(' vars ')' vars block ';' funct
+				{
+					var funct = {
+						id: $2
+					}
+					yy.functs.push(funct);
+				}
+	|
+	;
+
+block
+	: '{' '}'
 	;
 
 %%
@@ -56,6 +73,7 @@ var Raptor = function() {
 		this.lexer = new raptorLexer();
 		this.yy = {
 			vars: [],
+			functs: [],
 			escape: function(value) {
 				return value
 					.replace(/&/gi, '&amp;')
