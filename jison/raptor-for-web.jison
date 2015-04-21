@@ -1,64 +1,75 @@
 %lex
 
 %%
-\s+                 	{/* ignore whitespace */;}
-"program"				{return 'TOKPROGRAM';}
-"function"				{return 'TOKFUNCTION';}
-"var"					{return 'TOKVAR';}
-"int"					{return 'TOKINT';}
-"float"					{return 'TOKFLOAT';}
-"print"					{return 'TOKPRINT';}
-"if" 					{return 'TOKIF';}
-"else"					{return 'TOKELSE';}
-"while"					{return 'TOKWHILE';}
-"or"					{return 'TOKOR';}
-"and"					{return 'TOKAND';}
+\s+          					 {/* ignore whitespace */;}
+"program"							{return 'TOKPROGRAM';}
+"function"						{return 'TOKFUNCTION';}
+"var"									{return 'TOKVAR';}
+"int"									{return 'TOKINT';}
+"float"								{return 'TOKFLOAT';}
+"print"								{return 'TOKPRINT';}
+"if" 									{return 'TOKIF';}
+"else"								{return 'TOKELSE';}
+"while"								{return 'TOKWHILE';}
+"or"									{return 'TOKOR';}
+"and"									{return 'TOKAND';}
 [a-zA-Z][a-zA-Z0-9]*	{return 'ID';}
-[0-9]+					{return 'INT';}
+[0-9]+								{return 'INT';}
 ^[-+]?[0-9]*\.[0-9]+$	{return 'FLOAT';}
-\"[^\"]*\"|\'[^\']*\' 	{return 'STRING';}
-";"						{return 'SEMICOLON';}
-":"						{return 'COLON';}
-","						{return 'COMMA';}
-"{"						{return 'OBRACE';}
-"}"						{return 'EBRACE';}
-"="						{return 'EQUAL';}
-"("						{return 'OPARENT';}
-")"						{return 'EPARENT';}
-"<"						{return 'LBRACE';}
-">"						{return 'RBRACE';}
-"+"						{return 'PLUS';}
-"-"						{return 'MINUS';}
-"*"						{return 'ASTERISK';}
-"/"						{return 'SLASH';}
-"!"						{return 'EMARK';}
+\"[^\"]*\"|\'[^\']*\' {return 'STRING';}
+";"										{return 'SEMICOLON';}
+":"										{return 'COLON';}
+","										{return 'COMMA';}
+"{"										{return 'OBRACE';}
+"}"										{return 'EBRACE';}
+"="										{return 'EQUAL';}
+"("										{return 'OPARENT';}
+")"										{return 'EPARENT';}
+"<"										{return 'LBRACE';}
+">"										{return 'RBRACE';}
+"+"										{return 'PLUS';}
+"-"										{return 'MINUS';}
+"*"										{return 'ASTERISK';}
+"/"										{return 'SLASH';}
+"!"										{return 'EMARK';}
 
 /lex
+
+%start program
 
 %%
 
 program
 	: TOKPROGRAM ID SEMICOLON vars funcion bloque
+														{{ $$ = ['Vars', $4]}}
+
 	;
 
 vars
 	: TOKVAR ID ids COLON tipo SEMICOLON recvars
+														{{ $$ = $2 }}
+
 	|
 	;
 
 recvars
-	: ID ids COLON tipo SEMICOLON recvars
+	: ID ids COLON tipo SEMICOLON recvars	{
+												// console.log($1)
+											}
 	|
 	;
 
 ids
-	: COMMA ID ids
+	: COMMA ID ids	{
+						// console.log($2)
+					}
 	|
 	;
 
 tipo
 	: TOKINT
 	| TOKFLOAT
+	| TOKSTRING
 	;
 
 funcion
@@ -102,7 +113,7 @@ ciclo
 escritura
 	: TOKPRINT OPARENT expresion escrituras EPARENT SEMICOLON
 	| TOKPRINT OPARENT STRING escrituras EPARENT SEMICOLON
-	;	
+	;
 
 escrituras
 	: COMMA expresion escrituras
@@ -111,7 +122,7 @@ escrituras
 	;
 
 expresion
-	: exp 
+	: exp
 	| exp comparacion
 	;
 
