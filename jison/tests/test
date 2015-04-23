@@ -5,3 +5,7 @@ program test;
 program test;
 var float test2; var int test1; var string test3;
 function int test (var float test4; var string test5;) var int test6; {};{};
+
+program test;
+var float test2;
+function int test () var int test6; {};{};

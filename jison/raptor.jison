@@ -15,7 +15,7 @@
 "float"									{return 'FLOAT';}
 "string"								{return 'STRING';}
 "bool"									{return 'BOOL';}
-([a-zA-Z][a-zA-Z0-9]*)	{return 'ID';}
+([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)	{return 'ID';}
 <<EOF>>									{return 'EOF';}
 
 /lex
@@ -31,17 +31,18 @@ program
 				{
 					var proc = new Proc("main", "void", dir_proc(), json_to_vars($4));
 					yy.procs.push(proc);
+
+					assign_memory(yy.procs);
 				}
 	;
 
 vars
 	: VAR type ID ';' vars
 				{
-					alert(yystate);
 					if ($5 !== "") {
-						$$ = '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+dir_var($2)+'"},' + $5;
+						$$ = '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"},' + $5;
 					} else {
-						$$ =  '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+dir_var($2)+'"}';
+						$$ =  '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"}';
 					}
 				}
 	|
@@ -60,7 +61,12 @@ type
 funct
 	: FUNCTION type ID '(' vars ')' vars block ';' funct
 				{
-					var proc = new Proc($3, $2, dir_proc(), json_to_vars($5));
+					var json;
+					if ($5 === "" || $7 === "")
+						json = $5 + $7;
+					else
+						json = $5 + "," + $7;
+					var proc = new Proc($3, $2, dir_proc(), json_to_vars(json));
 					yy.procs.push(proc);
 				}
 	|
@@ -72,22 +78,24 @@ block
 
 %%
 
-var dir_procs = 2000;
+var dir_procs;
 
-var gv_i = 5000;
-var gv_f = 7000;
-var gv_st = 9000;
-var gv_bool = 11000;
+var gv_i;
+var gv_f;
+var gv_st;
+var gv_bool;
 
-var lv_i = 12000;
-var lv_f = 14000;
-var lv_st = 16000;
-var lv_bool = 18000;
+var lv_i;
+var lv_f;
+var lv_st;
+var lv_bool;
 
-var tv_i = 19000;
-var tv_f = 21000;
-var tv_st = 23000;
-var tv_bool = 25000;
+var tv_i;
+var tv_f;
+var tv_st;
+var tv_bool;
+
+init_dirs();
 
 var Raptor = function() {
 	var raptorLexer = function () {};
@@ -115,7 +123,7 @@ function Proc(name, type, dir, vars){
 	this.name = name;
 	this.type = type;
 	this.dir = dir;
-	this.vars = vars.variables;
+	this.vars = vars;
 };
 
 Proc.prototype = {
@@ -131,42 +139,138 @@ function dir_proc() {
 		alert("Out of memory.");
 }
 
-function dir_var(type) {
-	switch(type) {
-		case 'int':
-			if (gv_i < 7000) {
-				return gv_i++;
+function assign_memory(procs) {
+	for(var i = 0; i < procs.length; i++) {
+		var isGlobal = false;
+		if (procs[i].name == "main") {
+			isGlobal = true;
+		}
+
+		for(var j = 0; j < procs[i].vars.length; j++) {
+			if (procs[i].vars[j].id.indexOf("tmp__") > -1)
+			{
+				switch(procs[i].vars[j].type) {
+					case 'int':
+						if (tv_i < 21000) {
+							procs[i].vars[j].dir = tv_i++;
+						} else {
+							alert("Out of memory!");
+						}
+						break;
+					case 'float':
+						if (tv_f < 23000) {
+							procs[i].vars[j].dir = tv_f++;
+						} else {
+							alert("Out of memory!");
+						}
+						break;
+					case 'string':
+						if (tv_st < 25000) {
+							procs[i].vars[j].dir = tv_st++;
+						} else {
+							alert("Out of memory!");
+						}
+						break;
+					case 'bool':
+						if (tv_bool < 26000) {
+							procs[i].vars[j].dir = tv_bool++;
+						} else {
+							alert("Out of memory!");
+						}
+						break;
+				}
 			} else {
-				alert("Out of memory!");
+				if(isGlobal) {
+					switch(procs[i].vars[j].type) {
+						case 'int':
+							if (gv_i < 7000) {
+								procs[i].vars[j].dir = gv_i++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+						case 'float':
+							if (gv_f < 9000) {
+								procs[i].vars[j].dir = gv_f++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+						case 'string':
+							if (gv_st < 11000) {
+								procs[i].vars[j].dir = gv_st++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+						case 'bool':
+							if (gv_bool < 12000) {
+								procs[i].vars[j].dir = gv_bool++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+					}
+				} else {
+					switch(procs[i].vars[j].type) {
+						case 'int':
+							if (lv_i < 14000) {
+								procs[i].vars[j].dir = lv_i++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+						case 'float':
+							if (lv_f < 16000) {
+								procs[i].vars[j].dir = lv_f++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+						case 'string':
+							if (lv_st < 18000) {
+								procs[i].vars[j].dir = lv_st++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+						case 'bool':
+							if (lv_bool < 19000) {
+								procs[i].vars[j].dir = lv_bool++;
+							} else {
+								alert("Out of memory!");
+							}
+							break;
+					}
+				}
 			}
-			break;
-		case 'float':
-			if (gv_f < 9000) {
-				return gv_f++;
-			} else {
-				alert("Out of memory!");
-			}
-			break;
-		case 'string':
-			if (gv_st < 11000) {
-				return gv_st++;
-			} else {
-				alert("Out of memory!");
-			}
-			break;
-		case 'bool':
-			if (gv_bool < 12000) {
-				return gv_bool++;
-			} else {
-				alert("Out of memory!");
-			}
-			break;
+		}
 	}
+	init_dirs();
+}
+
+function init_dirs() {
+	dir_procs = 2000;
+
+	gv_i = 5000;
+	gv_f = 7000;
+	gv_st = 9000;
+	gv_bool = 11000;
+
+	lv_i = 12000;
+	lv_f = 14000;
+	lv_st = 16000;
+	lv_bool = 18000;
+
+	tv_i = 19000;
+	tv_f = 21000;
+	tv_st = 23000;
+	tv_bool = 25000;
 }
 
 function json_to_vars(text) {
 	var var_json = '{"variables":['+text+']}';
- 	return JSON.parse(var_json);
+ 	return JSON.parse(var_json).variables;
 }
 
 if (typeof(window) !== 'undefined') {
