@@ -94,7 +94,8 @@ case 2:
 break;
 case 3:
 
-					if (typeof $$[$0] !== "undefined") {
+					alert(yystate);
+					if ($$[$0] !== "") {
 						this.$ = '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+dir_var($$[$0-3])+'"},' + $$[$0];
 					} else {
 						this.$ =  '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+dir_var($$[$0-3])+'"}';

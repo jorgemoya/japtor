@@ -37,7 +37,8 @@ program
 vars
 	: VAR type ID ';' vars
 				{
-					if (typeof $5 !== "undefined") {
+					alert(yystate);
+					if ($5 !== "") {
 						$$ = '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+dir_var($2)+'"},' + $5;
 					} else {
 						$$ =  '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+dir_var($2)+'"}';
