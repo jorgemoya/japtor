@@ -6,10 +6,10 @@
     var parse = function() {
       var raptorParser = Raptor();
       var test = raptorParser.parse("program test;" +
-                                    "var test2: float; var test1: int; var test3: string;" +
-                                    "function test (var test4: float; var test5: string;) var test6: int; {};" +
+                                    "var float test2; var int test1; var string test3;" +
+                                    "function int test (var float test4; var string test5;) var int test6; {};" +
                                     "{};");
-      alert(test);
+      alert(raptorParser.yy);
     }
     parse();
   </script>

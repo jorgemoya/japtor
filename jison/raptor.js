@@ -72,12 +72,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,12],$V3=[17,19,20];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,9],$V3=[2,9],$V4=[1,11],$V5=[1,12],$V6=[1,13],$V7=[1,15],$V8=[16,18,19];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,":":12,"type":13,"INT":14,"FLOAT":15,"STRING":16,"FUNCTION":17,"(":18,")":19,"{":20,"}":21,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",12:":",14:"INT",15:"FLOAT",16:"STRING",17:"FUNCTION",18:"(",19:")",20:"{",21:"}"},
-productions_: [0,[3,1],[3,8],[8,6],[8,0],[13,1],[13,1],[13,1],[9,8],[9,0],[10,2]],
+symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,"type":12,"INT":13,"FLOAT":14,"STRING":15,"FUNCTION":16,"(":17,")":18,"{":19,"}":20,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",13:"INT",14:"FLOAT",15:"STRING",16:"FUNCTION",17:"(",18:")",19:"{",20:"}"},
+productions_: [0,[3,1],[3,8],[8,5],[8,0],[12,1],[12,1],[12,1],[9,10],[9,0],[10,2]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -87,29 +87,37 @@ case 1:
 return null;
 break;
 case 2:
-return yy;
+
+
+					var proc = new Proc("main", "main", 0, json_to_vars($$[$0-4]));
+					yy.procs.push(proc);
+				
 break;
 case 3:
 
 					var variable = {
-						id: $$[$0-4],
-						type: $$[$0-2]
+						id: $$[$0-2],
+						type: $$[$0-3],
+						dir: 0
 					}
-					yy.vars.push(variable);
+
+					if (typeof $$[$0] !== "undefined") {
+						this.$ = '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+0+'"},' + $$[$0];
+					} else {
+						this.$ =  '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+0+'"}';
+					}
 				
 break;
 case 8:
 
-					var funct = {
-						id: $$[$0-6]
-					}
-					yy.functs.push(funct);
+					var proc = new Proc($$[$0-7], $$[$0-8], 0, json_to_vars($$[$0-5]));
+					yy.procs.push(proc);
 				
 break;
 }
 },
-table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([17,20],$V0,{8:6,11:$V1}),{9:8,17:[1,9],20:[2,9]},{6:[1,10]},{10:11,20:$V2},{6:[1,13]},{12:[1,14]},{7:[1,15]},{21:[1,16]},{18:[1,17]},{13:18,14:[1,19],15:[1,20],16:[1,21]},{4:[1,22]},{7:[2,10]},{8:23,11:$V1,19:$V0},{7:[1,24]},{7:[2,5]},{7:[2,6]},{7:[2,7]},{1:[2,2]},{19:[1,25]},o($V3,$V0,{8:26,11:$V1}),{8:27,11:$V1,20:$V0},o($V3,[2,3]),{10:28,20:$V2},{7:[1,29]},{20:[2,8]}],
-defaultActions: {2:[2,1],16:[2,10],19:[2,5],20:[2,6],21:[2,7],22:[2,2],29:[2,8]},
+table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([16,19],$V0,{8:6,11:$V1}),{9:8,16:$V2,19:$V3},{12:10,13:$V4,14:$V5,15:$V6},{10:14,19:$V7},{12:16,13:$V4,14:$V5,15:$V6},{6:[1,17]},{6:[2,5]},{6:[2,6]},{6:[2,7]},{7:[1,18]},{20:[1,19]},{6:[1,20]},{7:[1,21]},{4:[1,22]},{7:[2,10]},{17:[1,23]},o($V8,$V0,{8:24,11:$V1}),{1:[2,2]},{8:25,11:$V1,18:$V0},o($V8,[2,3]),{18:[1,26]},{8:27,11:$V1,19:$V0},{10:28,19:$V7},{7:[1,29]},{9:30,16:$V2,19:$V3},{19:[2,8]}],
+defaultActions: {2:[2,1],11:[2,5],12:[2,6],13:[2,7],19:[2,10],22:[2,2],30:[2,8]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -264,16 +272,7 @@ var Raptor = function() {
 		this.lexer = new raptorLexer();
 		this.yy = {
 			vars: [],
-			functs: [],
-			escape: function(value) {
-				return value
-					.replace(/&/gi, '&amp;')
-					.replace(/>/gi, '&gt;')
-					.replace(/</gi, '&lt;')
-					.replace(/\n/g, '\n<br>')
-					.replace(/\t/g, '&nbsp;&nbsp;&nbsp ')
-					.replace(/  /g, '&nbsp; ');
-			},
+			procs: [],
 			parseError: function(msg, hash) {
 				this.done = true;
 				var result = new String();
@@ -283,11 +282,42 @@ var Raptor = function() {
 			}
 		};
 	};
-
 	raptorParser.prototype = parser;
 	var newParser = new raptorParser();
 	return newParser;
 };
+
+function Size(){
+	v_ints = [];
+	v_floats = [];
+	v_strings = [];
+	t_ints = [];
+	t_floats = [];
+	t_strings = [];
+};
+Size.prototype = {
+	size: function() {
+		return v_ints.length + v_floats.length + v_strings.length + t_ints.length + t_floats.length + t_strings.length;
+	}
+}
+
+function Proc(name, type, dir, vars){
+	this.name = name;
+	this.type = type;
+	this.dir = dir;
+	this.vars = vars;
+};
+Proc.prototype = {
+	size : function() {
+		return this.vars.variables.length;
+	}
+}
+
+function json_to_vars(text) {
+	var var_json = '{"variables":['+text+']}';
+ 	return JSON.parse(var_json);
+}
+
 if (typeof(window) !== 'undefined') {
 	window.Raptor = Raptor;
 } else {
@@ -625,27 +655,27 @@ case 0:/* ignore whitespace */;
 break;
 case 1:return 5;
 break;
-case 2:return 17;
+case 2:return 16;
 break;
 case 3:return 7;
 break;
-case 4:return 12;
+case 4:return ':';
 break;
-case 5:return 20;
+case 5:return 19;
 break;
-case 6:return 21;
+case 6:return 20;
 break;
-case 7:return 18;
+case 7:return 17;
 break;
-case 8:return 19;
+case 8:return 18;
 break;
 case 9:return 11;
 break;
-case 10:return 14;
+case 10:return 13;
 break;
-case 11:return 15;
+case 11:return 14;
 break;
-case 12:return 16;
+case 12:return 15;
 break;
 case 13:return 6;
 break;

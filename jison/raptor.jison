@@ -27,17 +27,21 @@ program
 	: EOF
 				{return null;}
 	| PROGRAM ID ';' vars funct block ';' EOF
-				{return yy;}
+				{
+
+					var proc = new Proc("main", "main", 0, json_to_vars($4));
+					yy.procs.push(proc);
+				}
 	;
 
 vars
-	: VAR ID ':' type ';' vars
+	: VAR type ID ';' vars
 				{
-					var variable = {
-						id: $2,
-						type: $4
+					if (typeof $5 !== "undefined") {
+						$$ = '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"},' + $5;
+					} else {
+						$$ =  '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"}';
 					}
-					yy.vars.push(variable);
 				}
 	|
 	;
@@ -49,12 +53,10 @@ type
 	;
 
 funct
-	: FUNCTION ID '(' vars ')' vars block ';' funct
+	: FUNCTION type ID '(' vars ')' vars block ';' funct
 				{
-					var funct = {
-						id: $2
-					}
-					yy.functs.push(funct);
+					var proc = new Proc($3, $2, 0, json_to_vars($5));
+					yy.procs.push(proc);
 				}
 	|
 	;
@@ -73,16 +75,7 @@ var Raptor = function() {
 		this.lexer = new raptorLexer();
 		this.yy = {
 			vars: [],
-			functs: [],
-			escape: function(value) {
-				return value
-					.replace(/&/gi, '&amp;')
-					.replace(/>/gi, '&gt;')
-					.replace(/</gi, '&lt;')
-					.replace(/\n/g, '\n<br>')
-					.replace(/\t/g, '&nbsp;&nbsp;&nbsp ')
-					.replace(/  /g, '&nbsp; ');
-			},
+			procs: [],
 			parseError: function(msg, hash) {
 				this.done = true;
 				var result = new String();
@@ -92,11 +85,28 @@ var Raptor = function() {
 			}
 		};
 	};
-
 	raptorParser.prototype = parser;
 	var newParser = new raptorParser();
 	return newParser;
 };
+
+function Proc(name, type, dir, vars){
+	this.name = name;
+	this.type = type;
+	this.dir = dir;
+	this.vars = vars;
+};
+Proc.prototype = {
+	size : function() {
+		return this.vars.variables.length;
+	}
+}
+
+function json_to_vars(text) {
+	var var_json = '{"variables":['+text+']}';
+ 	return JSON.parse(var_json);
+}
+
 if (typeof(window) !== 'undefined') {
 	window.Raptor = Raptor;
 } else {
