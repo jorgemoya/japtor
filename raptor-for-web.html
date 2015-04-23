@@ -4,15 +4,16 @@
   <script>
     // var test = raptorParser.parse("program test; var test2 float");
     var parse = function() {
+      var code = document.getElementById("code").value;
       var raptorParser = Raptor();
-      var test = raptorParser.parse("program test;" +
-                                    "var float test2; var int test1; var string test3;" +
-                                    "function int test (var float test4; var string test5;) var int test6; {};" +
-                                    "{};");
-      alert(raptorParser.yy);
+      var test = raptorParser.parse(code);
+      var procs = raptorParser.yy.procs
+      alert(procs.length);
     }
-    parse();
   </script>
 </head>
 <body>
+  <textarea id="code" rows="50" cols="100">
+  </textarea>
+  <button type="button" onClick="parse();">Submit</button>
 </body>

@@ -72,12 +72,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,9],$V3=[2,9],$V4=[1,11],$V5=[1,12],$V6=[1,13],$V7=[1,15],$V8=[16,18,19];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,9],$V3=[2,10],$V4=[1,11],$V5=[1,12],$V6=[1,13],$V7=[1,14],$V8=[1,16],$V9=[17,19,20];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,"type":12,"INT":13,"FLOAT":14,"STRING":15,"FUNCTION":16,"(":17,")":18,"{":19,"}":20,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",13:"INT",14:"FLOAT",15:"STRING",16:"FUNCTION",17:"(",18:")",19:"{",20:"}"},
-productions_: [0,[3,1],[3,8],[8,5],[8,0],[12,1],[12,1],[12,1],[9,10],[9,0],[10,2]],
+symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,"type":12,"INT":13,"FLOAT":14,"STRING":15,"BOOL":16,"FUNCTION":17,"(":18,")":19,"{":20,"}":21,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",13:"INT",14:"FLOAT",15:"STRING",16:"BOOL",17:"FUNCTION",18:"(",19:")",20:"{",21:"}"},
+productions_: [0,[3,1],[3,8],[8,5],[8,0],[12,1],[12,1],[12,1],[12,1],[9,10],[9,0],[10,2]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -88,36 +88,34 @@ return null;
 break;
 case 2:
 
-
-					var proc = new Proc("main", "main", 0, json_to_vars($$[$0-4]));
+					var proc = new Proc("main", "void", dir_proc(), json_to_vars($$[$0-4]));
 					yy.procs.push(proc);
 				
 break;
 case 3:
 
-					var variable = {
-						id: $$[$0-2],
-						type: $$[$0-3],
-						dir: 0
-					}
-
 					if (typeof $$[$0] !== "undefined") {
-						this.$ = '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+0+'"},' + $$[$0];
+						this.$ = '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+dir_var($$[$0-3])+'"},' + $$[$0];
 					} else {
-						this.$ =  '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+0+'"}';
+						this.$ =  '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+dir_var($$[$0-3])+'"}';
 					}
 				
 break;
-case 8:
+case 4:
 
-					var proc = new Proc($$[$0-7], $$[$0-8], 0, json_to_vars($$[$0-5]));
+					this.$ = "";
+				
+break;
+case 9:
+
+					var proc = new Proc($$[$0-7], $$[$0-8], dir_proc(), json_to_vars($$[$0-5]));
 					yy.procs.push(proc);
 				
 break;
 }
 },
-table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([16,19],$V0,{8:6,11:$V1}),{9:8,16:$V2,19:$V3},{12:10,13:$V4,14:$V5,15:$V6},{10:14,19:$V7},{12:16,13:$V4,14:$V5,15:$V6},{6:[1,17]},{6:[2,5]},{6:[2,6]},{6:[2,7]},{7:[1,18]},{20:[1,19]},{6:[1,20]},{7:[1,21]},{4:[1,22]},{7:[2,10]},{17:[1,23]},o($V8,$V0,{8:24,11:$V1}),{1:[2,2]},{8:25,11:$V1,18:$V0},o($V8,[2,3]),{18:[1,26]},{8:27,11:$V1,19:$V0},{10:28,19:$V7},{7:[1,29]},{9:30,16:$V2,19:$V3},{19:[2,8]}],
-defaultActions: {2:[2,1],11:[2,5],12:[2,6],13:[2,7],19:[2,10],22:[2,2],30:[2,8]},
+table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([17,20],$V0,{8:6,11:$V1}),{9:8,17:$V2,20:$V3},{12:10,13:$V4,14:$V5,15:$V6,16:$V7},{10:15,20:$V8},{12:17,13:$V4,14:$V5,15:$V6,16:$V7},{6:[1,18]},{6:[2,5]},{6:[2,6]},{6:[2,7]},{6:[2,8]},{7:[1,19]},{21:[1,20]},{6:[1,21]},{7:[1,22]},{4:[1,23]},{7:[2,11]},{18:[1,24]},o($V9,$V0,{8:25,11:$V1}),{1:[2,2]},{8:26,11:$V1,19:$V0},o($V9,[2,3]),{19:[1,27]},{8:28,11:$V1,20:$V0},{10:29,20:$V8},{7:[1,30]},{9:31,17:$V2,20:$V3},{20:[2,9]}],
+defaultActions: {2:[2,1],11:[2,5],12:[2,6],13:[2,7],14:[2,8],20:[2,11],23:[2,2],31:[2,9]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -264,6 +262,23 @@ parse: function parse(input) {
 }};
 
 
+var dir_procs = 2000;
+
+var gv_i = 5000;
+var gv_f = 7000;
+var gv_st = 9000;
+var gv_bool = 11000;
+
+var lv_i = 12000;
+var lv_f = 14000;
+var lv_st = 16000;
+var lv_bool = 18000;
+
+var tv_i = 19000;
+var tv_f = 21000;
+var tv_st = 23000;
+var tv_bool = 25000;
+
 var Raptor = function() {
 	var raptorLexer = function () {};
 	raptorLexer.prototype = parser.lexer;
@@ -271,7 +286,6 @@ var Raptor = function() {
 	var raptorParser = function () {
 		this.lexer = new raptorLexer();
 		this.yy = {
-			vars: [],
 			procs: [],
 			parseError: function(msg, hash) {
 				this.done = true;
@@ -287,29 +301,56 @@ var Raptor = function() {
 	return newParser;
 };
 
-function Size(){
-	v_ints = [];
-	v_floats = [];
-	v_strings = [];
-	t_ints = [];
-	t_floats = [];
-	t_strings = [];
-};
-Size.prototype = {
-	size: function() {
-		return v_ints.length + v_floats.length + v_strings.length + t_ints.length + t_floats.length + t_strings.length;
-	}
-}
-
 function Proc(name, type, dir, vars){
 	this.name = name;
 	this.type = type;
 	this.dir = dir;
-	this.vars = vars;
+	this.vars = vars.variables;
 };
+
 Proc.prototype = {
 	size : function() {
-		return this.vars.variables.length;
+		return this.vars.length;
+	}
+}
+
+function dir_proc() {
+	if(dir_procs < 5000)
+		return dir_procs++;
+	else
+		alert("Out of memory.");
+}
+
+function dir_var(type) {
+	switch(type) {
+		case 'int':
+			if (gv_i < 7000) {
+				return gv_i++;
+			} else {
+				alert("Out of memory!");
+			}
+			break;
+		case 'float':
+			if (gv_f < 9000) {
+				return gv_f++;
+			} else {
+				alert("Out of memory!");
+			}
+			break;
+		case 'string':
+			if (gv_st < 11000) {
+				return gv_st++;
+			} else {
+				alert("Out of memory!");
+			}
+			break;
+		case 'bool':
+			if (gv_bool < 12000) {
+				return gv_bool++;
+			} else {
+				alert("Out of memory!");
+			}
+			break;
 	}
 }
 
@@ -655,19 +696,19 @@ case 0:/* ignore whitespace */;
 break;
 case 1:return 5;
 break;
-case 2:return 16;
+case 2:return 17;
 break;
 case 3:return 7;
 break;
 case 4:return ':';
 break;
-case 5:return 19;
+case 5:return 20;
 break;
-case 6:return 20;
+case 6:return 21;
 break;
-case 7:return 17;
+case 7:return 18;
 break;
-case 8:return 18;
+case 8:return 19;
 break;
 case 9:return 11;
 break;
@@ -677,14 +718,16 @@ case 11:return 14;
 break;
 case 12:return 15;
 break;
-case 13:return 6;
+case 13:return 16;
 break;
-case 14:return 4;
+case 14:return 6;
+break;
+case 15:return 4;
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:program\b)/,/^(?:function\b)/,/^(?:;)/,/^(?::)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:var\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:string\b)/,/^(?:([a-zA-Z][a-zA-Z0-9]*))/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:program\b)/,/^(?:function\b)/,/^(?:;)/,/^(?::)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:var\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:string\b)/,/^(?:bool\b)/,/^(?:([a-zA-Z][a-zA-Z0-9]*))/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"inclusive":true}}
 });
 return lexer;
 })();
