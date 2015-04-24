@@ -29,7 +29,7 @@ program
 				{return null;}
 	| PROGRAM ID ';' vars funct block ';' EOF
 				{
-					var proc = new Proc("main", "void", dir_proc(), json_to_vars($4));
+					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($4));
 					yy.procs.push(proc);
 
 					assign_memory(yy.procs);
@@ -66,7 +66,15 @@ funct
 						json = $5 + $7;
 					else
 						json = $5 + "," + $7;
-					var proc = new Proc($3, $2, dir_proc(), json_to_vars(json));
+
+					var vars = json_to_vars($5);
+					var paramTypes = [];
+
+					for(var i = 0; i < vars.length; i++) {
+						paramTypes.push(vars[i].type);
+					}
+
+					var proc = new Proc($3, $2, dir_proc(), paramTypes, json_to_vars(json));
 					yy.procs.push(proc);
 				}
 	|
@@ -119,10 +127,11 @@ var Raptor = function() {
 	return newParser;
 };
 
-function Proc(name, type, dir, vars){
+function Proc(name, type, dir, params, vars){
 	this.name = name;
 	this.type = type;
 	this.dir = dir;
+	this.params = params;
 	this.vars = vars;
 };
 

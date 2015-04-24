@@ -88,7 +88,7 @@ return null;
 break;
 case 2:
 
-					var proc = new Proc("main", "void", dir_proc(), json_to_vars($$[$0-4]));
+					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($$[$0-4]));
 					yy.procs.push(proc);
 
 					assign_memory(yy.procs);
@@ -115,7 +115,15 @@ case 9:
 						json = $$[$0-5] + $$[$0-3];
 					else
 						json = $$[$0-5] + "," + $$[$0-3];
-					var proc = new Proc($$[$0-7], $$[$0-8], dir_proc(), json_to_vars(json));
+
+					var vars = json_to_vars($$[$0-5]);
+					var paramTypes = [];
+
+					for(var i = 0; i < vars.length; i++) {
+						paramTypes.push(vars[i].type);
+					}
+
+					var proc = new Proc($$[$0-7], $$[$0-8], dir_proc(), paramTypes, json_to_vars(json));
 					yy.procs.push(proc);
 				
 break;
@@ -310,10 +318,11 @@ var Raptor = function() {
 	return newParser;
 };
 
-function Proc(name, type, dir, vars){
+function Proc(name, type, dir, params, vars){
 	this.name = name;
 	this.type = type;
 	this.dir = dir;
+	this.params = params;
 	this.vars = vars;
 };
 
