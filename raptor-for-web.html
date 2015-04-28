@@ -7,8 +7,9 @@
       var code = document.getElementById("code").value;
       var raptorParser = Raptor();
       var test = raptorParser.parse(code);
-      var procs = raptorParser.yy.procs
-      alert(procs.length);
+      var procs = raptorParser.yy.procs;
+      var quads = raptorParser.yy.quads;
+      // alert(procs.length);
     }
   </script>
 </head>

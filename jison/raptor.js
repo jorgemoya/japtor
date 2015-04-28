@@ -72,12 +72,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,9],$V3=[2,10],$V4=[1,11],$V5=[1,12],$V6=[1,13],$V7=[1,14],$V8=[1,16],$V9=[17,19,20];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,9],$V3=[2,10],$V4=[1,11],$V5=[1,12],$V6=[1,13],$V7=[1,14],$V8=[1,16],$V9=[1,23],$Va=[2,13],$Vb=[6,22],$Vc=[17,19,20],$Vd=[1,37],$Ve=[1,38],$Vf=[1,39],$Vg=[7,25,29,30,31],$Vh=[7,25,29,30,31,34,35,36],$Vi=[7,25,29,30,31,34,35,36,39,40,41];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,"type":12,"INT":13,"FLOAT":14,"STRING":15,"BOOL":16,"FUNCTION":17,"(":18,")":19,"{":20,"}":21,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",13:"INT",14:"FLOAT",15:"STRING",16:"BOOL",17:"FUNCTION",18:"(",19:")",20:"{",21:"}"},
-productions_: [0,[3,1],[3,8],[8,5],[8,0],[12,1],[12,1],[12,1],[12,1],[9,10],[9,0],[10,2]],
+symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,"type":12,"INT":13,"FLOAT":14,"STRING":15,"BOOL":16,"FUNCTION":17,"(":18,")":19,"{":20,"statutes":21,"}":22,"statute":23,"assignment":24,"=":25,"expression":26,"exp":27,"comparison":28,"<":29,">":30,"!":31,"term":32,"plusminus":33,"+":34,"-":35,"||":36,"factor":37,"multidivi":38,"*":39,"/":40,"&&":41,"value":42,"I":43,"F":44,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",13:"INT",14:"FLOAT",15:"STRING",16:"BOOL",17:"FUNCTION",18:"(",19:")",20:"{",22:"}",25:"=",29:"<",30:">",31:"!",34:"+",35:"-",36:"||",39:"*",40:"/",41:"&&",43:"I",44:"F"},
+productions_: [0,[3,1],[3,8],[8,5],[8,0],[12,1],[12,1],[12,1],[12,1],[9,10],[9,0],[10,3],[21,2],[21,0],[23,1],[24,4],[26,1],[26,2],[28,3],[28,3],[28,3],[28,3],[27,2],[33,2],[33,2],[33,2],[33,0],[32,2],[38,2],[38,2],[38,2],[38,0],[37,1],[37,1],[42,1],[42,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -90,6 +90,7 @@ case 2:
 
 					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($$[$0-4]));
 					yy.procs.push(proc);
+					yy.quads.push($$[$0-2]);
 
 					assign_memory(yy.procs);
 				
@@ -127,10 +128,89 @@ case 9:
 					yy.procs.push(proc);
 				
 break;
+case 11:
+ this.$ = $$[$0-1]; 
+break;
+case 12:
+
+					var statute = $$[$0-1];
+					var otherStatutes = $$[$0];
+
+					if (typeof otherStatutes !== "undefined") {
+						var quads = statute.concat(otherStatutes);
+						this.$ = quads;
+					} else {
+						this.$ = statute;
+					}
+				
+break;
+case 15:
+
+					var quads = [];
+
+					ids.push($$[$0-3]);
+					ops.push($$[$0-2]);
+
+					var exps = $$[$0-1];
+					if( Object.prototype.toString.call(exps) === '[object Array]' ) {
+						for(var i = 0; i < exps.length; i++)
+							quads.push(exps[i]);
+					}
+
+					quads.push([ids.pop(), "", ids.pop(), ops.pop()]);
+
+					this.$ = quads;
+				
+break;
+case 22:
+
+					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
+						//validar tipos
+						var op = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
+						ids.push("tmp"+temp);
+						temp++;
+
+						var exp = $$[$0];
+						if(typeof exp !== "undefined" && Object.prototype.toString.call( exp ) === '[object Array]') {
+							exp.push(op);
+							this.$ = exp;
+						} else {
+							this.$ = [op];
+						}
+					}
+				
+break;
+case 23: case 24:
+
+					ops.push($$[$0-1]);
+					this.$ = $$[$0];
+				
+break;
+case 27:
+
+					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
+						//validar tipos
+						// this.$ = [ops.pop(), ids.pop(), ids.pop(), "tempvar"];
+						this.$ = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
+						ids.push("tmp"+temp);
+						temp++;
+					}
+				
+break;
+case 28: case 29:
+
+				ops.push($$[$0-1]);
+			
+break;
+case 32: case 33:
+
+					ids.push($$[$0]);
+				
+break;
 }
 },
-table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([17,20],$V0,{8:6,11:$V1}),{9:8,17:$V2,20:$V3},{12:10,13:$V4,14:$V5,15:$V6,16:$V7},{10:15,20:$V8},{12:17,13:$V4,14:$V5,15:$V6,16:$V7},{6:[1,18]},{6:[2,5]},{6:[2,6]},{6:[2,7]},{6:[2,8]},{7:[1,19]},{21:[1,20]},{6:[1,21]},{7:[1,22]},{4:[1,23]},{7:[2,11]},{18:[1,24]},o($V9,$V0,{8:25,11:$V1}),{1:[2,2]},{8:26,11:$V1,19:$V0},o($V9,[2,3]),{19:[1,27]},{8:28,11:$V1,20:$V0},{10:29,20:$V8},{7:[1,30]},{9:31,17:$V2,20:$V3},{20:[2,9]}],
-defaultActions: {2:[2,1],11:[2,5],12:[2,6],13:[2,7],14:[2,8],20:[2,11],23:[2,2],31:[2,9]},
+table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([17,20],$V0,{8:6,11:$V1}),{9:8,17:$V2,20:$V3},{12:10,13:$V4,14:$V5,15:$V6,16:$V7},{10:15,20:$V8},{12:17,13:$V4,14:$V5,15:$V6,16:$V7},{6:[1,18]},{6:[2,5]},{6:[2,6]},{6:[2,7]},{6:[2,8]},{7:[1,19]},{6:$V9,21:20,22:$Va,23:21,24:22},{6:[1,24]},{7:[1,25]},{4:[1,26]},{22:[1,27]},{6:$V9,21:28,22:$Va,23:21,24:22},o($Vb,[2,14]),{25:[1,29]},{18:[1,30]},o($Vc,$V0,{8:31,11:$V1}),{1:[2,2]},{7:[2,11]},{22:[2,12]},{6:$Vd,26:32,27:33,32:34,37:35,42:36,43:$Ve,44:$Vf},{8:40,11:$V1,19:$V0},o($Vc,[2,3]),{7:[1,41]},{7:[2,16],25:[1,46],28:42,29:[1,43],30:[1,44],31:[1,45]},o($Vg,[2,26],{33:47,34:[1,48],35:[1,49],36:[1,50]}),o($Vh,[2,31],{38:51,39:[1,52],40:[1,53],41:[1,54]}),o($Vi,[2,32]),o($Vi,[2,33]),o($Vi,[2,34]),o($Vi,[2,35]),{19:[1,55]},o($Vb,[2,15]),{7:[2,17]},{25:[1,56]},{25:[1,57]},{25:[1,58]},{25:[1,59]},o($Vg,[2,22]),{6:$Vd,27:60,32:34,37:35,42:36,43:$Ve,44:$Vf},{6:$Vd,27:61,32:34,37:35,42:36,43:$Ve,44:$Vf},{6:$Vd,27:62,32:34,37:35,42:36,43:$Ve,44:$Vf},o($Vh,[2,27]),{6:$Vd,32:63,37:35,42:36,43:$Ve,44:$Vf},{6:$Vd,32:64,37:35,42:36,43:$Ve,44:$Vf},{6:$Vd,32:65,37:35,42:36,43:$Ve,44:$Vf},{8:66,11:$V1,20:$V0},{6:$Vd,27:67,32:34,37:35,42:36,43:$Ve,44:$Vf},{6:$Vd,27:68,32:34,37:35,42:36,43:$Ve,44:$Vf},{6:$Vd,27:69,32:34,37:35,42:36,43:$Ve,44:$Vf},{6:$Vd,27:70,32:34,37:35,42:36,43:$Ve,44:$Vf},o($Vg,[2,23]),o($Vg,[2,24]),o($Vg,[2,25]),o($Vh,[2,28]),o($Vh,[2,29]),o($Vh,[2,30]),{10:71,20:$V8},{7:[2,18]},{7:[2,19]},{7:[2,20]},{7:[2,21]},{7:[1,72]},{9:73,17:$V2,20:$V3},{20:[2,9]}],
+defaultActions: {2:[2,1],11:[2,5],12:[2,6],13:[2,7],14:[2,8],26:[2,2],27:[2,11],28:[2,12],42:[2,17],67:[2,18],68:[2,19],69:[2,20],70:[2,21],73:[2,9]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -296,6 +376,48 @@ var tv_bool;
 
 init_dirs();
 
+var dataStructures = {
+    stack : function() {
+        var elements = [];
+
+        this.push = function(element) {
+            elements.push(element);
+        }
+        this.pop = function() {
+            return elements.pop();
+        }
+        this.stackTop = function(element) {
+            return elements[elements.length - 1];
+        }
+    }
+}
+
+var ids = new dataStructures.stack();
+var ops = new dataStructures.stack();
+var types = new dataStructures.stack();
+
+var semantic_cube = [
+											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||"],
+										 	["i",	"i", 	"i", 	"i", 	"i", 	"i", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["f", "f", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["s", "s", 	"s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "b", 	"x", 	"x", 	"x", 	"x", 	"b", 	"x", 	"x", 	"x", 	"x", 	"b", 	"b"],
+											["i", "f", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["i", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["i", "b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["f", "i", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["f", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["f", "b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["s", "i", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["s", "f", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["s", "b", 	"b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "i", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "f", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+										];
+
+var temp = 1;
+
 var Raptor = function() {
 	var raptorLexer = function () {};
 	raptorLexer.prototype = parser.lexer;
@@ -304,13 +426,14 @@ var Raptor = function() {
 		this.lexer = new raptorLexer();
 		this.yy = {
 			procs: [],
-			parseError: function(msg, hash) {
-				this.done = true;
-				var result = new String();
-				result.html = '<pre>' + msg + '</pre>';
-				result.hash = hash;
-				return result;
-			}
+			quads: []
+			// parseError: function(msg, hash) {
+			// 	this.done = true;
+			// 	var result = new String();
+			// 	result.html = '<pre>' + msg + '</pre>';
+			// 	result.hash = hash;
+			// 	return result;
+			// }
 		};
 	};
 	raptorParser.prototype = parser;
@@ -329,6 +452,9 @@ function Proc(name, type, dir, params, vars){
 Proc.prototype = {
 	size : function() {
 		return this.vars.length;
+	},
+	numParams : function() {
+		return this.params.length;
 	}
 }
 
@@ -818,30 +944,54 @@ case 4:return ':';
 break;
 case 5:return 20;
 break;
-case 6:return 21;
+case 6:return 22;
 break;
 case 7:return 18;
 break;
 case 8:return 19;
 break;
-case 9:return 11;
+case 9:return 29;
 break;
-case 10:return 13;
+case 10:return 30;
 break;
-case 11:return 14;
+case 11:return 31;
 break;
-case 12:return 15;
+case 12:return "=";
 break;
-case 13:return 16;
+case 13:return "+";
 break;
-case 14:return 6;
+case 14:return "-";
 break;
-case 15:return 4;
+case 15:return 39;
+break;
+case 16:return 40;
+break;
+case 17:return 41;
+break;
+case 18:return "||";
+break;
+case 19:return 11;
+break;
+case 20:return 13;
+break;
+case 21:return 14;
+break;
+case 22:return 15;
+break;
+case 23:return 16;
+break;
+case 24:return 44;
+break;
+case 25:return 43;
+break;
+case 26:return 6;
+break;
+case 27:return 4;
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:program\b)/,/^(?:function\b)/,/^(?:;)/,/^(?::)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:var\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:string\b)/,/^(?:bool\b)/,/^(?:([a-zA-Z][a-zA-Z0-9]*)(|_)*([a-zA-Z][a-zA-Z0-9]*))/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:program\b)/,/^(?:function\b)/,/^(?:;)/,/^(?::)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:<)/,/^(?:>)/,/^(?:!)/,/^(?:=)/,/^(?:\+)/,/^(?:-)/,/^(?:\*)/,/^(?:\/)/,/^(?:&&)/,/^(?:\|\|)/,/^(?:var\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:string\b)/,/^(?:bool\b)/,/^(?:[0-9]*\.[0-9]+)/,/^(?:[0-9]+)/,/^(?:([a-zA-Z][a-zA-Z0-9]*)(|_)*([a-zA-Z][a-zA-Z0-9]*)*)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],"inclusive":true}}
 });
 return lexer;
 })();

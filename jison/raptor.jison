@@ -10,12 +10,24 @@
 "}"											{return '}';}
 "("											{return '(';}
 ")"											{return ')';}
+"<"											{return '<';}
+">"											{return '>';}
+"!"											{return '!';}
+"="											{return "=";}
+"+"											{return "+";}
+"-"											{return "-";}
+"*"											{return '*';}
+"/"											{return '/';}
+"&&"										{return '&&';}
+"||"										{return "||";}
 "var"										{return 'VAR';}
 "int"										{return 'INT';}
 "float"									{return 'FLOAT';}
 "string"								{return 'STRING';}
 "bool"									{return 'BOOL';}
-([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)	{return 'ID';}
+[0-9]*"."[0-9]+					{return 'F';}
+[0-9]+									{return 'I';}
+([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
 <<EOF>>									{return 'EOF';}
 
 /lex
@@ -31,6 +43,7 @@ program
 				{
 					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($4));
 					yy.procs.push(proc);
+					yy.quads.push($6);
 
 					assign_memory(yy.procs);
 				}
@@ -81,7 +94,137 @@ funct
 	;
 
 block
-	: '{''}'
+	: '{' statutes '}'
+				{ $$ = $2; }
+	;
+
+statutes
+	: statute statutes
+				{
+					var statute = $1;
+					var otherStatutes = $2;
+
+					if (typeof otherStatutes !== "undefined") {
+						var quads = statute.concat(otherStatutes);
+						$$ = quads;
+					} else {
+						$$ = statute;
+					}
+				}
+	|
+	;
+
+statute
+	: assignment
+	;
+
+assignment
+	: ID '=' expression ';'
+				{
+					var quads = [];
+
+					ids.push($1);
+					ops.push($2);
+
+					var exps = $3;
+					if( Object.prototype.toString.call(exps) === '[object Array]' ) {
+						for(var i = 0; i < exps.length; i++)
+							quads.push(exps[i]);
+					}
+
+					quads.push([ids.pop(), "", ids.pop(), ops.pop()]);
+
+					$$ = quads;
+				}
+	;
+
+expression
+	: exp
+	| exp comparison
+	;
+
+comparison
+	: '<' '=' exp
+	| '>' '=' exp
+	| '!' '=' exp
+	| '=' '=' exp
+	;
+
+exp
+	: term plusminus
+				{
+					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
+						//validar tipos
+						var op = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
+						ids.push("tmp"+temp);
+						temp++;
+
+						var exp = $2;
+						if(typeof exp !== "undefined" && Object.prototype.toString.call( exp ) === '[object Array]') {
+							exp.push(op);
+							$$ = exp;
+						} else {
+							$$ = [op];
+						}
+					}
+				}
+	;
+
+plusminus
+	: '+' exp
+				{
+					ops.push($1);
+					$$ = $2;
+				}
+	| '-' exp
+				{
+					ops.push($1);
+					$$ = $2;
+				}
+	| '||' exp
+	|
+	;
+
+term
+	: factor multidivi
+				{
+					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
+						//validar tipos
+						// $$ = [ops.pop(), ids.pop(), ids.pop(), "tempvar"];
+						$$ = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
+						ids.push("tmp"+temp);
+						temp++;
+					}
+				}
+	;
+
+multidivi
+	: '*' term
+			{
+				ops.push($1);
+			}
+	| '/' term
+			{
+				ops.push($1);
+			}
+	| '&&' term
+	|
+	;
+
+factor
+	: value
+				{
+					ids.push($1);
+				}
+	| ID
+				{
+					ids.push($1);
+				}
+	;
+
+value
+	: I
+	| F
 	;
 
 %%
@@ -105,6 +248,48 @@ var tv_bool;
 
 init_dirs();
 
+var dataStructures = {
+    stack : function() {
+        var elements = [];
+
+        this.push = function(element) {
+            elements.push(element);
+        }
+        this.pop = function() {
+            return elements.pop();
+        }
+        this.stackTop = function(element) {
+            return elements[elements.length - 1];
+        }
+    }
+}
+
+var ids = new dataStructures.stack();
+var ops = new dataStructures.stack();
+var types = new dataStructures.stack();
+
+var semantic_cube = [
+											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||"],
+										 	["i",	"i", 	"i", 	"i", 	"i", 	"i", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["f", "f", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["s", "s", 	"s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "b", 	"x", 	"x", 	"x", 	"x", 	"b", 	"x", 	"x", 	"x", 	"x", 	"b", 	"b"],
+											["i", "f", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["i", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["i", "b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["f", "i", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["f", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["f", "b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["s", "i", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["s", "f", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["s", "b", 	"b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "i", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "f", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["b", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+										];
+
+var temp = 1;
+
 var Raptor = function() {
 	var raptorLexer = function () {};
 	raptorLexer.prototype = parser.lexer;
@@ -113,13 +298,14 @@ var Raptor = function() {
 		this.lexer = new raptorLexer();
 		this.yy = {
 			procs: [],
-			parseError: function(msg, hash) {
-				this.done = true;
-				var result = new String();
-				result.html = '<pre>' + msg + '</pre>';
-				result.hash = hash;
-				return result;
-			}
+			quads: []
+			// parseError: function(msg, hash) {
+			// 	this.done = true;
+			// 	var result = new String();
+			// 	result.html = '<pre>' + msg + '</pre>';
+			// 	result.hash = hash;
+			// 	return result;
+			// }
 		};
 	};
 	raptorParser.prototype = parser;
@@ -138,6 +324,9 @@ function Proc(name, type, dir, params, vars){
 Proc.prototype = {
 	size : function() {
 		return this.vars.length;
+	},
+	numParams : function() {
+		return this.params.length;
 	}
 }
 
