@@ -43,8 +43,6 @@ program
 				{
 					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($4));
 					yy.procs.push(proc);
-					yy.quads.push($6);
-
 					assign_memory(yy.procs);
 				}
 	;
@@ -141,18 +139,14 @@ comparison
 
 exp
 	: term end_exp
-	|
 	;
 
 end_exp
-	: validation plusminus exp
-			{
-				$$ = $exp;
-			}
-	|	validation
+	: validation_exp plusminus exp
+	|	validation_exp
 	;
 
-validation
+validation_exp
 	:
 				{
 					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
@@ -178,38 +172,37 @@ plusminus
 	;
 
 term
-	: factor multidivi
+	: factor end_term
+	;
+
+end_term
+	: validation_term multidivi term
+	| validation_term
+	;
+
+validation_term
+	:
 				{
 					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
 						//validar tipos
 						var op = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
 						ids.push("tmp"+temp);
 						temp++;
-
-						var exp = $2;
-						if(typeof exp !== "undefined" && Object.prototype.toString.call( exp ) === '[object Array]') {
-							exp.push(op);
-							$$ = exp;
-						} else {
-							$$ = [op];
-						}
+						yy.quads.push(op);
 					}
 				}
 	;
 
 multidivi
-	: '*' term
-			{
-				$$ = $2;
-				ops.push($1);
-			}
-	| '/' term
+	: '*'
 			{
 				ops.push($1);
-				$$ = $2;
 			}
-	| '&&' term
-	|
+	| '/'
+			{
+				ops.push($1);
+			}
+	| '&&'
 	;
 
 factor
