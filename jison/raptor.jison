@@ -39,28 +39,46 @@
 program
 	: EOF
 				{return null;}
-	| PROGRAM ID ';' vars funct block ';' EOF
+	| PROGRAM ID ';' program_init variables
+	;
+
+program_init
+	:
 				{
-					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($4));
+					var proc = new Proc("main", "void", dir_proc(), [], []);
 					yy.procs.push(proc);
-					assign_memory(yy.procs);
+					// assign_memory(yy.procs);
 					scope.push("main");
 				}
+	;
+
+variables
+	: vars functions
 	;
 
 vars
 	: VAR type ID ';' vars
 				{
-					if ($5 !== "") {
-						$$ = '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"},' + $5;
-					} else {
-						$$ =  '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"}';
+					var currentScope = scope.stackTop();
+					var proc = findProc(yy, currentScope);
+					var variable = {
+						dir: 0,
+						id: $ID,
+						type: $type
 					}
+					proc.vars.push(variable);
 				}
+				// {
+				// 	if ($5 !== "") {
+				// 		$$ = '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"},' + $5;
+				// 	} else {
+				// 		$$ =  '{"id":"'+$3+'", "type":"'+$2+'", "dir":"'+0+'"}';
+				// 	}
+				// }
 	|
-				{
-					$$ = "";
-				}
+				// {
+				// 	$$ = "";
+				// }
 	;
 
 type
@@ -68,6 +86,10 @@ type
 	| FLOAT
 	| STRING
 	| BOOL
+	;
+
+functions
+	: funct block ';' EOF
 	;
 
 funct
@@ -156,13 +178,9 @@ validation_exp
 						var op = ops.pop();
 						var type = validate_sem(op, var1t, var2t);
 						if(type != "x")
-							var op = [op, var1, var2, "tmp__"+temp];
+							var op = [op, var1, var2, createTemp(yy, type)];
 						else
-							alert("Error in semantics.");
-						ids.push("tmp__"+temp);
-						types.push(type);
-						// add temp to proc
-						temp++;
+							alert("Error in semantics.");;
 						yy.quads.push(op);
 					}
 				}
@@ -200,13 +218,9 @@ validation_term
 						var op = ops.pop();
 						var type = validate_sem(op, var1t, var2t);
 						if(type != "x")
-							var op = [op, var1, var2, "tmp__"+temp];
+							var op = [op, var1, var2, createTemp(yy, type)];
 						else
-							alert("Error in semantics.");
-						ids.push("tmp__"+temp);
-						types.push(type);
-						// add temp to proc
-						temp++;
+							alert("Error in semantics.");;
 						yy.quads.push(op);
 					}
 				}
@@ -506,6 +520,41 @@ function validate_sem(op, var1, var2) {
 
 function findTypeId(id) {
 
+}
+
+function findProc(yy, name) {
+	for (var i = 0; i < yy.procs.length; i++) {
+		if (yy.procs[i].name == name)
+			return yy.procs[i];
+	}
+}
+
+function createTemp(yy, type) {
+	var currentScope = scope.stackTop();
+	var proc = findProc(yy, currentScope);
+
+	var tmp = {
+		dir: 0,
+		name: "tmp__"+temp,
+		type: type
+	}
+
+	ids.push(tmp.name);
+	types.push(tmp.type);
+	temp++;
+
+	if(tmp.type == "i")
+		tmp.type = "int";
+	else if (tmp.type == "f")
+	tmp.type = "float";
+	else if (tmp.type == "s")
+	tmp.type = "string";
+	else if (tmp.type == "b")
+		tmp.type = "boolean";
+
+	proc.vars.push(tmp);
+
+	return temp.name;
 }
 
 if (typeof(window) !== 'undefined') {

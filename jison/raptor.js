@@ -72,12 +72,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,4],$V1=[1,7],$V2=[1,9],$V3=[2,10],$V4=[1,11],$V5=[1,12],$V6=[1,13],$V7=[1,14],$V8=[1,16],$V9=[1,23],$Va=[2,13],$Vb=[6,22],$Vc=[17,19,20],$Vd=[1,37],$Ve=[1,38],$Vf=[1,39],$Vg=[7,25,29,30,31,36,37,38],$Vh=[7,25,29,30,31,36,37,38,43,44,45],$Vi=[7,25,29,30,31],$Vj=[6,47,48];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[2,6],$V1=[1,9],$V2=[1,12],$V3=[2,13],$V4=[1,14],$V5=[1,15],$V6=[1,16],$V7=[1,17],$V8=[1,19],$V9=[1,26],$Va=[2,16],$Vb=[6,25],$Vc=[20,22,23],$Vd=[1,40],$Ve=[1,41],$Vf=[1,42],$Vg=[7,28,32,33,34,39,40,41],$Vh=[7,28,32,33,34,39,40,41,46,47,48],$Vi=[7,28,32,33,34],$Vj=[6,50,51];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"vars":8,"funct":9,"block":10,"VAR":11,"type":12,"INT":13,"FLOAT":14,"STRING":15,"BOOL":16,"FUNCTION":17,"(":18,")":19,"{":20,"statutes":21,"}":22,"statute":23,"assignment":24,"=":25,"expression":26,"exp":27,"comparison":28,"<":29,">":30,"!":31,"term":32,"end_exp":33,"validation_exp":34,"plusminus":35,"+":36,"-":37,"||":38,"factor":39,"end_term":40,"validation_term":41,"multidivi":42,"*":43,"/":44,"&&":45,"value":46,"I":47,"F":48,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",11:"VAR",13:"INT",14:"FLOAT",15:"STRING",16:"BOOL",17:"FUNCTION",18:"(",19:")",20:"{",22:"}",25:"=",29:"<",30:">",31:"!",36:"+",37:"-",38:"||",43:"*",44:"/",45:"&&",47:"I",48:"F"},
-productions_: [0,[3,1],[3,8],[8,5],[8,0],[12,1],[12,1],[12,1],[12,1],[9,10],[9,0],[10,3],[21,2],[21,0],[23,1],[24,4],[26,1],[26,2],[28,3],[28,3],[28,3],[28,3],[27,2],[33,3],[33,1],[34,0],[35,1],[35,1],[35,1],[32,2],[40,3],[40,1],[41,0],[42,1],[42,1],[42,1],[39,1],[39,1],[46,1],[46,1]],
+symbols_: {"error":2,"program":3,"EOF":4,"PROGRAM":5,"ID":6,";":7,"program_init":8,"variables":9,"vars":10,"functions":11,"VAR":12,"type":13,"INT":14,"FLOAT":15,"STRING":16,"BOOL":17,"funct":18,"block":19,"FUNCTION":20,"(":21,")":22,"{":23,"statutes":24,"}":25,"statute":26,"assignment":27,"=":28,"expression":29,"exp":30,"comparison":31,"<":32,">":33,"!":34,"term":35,"end_exp":36,"validation_exp":37,"plusminus":38,"+":39,"-":40,"||":41,"factor":42,"end_term":43,"validation_term":44,"multidivi":45,"*":46,"/":47,"&&":48,"value":49,"I":50,"F":51,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"EOF",5:"PROGRAM",6:"ID",7:";",12:"VAR",14:"INT",15:"FLOAT",16:"STRING",17:"BOOL",20:"FUNCTION",21:"(",22:")",23:"{",25:"}",28:"=",32:"<",33:">",34:"!",39:"+",40:"-",41:"||",46:"*",47:"/",48:"&&",50:"I",51:"F"},
+productions_: [0,[3,1],[3,5],[8,0],[9,2],[10,5],[10,0],[13,1],[13,1],[13,1],[13,1],[11,4],[18,10],[18,0],[19,3],[24,2],[24,0],[26,1],[27,4],[29,1],[29,2],[31,3],[31,3],[31,3],[31,3],[30,2],[36,3],[36,1],[37,0],[38,1],[38,1],[38,1],[35,2],[43,3],[43,1],[44,0],[45,1],[45,1],[45,1],[42,1],[42,1],[49,1],[49,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -86,29 +86,27 @@ switch (yystate) {
 case 1:
 return null;
 break;
-case 2:
+case 3:
 
-					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($$[$0-4]));
+					var proc = new Proc("main", "void", dir_proc(), [], []);
 					yy.procs.push(proc);
-					assign_memory(yy.procs);
+					// assign_memory(yy.procs);
 					scope.push("main");
 				
 break;
-case 3:
+case 5:
 
-					if ($$[$0] !== "") {
-						this.$ = '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+0+'"},' + $$[$0];
-					} else {
-						this.$ =  '{"id":"'+$$[$0-2]+'", "type":"'+$$[$0-3]+'", "dir":"'+0+'"}';
+					var currentScope = scope.stackTop();
+					var proc = findProc(yy, currentScope);
+					var variable = {
+						dir: 0,
+						id: $$[$0-2],
+						type: $$[$0-3]
 					}
+					proc.vars.push(variable);
 				
 break;
-case 4:
-
-					this.$ = "";
-				
-break;
-case 9:
+case 12:
 
 					var json;
 					if ($$[$0-5] === "" || $$[$0-3] === "")
@@ -127,10 +125,10 @@ case 9:
 					yy.procs.push(proc);
 				
 break;
-case 11:
+case 14:
  this.$ = $$[$0-1]; 
 break;
-case 12:
+case 15:
 
 					var statute = $$[$0-1];
 					var otherStatutes = $$[$0];
@@ -143,12 +141,12 @@ case 12:
 					}
 				
 break;
-case 15:
+case 18:
 
 					yy.quads.push($$[$0-2], ids.pop(), "", $$[$0-3]);
 				
 break;
-case 25:
+case 28:
 
 					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
 						var var2 = ids.pop();
@@ -158,23 +156,19 @@ case 25:
 						var op = ops.pop();
 						var type = validate_sem(op, var1t, var2t);
 						if(type != "x")
-							var op = [op, var1, var2, "tmp__"+temp];
+							var op = [op, var1, var2, createTemp(yy, type)];
 						else
-							alert("Error in semantics.");
-						ids.push("tmp__"+temp);
-						types.push(type);
-						// add temp to proc
-						temp++;
+							alert("Error in semantics.");;
 						yy.quads.push(op);
 					}
 				
 break;
-case 26: case 27:
+case 29: case 30:
 
 					ops.push($$[$0]);
 				
 break;
-case 32:
+case 35:
 
 					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
 						var var2 = ids.pop();
@@ -184,47 +178,43 @@ case 32:
 						var op = ops.pop();
 						var type = validate_sem(op, var1t, var2t);
 						if(type != "x")
-							var op = [op, var1, var2, "tmp__"+temp];
+							var op = [op, var1, var2, createTemp(yy, type)];
 						else
-							alert("Error in semantics.");
-						ids.push("tmp__"+temp);
-						types.push(type);
-						// add temp to proc
-						temp++;
+							alert("Error in semantics.");;
 						yy.quads.push(op);
 					}
 				
 break;
-case 33: case 34:
+case 36: case 37:
 
 				ops.push($$[$0]);
 			
 break;
-case 36:
+case 39:
 
 					ids.push($$[$0]);
 				
 break;
-case 37:
+case 40:
 
 					ids.push($$[$0]);
 					types.push(findTypeId($$[$0]));
 				
 break;
-case 38:
+case 41:
 
 					types.push("i");
 				
 break;
-case 39:
+case 42:
 
 					types.push("f");
 				
 break;
 }
 },
-table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([17,20],$V0,{8:6,11:$V1}),{9:8,17:$V2,20:$V3},{12:10,13:$V4,14:$V5,15:$V6,16:$V7},{10:15,20:$V8},{12:17,13:$V4,14:$V5,15:$V6,16:$V7},{6:[1,18]},{6:[2,5]},{6:[2,6]},{6:[2,7]},{6:[2,8]},{7:[1,19]},{6:$V9,21:20,22:$Va,23:21,24:22},{6:[1,24]},{7:[1,25]},{4:[1,26]},{22:[1,27]},{6:$V9,21:28,22:$Va,23:21,24:22},o($Vb,[2,14]),{25:[1,29]},{18:[1,30]},o($Vc,$V0,{8:31,11:$V1}),{1:[2,2]},{7:[2,11]},{22:[2,12]},{6:$Vd,26:32,27:33,32:34,39:35,46:36,47:$Ve,48:$Vf},{8:40,11:$V1,19:$V0},o($Vc,[2,3]),{7:[1,41]},{7:[2,16],25:[1,46],28:42,29:[1,43],30:[1,44],31:[1,45]},o($Vg,[2,25],{33:47,34:48}),o($Vh,[2,32],{40:49,41:50}),o($Vh,[2,36]),o($Vh,[2,37]),o($Vh,[2,38]),o($Vh,[2,39]),{19:[1,51]},o($Vb,[2,15]),{7:[2,17]},{25:[1,52]},{25:[1,53]},{25:[1,54]},{25:[1,55]},o($Vi,[2,22]),o($Vi,[2,24],{35:56,36:[1,57],37:[1,58],38:[1,59]}),o($Vg,[2,29]),o($Vg,[2,31],{42:60,43:[1,61],44:[1,62],45:[1,63]}),{8:64,11:$V1,20:$V0},{6:$Vd,27:65,32:34,39:35,46:36,47:$Ve,48:$Vf},{6:$Vd,27:66,32:34,39:35,46:36,47:$Ve,48:$Vf},{6:$Vd,27:67,32:34,39:35,46:36,47:$Ve,48:$Vf},{6:$Vd,27:68,32:34,39:35,46:36,47:$Ve,48:$Vf},{6:$Vd,27:69,32:34,39:35,46:36,47:$Ve,48:$Vf},o($Vj,[2,26]),o($Vj,[2,27]),o($Vj,[2,28]),{6:$Vd,32:70,39:35,46:36,47:$Ve,48:$Vf},o($Vj,[2,33]),o($Vj,[2,34]),o($Vj,[2,35]),{10:71,20:$V8},{7:[2,18]},{7:[2,19]},{7:[2,20]},{7:[2,21]},o($Vi,[2,23]),o($Vg,[2,30]),{7:[1,72]},{9:73,17:$V2,20:$V3},{20:[2,9]}],
-defaultActions: {2:[2,1],11:[2,5],12:[2,6],13:[2,7],14:[2,8],26:[2,2],27:[2,11],28:[2,12],42:[2,17],65:[2,18],66:[2,19],67:[2,20],68:[2,21],73:[2,9]},
+table: [{3:1,4:[1,2],5:[1,3]},{1:[3]},{1:[2,1]},{6:[1,4]},{7:[1,5]},o([12,20,23],[2,3],{8:6}),o([20,23],$V0,{9:7,10:8,12:$V1}),{1:[2,2]},{11:10,18:11,20:$V2,23:$V3},{13:13,14:$V4,15:$V5,16:$V6,17:$V7},{1:[2,4]},{19:18,23:$V8},{13:20,14:$V4,15:$V5,16:$V6,17:$V7},{6:[1,21]},{6:[2,7]},{6:[2,8]},{6:[2,9]},{6:[2,10]},{7:[1,22]},{6:$V9,24:23,25:$Va,26:24,27:25},{6:[1,27]},{7:[1,28]},{4:[1,29]},{25:[1,30]},{6:$V9,24:31,25:$Va,26:24,27:25},o($Vb,[2,17]),{28:[1,32]},{21:[1,33]},o($Vc,$V0,{10:34,12:$V1}),{1:[2,11]},{7:[2,14]},{25:[2,15]},{6:$Vd,29:35,30:36,35:37,42:38,49:39,50:$Ve,51:$Vf},{10:43,12:$V1,22:$V0},o($Vc,[2,5]),{7:[1,44]},{7:[2,19],28:[1,49],31:45,32:[1,46],33:[1,47],34:[1,48]},o($Vg,[2,28],{36:50,37:51}),o($Vh,[2,35],{43:52,44:53}),o($Vh,[2,39]),o($Vh,[2,40]),o($Vh,[2,41]),o($Vh,[2,42]),{22:[1,54]},o($Vb,[2,18]),{7:[2,20]},{28:[1,55]},{28:[1,56]},{28:[1,57]},{28:[1,58]},o($Vi,[2,25]),o($Vi,[2,27],{38:59,39:[1,60],40:[1,61],41:[1,62]}),o($Vg,[2,32]),o($Vg,[2,34],{45:63,46:[1,64],47:[1,65],48:[1,66]}),{10:67,12:$V1,23:$V0},{6:$Vd,30:68,35:37,42:38,49:39,50:$Ve,51:$Vf},{6:$Vd,30:69,35:37,42:38,49:39,50:$Ve,51:$Vf},{6:$Vd,30:70,35:37,42:38,49:39,50:$Ve,51:$Vf},{6:$Vd,30:71,35:37,42:38,49:39,50:$Ve,51:$Vf},{6:$Vd,30:72,35:37,42:38,49:39,50:$Ve,51:$Vf},o($Vj,[2,29]),o($Vj,[2,30]),o($Vj,[2,31]),{6:$Vd,35:73,42:38,49:39,50:$Ve,51:$Vf},o($Vj,[2,36]),o($Vj,[2,37]),o($Vj,[2,38]),{19:74,23:$V8},{7:[2,21]},{7:[2,22]},{7:[2,23]},{7:[2,24]},o($Vi,[2,26]),o($Vg,[2,33]),{7:[1,75]},{18:76,20:$V2,23:$V3},{23:[2,12]}],
+defaultActions: {2:[2,1],7:[2,2],10:[2,4],14:[2,7],15:[2,8],16:[2,9],17:[2,10],29:[2,11],30:[2,14],31:[2,15],45:[2,20],68:[2,21],69:[2,22],70:[2,23],71:[2,24],76:[2,12]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -630,6 +620,41 @@ function findTypeId(id) {
 
 }
 
+function findProc(yy, name) {
+	for (var i = 0; i < yy.procs.length; i++) {
+		if (yy.procs[i].name == name)
+			return yy.procs[i];
+	}
+}
+
+function createTemp(yy, type) {
+	var currentScope = scope.stackTop();
+	var proc = findProc(yy, currentScope);
+
+	var tmp = {
+		dir: 0,
+		name: "tmp__"+temp,
+		type: type
+	}
+
+	ids.push(tmp.name);
+	types.push(tmp.type);
+	temp++;
+
+	if(tmp.type == "i")
+		tmp.type = "int";
+	else if (tmp.type == "f")
+	tmp.type = "float";
+	else if (tmp.type == "s")
+	tmp.type = "string";
+	else if (tmp.type == "b")
+		tmp.type = "boolean";
+
+	proc.vars.push(tmp);
+
+	return temp.name;
+}
+
 if (typeof(window) !== 'undefined') {
 	window.Raptor = Raptor;
 } else {
@@ -967,25 +992,25 @@ case 0:/* ignore whitespace */;
 break;
 case 1:return 5;
 break;
-case 2:return 17;
+case 2:return 20;
 break;
 case 3:return 7;
 break;
 case 4:return ':';
 break;
-case 5:return 20;
+case 5:return 23;
 break;
-case 6:return 22;
+case 6:return 25;
 break;
-case 7:return 18;
+case 7:return 21;
 break;
-case 8:return 19;
+case 8:return 22;
 break;
-case 9:return 29;
+case 9:return 32;
 break;
-case 10:return 30;
+case 10:return 33;
 break;
-case 11:return 31;
+case 11:return 34;
 break;
 case 12:return "=";
 break;
@@ -993,27 +1018,27 @@ case 13:return "+";
 break;
 case 14:return "-";
 break;
-case 15:return 43;
+case 15:return 46;
 break;
-case 16:return 44;
+case 16:return 47;
 break;
-case 17:return 45;
+case 17:return 48;
 break;
 case 18:return "||";
 break;
-case 19:return 11;
+case 19:return 12;
 break;
-case 20:return 13;
+case 20:return 14;
 break;
-case 21:return 14;
+case 21:return 15;
 break;
-case 22:return 15;
+case 22:return 16;
 break;
-case 23:return 16;
+case 23:return 17;
 break;
-case 24:return 48;
+case 24:return 51;
 break;
-case 25:return 47;
+case 25:return 50;
 break;
 case 26:return 6;
 break;
