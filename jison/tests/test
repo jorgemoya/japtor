@@ -1,33 +1,17 @@
 program test;
-	var test2 float
-
-
-program test;
-var float test2; var int test1; var string test3;
-function int test (var float test4; var string test5;) var int test6; {};{};
-
-program test;
-var float test2;
-function int test () var int test6; {};{};
-
-program test;
 var int xx;
 var int yy;
-{
-	xx = 10;
-};
-
-program test;
-var int xx;
-var int yy;
-{
-	xx = 10 + 10;
-};
-
-program test;
-var int xx;
-var int yy;
-{
-	xx = 10 + 10;
+function void main(){
+	xx = 10 + 20;
 	yy = 10 + xx;
+};
+
+program test;
+var int xx;
+var int yy;
+function void main(int zz) {
+	var int kk;
+	xx = zz + 10 * 20;
+	yy = 40;
+	kk = xx + 30;
 };

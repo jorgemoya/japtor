@@ -18,6 +18,7 @@
 "-"											{return "-";}
 "*"											{return '*';}
 "/"											{return '/';}
+","											{return ',';}
 "&&"										{return '&&';}
 "||"										{return "||";}
 "var"										{return 'VAR';}
@@ -25,6 +26,7 @@
 "float"									{return 'FLOAT';}
 "string"								{return 'STRING';}
 "bool"									{return 'BOOL';}
+"void"									{return 'VOID';}
 [0-9]*"."[0-9]+					{return 'F';}
 [0-9]+									{return 'I';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
@@ -39,25 +41,31 @@
 program
 	: EOF
 				{return null;}
-	| PROGRAM ID ';' program_init variables
+	| PROGRAM ID ';' program_init program_code
 	;
 
 program_init
 	:
 				{
-					var proc = new Proc("main", "void", dirProc(), [], []);
+					var proc = new Proc("global", "void", dirProc(), [], []);
 					yy.procs.push(proc);
 					// assignMemory(yy.procs);
-					scope.push("main");
+					scope.push("global");
 				}
 	;
 
-variables
+program_code
 	: vars functions
 	;
 
 vars
-	: VAR type ID ';' vars
+	: VAR var_init vars ';' vars
+	| ',' var_init vars
+	|
+	;
+
+var_init
+	: type ID
 				{
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
@@ -68,7 +76,38 @@ vars
 					}
 					proc.vars.push(variable);
 				}
+	;
+
+vars_params
+	: vars_params_init vars_params
 	|
+	;
+
+vars_params_init
+	: type ID
+				{
+					var currentScope = scope.stackTop();
+					var proc = findProc(yy, currentScope);
+					var variable = {
+						dir: assignMemory($type, false),
+						id: $ID,
+						type: $type
+					}
+					proc.vars.push(variable);
+					proc.params.push($type);
+				}
+	| ',' type ID
+				{
+					var currentScope = scope.stackTop();
+					var proc = findProc(yy, currentScope);
+					var variable = {
+						dir: assignMemory($type, false),
+						id: $ID,
+						type: $type
+					}
+					proc.vars.push(variable);
+					proc.params.push($type);
+				}
 	;
 
 type
@@ -76,47 +115,45 @@ type
 	| FLOAT
 	| STRING
 	| BOOL
+	| VOID
 	;
 
 functions
-	: funct block ';' EOF
+	: funct ';' functions
+	| EOF
 	;
 
 funct
-	: FUNCTION type ID funct_init params
-				{
-					// var json;
-					// if ($5 === "" || $7 === "")
-					// 	json = $5 + $7;
-					// else
-					// 	json = $5 + "," + $7;
-					//
-					// var vars = json_to_vars($5);
-					// var paramTypes = [];
-					//
-					// for(var i = 0; i < vars.length; i++) {
-					// 	paramTypes.push(vars[i].type);
-					// }
-					//
-					// var proc = new Proc($3, $2, dirProc(), paramTypes, json_to_vars(json));
-					// yy.procs.push(proc);
-				}
+	: FUNCTION funct_init params
 	|
 	;
 
 funct_init
-	:
+	: type ID
 				{
-
+					var proc = new Proc($ID, $type, dirProc(), [], []);
+					yy.procs.push(proc);
+					scope.push($ID);
 				}
 	;
 
 params
-	: '(' vars ')' vars block ';' funct
+	: '(' vars_params ')' '{' vars funct_code
+	;
+
+funct_code
+	:  block '}' funct_end
+	;
+
+funct_end
+	:
+				{
+					scope.pop();
+				}
 	;
 
 block
-	: '{' statutes '}'
+	: statutes
 	;
 
 statutes
@@ -364,7 +401,7 @@ function dirProc() {
 function assignMemory(type, tmp) {
 
 	var isGlobal = false;
-	if (scope.stackTop() == "main") {
+	if (scope.stackTop() == "global") {
 		isGlobal = true;
 	}
 
