@@ -15,3 +15,21 @@ function void main(int zz) {
 	yy = 40;
 	kk = xx + 30;
 };
+
+program test;
+var int xx, int yy;
+function void main(int zz, float aa) {
+	var int kk, int bb;
+	xx = zz + 10 * 20;
+	yy = 40;
+	kk = xx + 30;
+};
+
+program test;
+var int xx, int yy, int hello;
+function void main(int zz, float aa) {
+	var int kk, int bb, float yellow;
+	xx = zz + 10 * 20;
+	yy = hello + yellow;
+	kk = xx + 30;
+};

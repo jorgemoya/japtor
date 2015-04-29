@@ -168,7 +168,7 @@ statute
 assignment
 	: ID '=' expression ';'
 				{
-					yy.quads.push($2, ids.pop(), "", $1);
+					yy.quads.push([$2, ids.pop(), "", $1]);
 				}
 	;
 
@@ -272,18 +272,18 @@ factor
 	| ID
 				{
 					ids.push($1);
-					types.push(findTypeId($1));
+					types.push(findTypeId(yy, $1));
 				}
 	;
 
 value
 	: I
 				{
-					types.push("i");
+					types.push("int");
 				}
 	| F
 				{
-					types.push("f");
+					types.push("float");
 				}
 	;
 
@@ -331,22 +331,22 @@ var scope = new dataStructures.stack();
 
 var semanticCube = [
 											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||"],
-										 	["i",	"i", 	"i", 	"i", 	"i", 	"i", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
-											["f", "f", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
-											["s", "s", 	"s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["b", "b", 	"x", 	"x", 	"x", 	"x", 	"b", 	"x", 	"x", 	"x", 	"x", 	"b", 	"b"],
-											["i", "f", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
-											["i", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["i", "b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["f", "i", 	"f", 	"f", 	"f", 	"f", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
-											["f", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["f", "b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["s", "i", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["s", "f", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["s", "b", 	"b", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["b", "i", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["b", "f", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
-											["b", "s", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+										 	["int",	"int", 	"int", 	"int", 	"int", 	"int", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x"],
+											["float", "float", 	"float", 	"float", 	"float", 	"float", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x"],
+											["string", "string", 	"string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["boolean", "boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"boolean"],
+											["int", "float", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x"],
+											["int", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["int", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["float", "int", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x"],
+											["float", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["float", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["string", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["string", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["string", "boolean", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["boolean", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["boolean", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
+											["boolean", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x"],
 										];
 
 var temp = 1;
@@ -533,8 +533,19 @@ function validateSem(op, var1, var2) {
 		}
 }
 
-function findTypeId(id) {
+function findTypeId(yy, id) {
+	var currentScope = scope.stackTop();
+	var proc = findProc(yy, currentScope);
+	for(var i = 0; i < proc.vars.length; i++)
+		if(proc.vars[i].id == id)
+			return proc.vars[i].type;
 
+	proc = findProc(yy, "global");
+	for(var i = 0; i < proc.vars.length; i++)
+		if(proc.vars[i].id == id)
+			return proc.vars[i].type;
+
+	alert("ID not declared.");
 }
 
 function findProc(yy, name) {
@@ -549,7 +560,7 @@ function createTemp(yy, type) {
 	var proc = findProc(yy, currentScope);
 
 	var tmp = {
-		dir: 0,
+		dir: assignMemory(type, true),
 		name: "tmp__"+temp,
 		type: type
 	}
@@ -557,17 +568,6 @@ function createTemp(yy, type) {
 	ids.push(tmp.name);
 	types.push(tmp.type);
 	temp++;
-
-	if(tmp.type == "i")
-		tmp.type = "int";
-	else if (tmp.type == "f")
-	tmp.type = "float";
-	else if (tmp.type == "s")
-	tmp.type = "string";
-	else if (tmp.type == "b")
-		tmp.type = "boolean";
-
-	tmp.dir = assignMemory(tmp.type, true);
 
 	proc.vars.push(tmp);
 
