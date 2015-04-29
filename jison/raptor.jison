@@ -241,6 +241,10 @@ else_code
 
 while_
 	: WHILE while_condition '{' block '}' ';'
+				{
+					var jump = jumps.pop();
+					yy.quads[jump][3] = yy.quads.length;
+				}
 	;
 
 while_condition
@@ -275,19 +279,19 @@ expression
 	;
 
 comparison
-	: '<='
+	: '<' '='
 				{
 					ops.push("<=");
 				}
-	| '>='
+	| '>' '='
 				{
 					ops.push(">=");
 				}
-	| '!='
+	| '!' '='
 				{
 					ops.push("!=");
 				}
-	| '=='
+	| '=' '='
 				{
 					ops.push("==");
 				}

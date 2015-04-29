@@ -90,3 +90,23 @@ function void main() {
 	};
 	x = 30 + 40;
 };
+
+program test;
+function void main() {
+	var int x;
+	while(x > 0) {
+		x = x - 1;
+	};
+	write(x);
+};
+
+program test;
+function void main() {
+	var int x;
+	while(x > 0) {
+		if(x == x) {
+				x = x - 1;
+		};
+	};
+	write(x);
+};
