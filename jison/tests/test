@@ -76,3 +76,17 @@ function void main() {
 	};
 	x = 30 + 40;
 };
+
+program test;
+function void main() {
+	var int x, int y;
+	if(true) {
+		x = 10 + 20;
+		if(x > 0)	{
+			x = 50 * (20 - 10);
+		} else {
+			y = x + (30 / 4);
+		};
+	};
+	x = 30 + 40;
+};

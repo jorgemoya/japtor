@@ -175,6 +175,7 @@ statute
 	: assignment
 	| write
 	| if_
+	| while_
 	;
 
 assignment
@@ -217,6 +218,10 @@ if_condition
 
 else_
 	: else_code '{' block '}' ';'
+				{
+					var jump = jumps.pop();
+					yy.quads[jump][3] = yy.quads.length;
+				}
  	| ';'
 				{
 					var jump = jumps.pop();
@@ -228,7 +233,26 @@ else_code
 	: ELSE
 				{
 					var jump = jumps.pop();
+					yy.quads.push(["goto", "", "", ""]);
 					yy.quads[jump][3] = yy.quads.length;
+					jumps.push(yy.quads.length - 1);
+				}
+	;
+
+while_
+	: WHILE while_condition '{' block '}' ';'
+	;
+
+while_condition
+	: '(' expression ')'
+				{
+					var type = types.pop();
+					if(type == "boolean") {
+						yy.quads.push(["gotof", ids.pop(), "", ""]);
+						jumps.push(yy.quads.length - 1);
+					} else {
+						alert("Error!");
+					}
 				}
 	;
 
@@ -246,7 +270,7 @@ expression
 						var op = [op, var1, var2, createTemp(yy, type)];
 					else
 						alert("Error in semantics.");
-					yy.quads.push(op);	
+					yy.quads.push(op);
 				}
 	;
 
