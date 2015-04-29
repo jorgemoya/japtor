@@ -44,6 +44,7 @@ program
 					var proc = new Proc("main", "void", dir_proc(), [], json_to_vars($4));
 					yy.procs.push(proc);
 					assign_memory(yy.procs);
+					scope.push("main");
 				}
 	;
 
@@ -149,10 +150,18 @@ validation_exp
 				{
 					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
 						var var2 = ids.pop();
+						var var2t = types.pop();
 						var var1 = ids.pop();
+						var var1t = types.pop();
 						var op = ops.pop();
-						var op = [op, var1, var2, "tmp__"+temp];
+						var type = validate_sem(op, var1t, var2t);
+						if(type != "x")
+							var op = [op, var1, var2, "tmp__"+temp];
+						else
+							alert("Error in semantics.");
 						ids.push("tmp__"+temp);
+						types.push(type);
+						// add temp to proc
 						temp++;
 						yy.quads.push(op);
 					}
@@ -184,12 +193,19 @@ validation_term
 	:
 				{
 					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
-						//validar tipos
 						var var2 = ids.pop();
+						var var2t = types.pop();
 						var var1 = ids.pop();
+						var var1t = types.pop();
 						var op = ops.pop();
-						var op = [op, var1, var2, "tmp__"+temp];
+						var type = validate_sem(op, var1t, var2t);
+						if(type != "x")
+							var op = [op, var1, var2, "tmp__"+temp];
+						else
+							alert("Error in semantics.");
 						ids.push("tmp__"+temp);
+						types.push(type);
+						// add temp to proc
 						temp++;
 						yy.quads.push(op);
 					}
@@ -216,12 +232,19 @@ factor
 	| ID
 				{
 					ids.push($1);
+					types.push(findTypeId($1));
 				}
 	;
 
 value
 	: I
+				{
+					types.push("i");
+				}
 	| F
+				{
+					types.push("f");
+				}
 	;
 
 %%
@@ -262,8 +285,9 @@ var dataStructures = {
 }
 
 var ids = new dataStructures.stack();
-var ops = new dataStructures.stack();
 var types = new dataStructures.stack();
+var ops = new dataStructures.stack();
+var scope = new dataStructures.stack();
 
 var semantic_cube = [
 											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||"],
@@ -467,6 +491,21 @@ function init_dirs() {
 function json_to_vars(text) {
 	var var_json = '{"variables":['+text+']}';
  	return JSON.parse(var_json).variables;
+}
+
+function validate_sem(op, var1, var2) {
+		for (var i = 0; i < semantic_cube.length; i++) {
+			if(semantic_cube[i][0] == var1 && semantic_cube[i][1] == var2) {
+				for (var j = 0; j < semantic_cube[0].length; j++) {
+					if(semantic_cube[0][j] == op)
+						return semantic_cube[i][j];
+				}
+			}
+		}
+}
+
+function findTypeId(id) {
+
 }
 
 if (typeof(window) !== 'undefined') {
