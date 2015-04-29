@@ -144,16 +144,16 @@ case 12:
 break;
 case 15:
 
-					ids.push($$[$0-3]);
-					ops.push($$[$0-2]);
-					yy.quads.push([ids.pop(), "", ids.pop(), ops.pop()]);
+					yy.quads.push($$[$0-2], ids.pop(), "", $$[$0-3]);
 				
 break;
 case 25:
 
 					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
-						//validar tipos
-						var op = ["tmp__"+temp, ids.pop(), ids.pop(), ops.pop()];
+						var var2 = ids.pop();
+						var var1 = ids.pop();
+						var op = ops.pop();
+						var op = [op, var1, var2, "tmp__"+temp];
 						ids.push("tmp__"+temp);
 						temp++;
 						yy.quads.push(op);
@@ -169,7 +169,10 @@ case 32:
 
 					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
 						//validar tipos
-						var op = ["tmp__"+temp, ids.pop(), ids.pop(), ops.pop()];
+						var var2 = ids.pop();
+						var var1 = ids.pop();
+						var op = ops.pop();
+						var op = [op, var1, var2, "tmp__"+temp];
 						ids.push("tmp__"+temp);
 						temp++;
 						yy.quads.push(op);
