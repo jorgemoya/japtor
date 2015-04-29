@@ -14,6 +14,9 @@
 ">"											{return '>';}
 "!"											{return '!';}
 "="											{return "=";}
+"=="										{return "==";}
+"<="										{return "<=";}
+">="										{return ">=";}
 "+"											{return "+";}
 "-"											{return "-";}
 "*"											{return '*';}
@@ -288,12 +291,29 @@ factor
 				{
 					ids.push($1);
 				}
-	| ID
+	| ID params_exp
 				{
 					ids.push($1);
 					types.push(findTypeId(yy, $1));
 				}
+	| "(" add_closure expression")"
+				{
+					ops.pop();
+				}
 	;
+
+params_exp
+	: "(" expression ")"
+	|
+	;
+
+add_closure
+	:
+				{
+					ops.push("|");
+				}
+	;
+
 
 value
 	: I

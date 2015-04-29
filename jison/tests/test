@@ -46,3 +46,10 @@ function void main() {
 	var int x;
 	x = 10;
 };
+
+program test;
+var int xx, int yy;
+function void main() {
+	var int kk, int bb;
+	xx = (zz + 10) * 20;
+};
