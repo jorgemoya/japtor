@@ -9,6 +9,8 @@
       var test = raptorParser.parse(code);
       var procs = raptorParser.yy.procs;
       var quads = raptorParser.yy.quads;
+      for(var i = 0; i < quads.length; i++)
+        console.log(i+": ["+quads[i][0]+","+quads[i][1]+","+quads[i][2]+","+quads[i][3]+"]");
       // alert(procs.length);
     }
   </script>

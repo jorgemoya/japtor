@@ -31,12 +31,12 @@
 "if"										{return 'IF';}
 "else"									{return 'ELSE';}
 "while"									{return 'WHILE';}
+"return"								{return 'RETURN';}
 [0-9]*"."[0-9]+					{return 'F';}
 [0-9]+									{return 'I';}
 "true"|"false"					{return 'B';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
-\"[^\"]*\"|\'[^\']*\		{return 'S';}
-// """ hack
+\"[^\"]*\"|\'[^\']*\		{return 'S';} // """
 <<EOF>>									{return 'EOF';}
 
 /lex
@@ -48,20 +48,21 @@
 program
 	: EOF
 				{return null;}
-	| PROGRAM ID ';' program_init program_code
+	| PROGRAM ID ';' program_init program_block
 	;
 
 program_init
 	:
 				{
-					var proc = new Proc("global", "void", dirProc(), [], []);
+					var proc = new Proc("global", "void", dirProc(), [], [], "");
 					yy.procs.push(proc);
-					// assignMemory(yy.procs);
 					scope.push("global");
+					yy.quads.push(["goto", "", "", ""]);
+					jumps.push(yy.quads.length - 1);
 				}
 	;
 
-program_code
+program_block
 	: vars functions
 	;
 
@@ -138,9 +139,14 @@ funct
 funct_init
 	: type ID
 				{
-					var proc = new Proc($ID, $type, dirProc(), [], []);
+					var proc = new Proc($ID, $type, dirProc(), [], [], yy.quads.length);
 					yy.procs.push(proc);
 					scope.push($ID);
+
+					if($ID == "main")	{
+						var jump = jumps.pop();
+						yy.quads[jump][3] = yy.quads.length;
+					}
 				}
 	;
 
@@ -173,6 +179,7 @@ statute
 	| write
 	| if_
 	| while_
+	| return_
 	;
 
 assignment
@@ -251,6 +258,20 @@ while_condition
 					if(type == "boolean") {
 						yy.quads.push(["gotof", ids.pop(), "", ""]);
 						jumps.push(yy.quads.length - 1);
+					} else {
+						alert("Error!");
+					}
+				}
+	;
+
+return_
+	: RETURN expression ';'
+				{
+					proc = findProc(yy, scope.stackTop());
+					var var1 = ids.pop();
+					var var1t = types.pop();
+					if (proc.type != "void" && proc.type == var1t)	{
+						yy.quads.push(["return", "", "", var1]);
 					} else {
 						alert("Error!");
 					}
@@ -413,20 +434,60 @@ multidivi
 
 factor
 	: value
-	| ID params_exp
-				{
-					ids.push($1);
-					types.push(findTypeId(yy, $1));
-				}
+	| id params_exp
 	| "(" add_closure expression")"
 				{
 					ops.pop();
 				}
 	;
 
+id
+	: ID
+				{
+					ids.push($ID);
+					types.push(findTypeId(yy, $ID));
+				}
+	;
+
 params_exp
-	: "(" expression ")"
+	: "(" init_memory inside_params ")"
+				{
+					if (paramTemp > procTemp.numParams())
+						alert("ERROR");
+
+					yy.quads.push(["gosub",procTemp.name,"",""]);
+					ids.push(procTemp.name);
+					types.push(procTemp.type);
+				}
 	|
+	;
+
+init_memory
+	:
+				{
+						procTemp = findProc(yy, ids.pop());
+						types.pop();
+						paramTemp = 0;
+				}
+	;
+
+inside_params
+	: params_exps
+	|	params_exps ',' inside_params
+	|
+	;
+
+params_exps
+	: expression
+				{
+					var id = ids.pop();
+					var type = types.pop();
+					if(procTemp.params[paramTemp] == type || (procTemp.params[paramTemp] == "float" && type == "int") )
+						yy.quads.push(["param", id, "", ++paramTemp]);
+					else
+						alert("Error in param");
+					// ops.pop();
+				}
 	;
 
 add_closure
@@ -525,6 +586,8 @@ var semanticCube = [
 										];
 
 var temp = 1;
+var paramTemp = 1;
+var procTemp = "";
 
 var Raptor = function() {
 	var raptorLexer = function () {};
@@ -549,12 +612,13 @@ var Raptor = function() {
 	return newParser;
 };
 
-function Proc(name, type, dir, params, vars){
+function Proc(name, type, dir, params, vars, init){
 	this.name = name;
 	this.type = type;
 	this.dir = dir;
 	this.params = params;
 	this.vars = vars;
+	this.init = init;
 };
 
 Proc.prototype = {
@@ -709,8 +773,16 @@ function validateSem(op, var1, var2) {
 }
 
 function findTypeId(yy, id) {
+	for(var i = 0; i < yy.procs.length; i++) {
+		if(id == yy.procs[i].name) {
+			yy.quads.push(["era", id,"",""]);
+			return yy.procs[i].type;
+		}
+	}
+
 	var currentScope = scope.stackTop();
 	var proc = findProc(yy, currentScope);
+
 	for(var i = 0; i < proc.vars.length; i++)
 		if(proc.vars[i].id == id)
 			return proc.vars[i].type;
