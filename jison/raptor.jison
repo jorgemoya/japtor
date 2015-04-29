@@ -31,6 +31,9 @@
 "boolean"								{return 'BOOL';}
 "void"									{return 'VOID';}
 "write"									{return 'WRITE';}
+"if"										{return 'IF';}
+"else"									{return 'ELSE';}
+"while"									{return 'WHILE';}
 [0-9]*"."[0-9]+					{return 'F';}
 [0-9]+									{return 'I';}
 "true"|"false"					{return 'B';}
@@ -171,6 +174,7 @@ statutes
 statute
 	: assignment
 	| write
+	| if_
 	;
 
 assignment
@@ -194,16 +198,83 @@ write
 				}
 	;
 
+if_
+	: IF if_condition '{' block '}' else_
+	;
+
+if_condition
+	: '(' expression ')'
+				{
+					var type = types.pop();
+					if(type == "boolean") {
+						yy.quads.push(["gotof", ids.pop(), "", ""]);
+						jumps.push(yy.quads.length - 1);
+					} else {
+						alert("Error!");
+					}
+				}
+	;
+
+else_
+	: else_code '{' block '}' ';'
+ 	| ';'
+				{
+					var jump = jumps.pop();
+					yy.quads[jump][3] = yy.quads.length;
+				}
+	;
+
+else_code
+	: ELSE
+				{
+					var jump = jumps.pop();
+					yy.quads[jump][3] = yy.quads.length;
+				}
+	;
+
 expression
 	: exp
-	| exp comparison
+	| exp comparison exp
+				{
+					var var2 = ids.pop();
+					var var2t = types.pop();
+					var var1 = ids.pop();
+					var var1t = types.pop();
+					var op = ops.pop();
+					var type = validateSem(op, var1t, var2t);
+					if(type != "x")
+						var op = [op, var1, var2, createTemp(yy, type)];
+					else
+						alert("Error in semantics.");
+					yy.quads.push(op);	
+				}
 	;
 
 comparison
-	: '<' '=' exp
-	| '>' '=' exp
-	| '!' '=' exp
-	| '=' '=' exp
+	: '<='
+				{
+					ops.push("<=");
+				}
+	| '>='
+				{
+					ops.push(">=");
+				}
+	| '!='
+				{
+					ops.push("!=");
+				}
+	| '=='
+				{
+					ops.push("==");
+				}
+	| '>'
+				{
+					ops.push(">");
+				}
+	| '<'
+				{
+					ops.push("<");
+				}
 	;
 
 exp
@@ -288,9 +359,6 @@ multidivi
 
 factor
 	: value
-				{
-					ids.push($1);
-				}
 	| ID params_exp
 				{
 					ids.push($1);
@@ -319,18 +387,22 @@ value
 	: I
 				{
 					types.push("int");
+					ids.push($I);
 				}
 	| F
 				{
 					types.push("float");
+					ids.push($F);
 				}
 	| B
 				{
 					types.push("boolean");
+					ids.push($B);
 				}
 	| S
 				{
 					types.push("string");
+					ids.push($S);
 				}
 	;
 
@@ -375,6 +447,7 @@ var ids = new dataStructures.stack();
 var types = new dataStructures.stack();
 var ops = new dataStructures.stack();
 var scope = new dataStructures.stack();
+var jumps = new dataStructures.stack()
 
 var semanticCube = [
 											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||"],

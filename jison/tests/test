@@ -48,8 +48,31 @@ function void main() {
 };
 
 program test;
-var int xx, int yy;
+var int xx;
 function void main() {
-	var int kk, int bb;
+	var int zz;
+	zz = 30;
 	xx = (zz + 10) * 20;
+};
+
+
+program test;
+function void main() {
+	var int x;
+	if(true) {
+		x = 10 + 20;
+	};
+	x = 30 + 40;
+};
+
+program test;
+function void main() {
+	var int x;
+	if(true) {
+		x = 10 + 20;
+		if(x > 0)	{
+			x = 50 * (20 - 10);
+		};
+	};
+	x = 30 + 40;
 };
