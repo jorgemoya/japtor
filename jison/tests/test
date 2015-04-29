@@ -110,3 +110,14 @@ function void main() {
 	};
 	write(x);
 };
+
+program test;
+function void main() {
+	var int x;
+	while(x > 0) {
+		if((x >= x && x == x) || (x <= x && x == x)) {
+				x = x - 1;
+		};
+	};
+	write(x);
+};

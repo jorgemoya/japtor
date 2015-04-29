@@ -14,16 +14,13 @@
 ">"											{return '>';}
 "!"											{return '!';}
 "="											{return "=";}
-"=="										{return "==";}
-"<="										{return "<=";}
-">="										{return ">=";}
 "+"											{return "+";}
 "-"											{return "-";}
 "*"											{return '*';}
 "/"											{return '/';}
 ","											{return ',';}
-"&&"										{return '&&';}
-"||"										{return "||";}
+"&"											{return '&';}
+"|"											{return "|";}
 "var"										{return 'VAR';}
 "int"										{return 'INT';}
 "float"									{return 'FLOAT';}
@@ -261,8 +258,8 @@ while_condition
 	;
 
 expression
-	: exp
-	| exp comparison exp
+	: comp
+	| comp logical_ops comp
 				{
 					var var2 = ids.pop();
 					var var2t = types.pop();
@@ -278,7 +275,36 @@ expression
 				}
 	;
 
-comparison
+logical_ops
+	: '&' '&'
+				{
+					ops.push("&&");
+				}
+	| '|' '|'
+				{
+					ops.push("||");
+				}
+	;
+
+comp
+	: exp
+	| exp comparison_ops exp
+				{
+					var var2 = ids.pop();
+					var var2t = types.pop();
+					var var1 = ids.pop();
+					var var1t = types.pop();
+					var op = ops.pop();
+					var type = validateSem(op, var1t, var2t);
+					if(type != "x")
+						var op = [op, var1, var2, createTemp(yy, type)];
+					else
+						alert("Error in semantics.");
+					yy.quads.push(op);
+				}
+	;
+
+comparison_ops
 	: '<' '='
 				{
 					ops.push("<=");
@@ -477,6 +503,7 @@ var ops = new dataStructures.stack();
 var scope = new dataStructures.stack();
 var jumps = new dataStructures.stack()
 
+// falta !=
 var semanticCube = [
 											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||"],
 										 	["int",	"int", 	"int", 	"int", 	"int", 	"int", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x"],
