@@ -153,8 +153,8 @@ case 25:
 
 					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
 						//validar tipos
-						var op = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
-						ids.push("tmp"+temp);
+						var op = ["tmp__"+temp, ids.pop(), ids.pop(), ops.pop()];
+						ids.push("tmp__"+temp);
 						temp++;
 						yy.quads.push(op);
 					}
@@ -169,8 +169,8 @@ case 32:
 
 					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
 						//validar tipos
-						var op = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
-						ids.push("tmp"+temp);
+						var op = ["tmp__"+temp, ids.pop(), ids.pop(), ops.pop()];
+						ids.push("tmp__"+temp);
 						temp++;
 						yy.quads.push(op);
 					}
