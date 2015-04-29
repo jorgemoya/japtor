@@ -1,9 +1,0 @@
-program test; 
-	{
-		if (4*2) {
-			test2 = true;
-		} else {
-			print("Hello world!", 5+test3, 4<=2); 
-			test4 = 2;
-		};
-	}

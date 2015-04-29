@@ -25,11 +25,15 @@
 "int"										{return 'INT';}
 "float"									{return 'FLOAT';}
 "string"								{return 'STRING';}
-"bool"									{return 'BOOL';}
+"boolean"								{return 'BOOL';}
 "void"									{return 'VOID';}
+"write"									{return 'WRITE';}
 [0-9]*"."[0-9]+					{return 'F';}
 [0-9]+									{return 'I';}
+"true"|"false"					{return 'B';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
+\"[^\"]*\"|\'[^\']*\		{return 'S';}
+// """ hack
 <<EOF>>									{return 'EOF';}
 
 /lex
@@ -163,12 +167,27 @@ statutes
 
 statute
 	: assignment
+	| write
 	;
 
 assignment
 	: ID '=' expression ';'
 				{
-					yy.quads.push([$2, ids.pop(), "", $1]);
+					var var1 = ids.pop();
+					var var1t = types.pop();
+					var id = $ID;
+					var idt = findTypeId(yy, id);
+					if(var1t == idt || (var1t == "int" && idt == "float"))
+						var op = yy.quads.push([$2, var1, "", id]);
+					else
+						alert("Error in semantics.");;
+				}
+	;
+
+write
+	: WRITE '(' expression ')' ';'
+				{
+					yy.quads.push(["write", "", "", ids.pop()]);
 				}
 	;
 
@@ -206,7 +225,7 @@ validation_exp
 						if(type != "x")
 							var op = [op, var1, var2, createTemp(yy, type)];
 						else
-							alert("Error in semantics.");;
+							alert("Error in semantics.");
 						yy.quads.push(op);
 					}
 				}
@@ -284,6 +303,14 @@ value
 	| F
 				{
 					types.push("float");
+				}
+	| B
+				{
+					types.push("boolean");
+				}
+	| S
+				{
+					types.push("string");
 				}
 	;
 
@@ -428,7 +455,7 @@ function assignMemory(type, tmp) {
 					alert("Out of memory!");
 				}
 				break;
-			case 'bool':
+			case 'boolean':
 				if (tv_bool < 26000) {
 					return tv_bool++;
 				} else {
@@ -460,7 +487,7 @@ function assignMemory(type, tmp) {
 						alert("Out of memory!");
 					}
 					break;
-				case 'bool':
+				case 'boolean':
 					if (gv_bool < 12000) {
 						return gv_bool++;
 					} else {
@@ -491,7 +518,7 @@ function assignMemory(type, tmp) {
 						alert("Out of memory!");
 					}
 					break;
-				case 'bool':
+				case 'boolean':
 					if (lv_bool < 19000) {
 						return lv_bool++;
 					} else {

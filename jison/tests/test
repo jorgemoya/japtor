@@ -33,3 +33,16 @@ function void main(int zz, float aa) {
 	yy = hello + yellow;
 	kk = xx + 30;
 };
+
+program test;
+var int xx;
+function void main(int zz, float aa) {
+	xx = 10 * 30 - 20;
+	write(xx);
+};
+
+program test;
+function void main() {
+	var int x;
+	x = 10;
+};
