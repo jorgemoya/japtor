@@ -121,20 +121,9 @@ statute
 assignment
 	: ID '=' expression ';'
 				{
-					var quads = [];
-
 					ids.push($1);
 					ops.push($2);
-
-					var exps = $3;
-					if( Object.prototype.toString.call(exps) === '[object Array]' ) {
-						for(var i = 0; i < exps.length; i++)
-							quads.push(exps[i]);
-					}
-
-					quads.push([ids.pop(), "", ids.pop(), ops.pop()]);
-
-					$$ = quads;
+					yy.quads.push([ids.pop(), "", ids.pop(), ops.pop()]);
 				}
 	;
 
@@ -151,9 +140,47 @@ comparison
 	;
 
 exp
-	: term plusminus
+	: term end_exp
+	|
+	;
+
+end_exp
+	: validation plusminus exp
+			{
+				$$ = $exp;
+			}
+	|	validation
+	;
+
+validation
+	:
 				{
 					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
+						//validar tipos
+						var op = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
+						ids.push("tmp"+temp);
+						temp++;
+						yy.quads.push(op);
+					}
+				}
+	;
+
+plusminus
+	: '+'
+				{
+					ops.push($1);
+				}
+	| '-'
+				{
+					ops.push($1);
+				}
+	| '||'
+	;
+
+term
+	: factor multidivi
+				{
+					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
 						//validar tipos
 						var op = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
 						ids.push("tmp"+temp);
@@ -170,42 +197,16 @@ exp
 				}
 	;
 
-plusminus
-	: '+' exp
-				{
-					ops.push($1);
-					$$ = $2;
-				}
-	| '-' exp
-				{
-					ops.push($1);
-					$$ = $2;
-				}
-	| '||' exp
-	|
-	;
-
-term
-	: factor multidivi
-				{
-					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
-						//validar tipos
-						// $$ = [ops.pop(), ids.pop(), ids.pop(), "tempvar"];
-						$$ = ["tmp"+temp, ids.pop(), ids.pop(), ops.pop()];
-						ids.push("tmp"+temp);
-						temp++;
-					}
-				}
-	;
-
 multidivi
 	: '*' term
 			{
+				$$ = $2;
 				ops.push($1);
 			}
 	| '/' term
 			{
 				ops.push($1);
+				$$ = $2;
 			}
 	| '&&' term
 	|
@@ -445,6 +446,7 @@ function assign_memory(procs) {
 		}
 	}
 	init_dirs();
+	temp = 1;
 }
 
 function init_dirs() {
