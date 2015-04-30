@@ -36,7 +36,7 @@
 [0-9]+									{return 'I';}
 "true"|"false"					{return 'B';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
-\"[^\"]*\"|\'[^\']*\		{return 'S';} // null"
+\"[^\"]*\"|\'[^\']*\		{return 'S';} // "
 <<EOF>>									{return 'EOF';}
 
 /lex
@@ -78,7 +78,7 @@ var_declaration
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false),
+						dir: assignMemory($type, false, false),
 						id: $ID,
 						type: $type
 					}
@@ -146,7 +146,7 @@ vars_params_declaration
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false),
+						dir: assignMemory($type, false, false),
 						id: $ID,
 						type: $type
 					}
@@ -158,7 +158,7 @@ vars_params_declaration
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false),
+						dir: assignMemory($type, false, false),
 						id: $ID,
 						type: $type
 					}
@@ -192,9 +192,9 @@ assignment_statute
 					var id = $ID;
 					var idt = findTypeId(yy, id);
 					if(var1t == idt || (var1t == "int" && idt == "float"))
-						var op = yy.quads.push([$2, var1, null, id]);
+						var op = yy.quads.push([$2, findDir(yy, var1), null, findDir(yy, id)]);
 					else
-						alert("Error in semantics.");;
+						alert("Error in semantics.");
 				}
 	;
 
@@ -509,21 +509,25 @@ add_closure
 constant
 	: I
 				{
+					yy.consts.push([$I, assignMemory("int", false, true)]);
 					types.push("int");
 					ids.push($I);
 				}
 	| F
 				{
+					yy.consts.push([$F, assignMemory("float", false, true)]);
 					types.push("float");
 					ids.push($F);
 				}
 	| B
 				{
+					yy.consts.push([$B, assignMemory("boolean", false, true)]);
 					types.push("boolean");
 					ids.push($B);
 				}
 	| S
 				{
+					yy.consts.push([$S, assignMemory("string", false, true)]);
 					types.push("string");
 					ids.push($S);
 				}
@@ -547,6 +551,11 @@ var tv_i;
 var tv_f;
 var tv_st;
 var tv_bool;
+
+var cv_i;
+var cv_f;
+var cv_st;
+var cv_bool;
 
 initDirs();
 
@@ -572,7 +581,6 @@ var ops = new dataStructures.stack();
 var scope = new dataStructures.stack();
 var jumps = new dataStructures.stack()
 
-// falta !=
 var semanticCube = [
 											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||", "!="],
 										 	["int",	"int", 	"int", 	"int", 	"int", 	"int", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
@@ -606,7 +614,8 @@ var Raptor = function() {
 		this.lexer = new raptorLexer();
 		this.yy = {
 			procs: [],
-			quads: []
+			quads: [],
+			consts: []
 			// parseError: function(msg, hash) {
 			// 	this.done = true;
 			// 	var result = new String();
@@ -646,7 +655,7 @@ function dirProc() {
 		alert("Out of memory.");
 }
 
-function assignMemory(type, tmp) {
+function assignMemory(type, tmp, cons) {
 
 	var isGlobal = false;
 	if (scope.stackTop() == "global") {
@@ -679,6 +688,37 @@ function assignMemory(type, tmp) {
 			case 'boolean':
 				if (tv_bool < 26000) {
 					return tv_bool++;
+				} else {
+					alert("Out of memory!");
+				}
+				break;
+		}
+	} else if (cons) {
+		switch(type) {
+			case 'int':
+				if (cv_i < 28000) {
+					return cv_i++;
+				} else {
+					alert("Out of memory!");
+				}
+				break;
+			case 'float':
+				if (cv_f < 30000) {
+					return cv_f++;
+				} else {
+					alert("Out of memory!");
+				}
+				break;
+			case 'string':
+				if (cv_st < 32000) {
+					return cv_st++;
+				} else {
+					alert("Out of memory!");
+				}
+				break;
+			case 'boolean':
+				if (cv_bool < 33000) {
+					return cv_bool++;
 				} else {
 					alert("Out of memory!");
 				}
@@ -768,6 +808,11 @@ function initDirs() {
 	tv_f = 21000;
 	tv_st = 23000;
 	tv_bool = 25000;
+
+	cv_i = 26000;
+	cv_f = 28000;
+	cv_st = 30000;
+	cv_bool = 32000;
 }
 
 function validateSem(op, var1, var2) {
@@ -818,7 +863,7 @@ function createTemp(yy, type) {
 	var proc = findProc(yy, currentScope);
 
 	var tmp = {
-		dir: assignMemory(type, true),
+		dir: assignMemory(type, true, false),
 		name: "tmp__"+temp,
 		type: type
 	}
@@ -830,6 +875,27 @@ function createTemp(yy, type) {
 	proc.vars.push(tmp);
 
 	return tmp.name;
+}
+
+function findDir(yy, id) {
+	var currentScope = scope.stackTop();
+	var proc = findProc(yy, currentScope);
+
+	for(var i = 0; i < proc.vars.length; i++)
+		if(proc.vars[i].id == id)
+			return proc.vars[i].dir;
+
+	proc = findProc(yy, "global");
+	for(var i = 0; i < proc.vars.length; i++)
+		if(proc.vars[i].id == id)
+			return proc.vars[i].dir;
+
+	for(var i = 0; i < yy.consts.length; i++)
+		if(yy.consts[i][0] == id)
+			return yy.consts[i][1];
+
+	alert("ID not declared.");
+	return "undefined";
 }
 
 if (typeof(window) !== 'undefined') {
