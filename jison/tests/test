@@ -1,9 +1,10 @@
 program test;
-var int xx;
-var int yy;
+var int x;
 function void main(){
-	xx = 10 + 20;
-	yy = 10 + xx;
+	var int y;
+	x = 10;
+	y = x + 20;
+	write(x);
 }
 
 program test;
@@ -94,15 +95,17 @@ function void main() {
 program test;
 function void main() {
 	var int x;
+	x = 10;
 	while(x > 0) {
+		write(x);
 		x = x - 1;
 	}
-	write(x);
 }
 
 program test;
 function void main() {
 	var int x;
+	x = 10;
 	while(x > 0) {
 		if(x == x) {
 				x = x - 1;
@@ -114,12 +117,13 @@ function void main() {
 program test;
 function void main() {
 	var int x;
+	x = 10;
 	while(x > 0) {
-		if((x >= x && x == x) || (x <= x && x == x)) {
+		if((x == x)) {
+				write(x);
 				x = x - 1;
 		}
 	}
-	write(x);
 }
 
 program test;

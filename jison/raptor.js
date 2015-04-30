@@ -356,16 +356,16 @@ ops.push("|");
 break;
 case 81:
 
-					yy.consts.push([$$[$0], assignMemory("int", false, true)]);
+					yy.consts.push([parseInt($$[$0]), assignMemory("int", false, true)]);
 					types.push("int");
-					ids.push($$[$0]);
+					ids.push(parseInt($$[$0]));
 				
 break;
 case 82:
 
-					yy.consts.push([$$[$0], assignMemory("float", false, true)]);
+					yy.consts.push([parseFloat($$[$0]), assignMemory("float", false, true)]);
 					types.push("float");
-					ids.push($$[$0]);
+					ids.push(parseFloat($$[$0]));
 				
 break;
 case 83:

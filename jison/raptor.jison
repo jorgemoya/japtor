@@ -510,15 +510,15 @@ add_closure
 constant
 	: I
 				{
-					yy.consts.push([$I, assignMemory("int", false, true)]);
+					yy.consts.push([parseInt($I), assignMemory("int", false, true)]);
 					types.push("int");
-					ids.push($I);
+					ids.push(parseInt($I));
 				}
 	| F
 				{
-					yy.consts.push([$F, assignMemory("float", false, true)]);
+					yy.consts.push([parseFloat($F), assignMemory("float", false, true)]);
 					types.push("float");
-					ids.push($F);
+					ids.push(parseFloat($F));
 				}
 	| B
 				{

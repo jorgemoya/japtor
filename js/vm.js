@@ -19,6 +19,15 @@ function VM(yy) {
         cont = quads[cont][3];
         break;
 
+      case 'gotof':
+        var condition = findValue(quads[cont][1]);
+        if(condition)
+          cont++;
+        else
+        cont = quads[cont][3];
+
+        break;
+
       case 'era':
         var proc_dir = quads[cont][1];
         for(var i = 0; i < procs.length; i++) {
@@ -44,7 +53,83 @@ function VM(yy) {
         break;
 
       case '+':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 + value2);
+        cont++;
+        break;
 
+      case '-':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 - value2);
+        cont++;
+        break;
+
+      case '*':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 * value2);
+        cont++;
+        break;
+
+      case '/':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 / value2);
+        cont++;
+        break;
+
+      case '==':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 == value2);
+        cont++;
+        break;
+
+      case '>=':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 >= value2);
+        cont++;
+        break;
+
+      case '<=':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 <= value2);
+        cont++;
+        break;
+
+      case '!=':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 != value2);
+        cont++;
+        break;
+
+      case '>':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 > value2);
+        cont++;
+        break;
+
+      case '<':
+        var value1 = findValue(quads[cont][1]);
+        var value2 = findValue(quads[cont][2]);
+        var dir = quads[cont][3];
+        insertValue(dir, value1 < value2);
+        cont++;
         break;
     }
   }
