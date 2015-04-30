@@ -25,7 +25,7 @@
 "int"										{return 'INT';}
 "float"									{return 'FLOAT';}
 "string"								{return 'STRING';}
-"boolean"								{return 'BOOL';}
+"boolean"								{return 'BOOLEAN';}
 "void"									{return 'VOID';}
 "write"									{return 'WRITE';}
 "if"										{return 'IF';}
@@ -48,13 +48,13 @@
 program
 	: EOF
 				{return null;}
-	| PROGRAM ID ';' program_init program_block
+	| program_declaration program_block
 	;
 
-program_init
-	:
+program_declaration
+	: PROGRAM ID ';'
 				{
-					var proc = new Proc("global", "void", dirProc(), [], [], "");
+					var proc = new Proc("global", "void", dirProc(), [], [], null);
 					yy.procs.push(proc);
 					scope.push("global");
 					yy.quads.push(["goto", "", "", ""]);
@@ -67,12 +67,12 @@ program_block
 	;
 
 vars
-	: VAR var_init vars ';' vars
-	| ',' var_init vars
+	: VAR var_declaration vars ';' vars
+	| ',' var_declaration vars
 	|
 	;
 
-var_init
+var_declaration
 	: type ID
 				{
 					var currentScope = scope.stackTop();
@@ -86,12 +86,55 @@ var_init
 				}
 	;
 
+type
+	: INT
+	| FLOAT
+	| STRING
+	| BOOLEAN
+	| VOID
+	;
+
+functions
+	: FUNCTION funct functions
+	| EOF
+	;
+
+funct
+	: function_declaration function_params function_block
+	;
+
+function_declaration
+	: type ID
+				{
+					var proc = new Proc($ID, $type, dirProc(), [], [], yy.quads.length);
+					yy.procs.push(proc);
+					scope.push($ID);
+
+					if($ID == "main")	{
+						var jump = jumps.pop();
+						yy.quads[jump][3] = yy.quads.length;
+					}
+				}
+	;
+
+function_params
+	: '(' vars_params ')'
+	;
+
+function_block
+	:  '{' vars block '}'
+				{
+					if(scope.pop() == "main")
+					 	return;
+				}
+	;
+
 vars_params
-	: vars_params_init vars_params
+	: vars_params_declaration vars_params
 	|
 	;
 
-vars_params_init
+vars_params_declaration
 	: type ID
 				{
 					var currentScope = scope.stackTop();
@@ -118,53 +161,6 @@ vars_params_init
 				}
 	;
 
-type
-	: INT
-	| FLOAT
-	| STRING
-	| BOOL
-	| VOID
-	;
-
-functions
-	: funct ';' functions
-	| EOF
-	;
-
-funct
-	: FUNCTION funct_init params
-	|
-	;
-
-funct_init
-	: type ID
-				{
-					var proc = new Proc($ID, $type, dirProc(), [], [], yy.quads.length);
-					yy.procs.push(proc);
-					scope.push($ID);
-
-					if($ID == "main")	{
-						var jump = jumps.pop();
-						yy.quads[jump][3] = yy.quads.length;
-					}
-				}
-	;
-
-params
-	: '(' vars_params ')' '{' vars funct_code
-	;
-
-funct_code
-	:  block '}' funct_end
-	;
-
-funct_end
-	:
-				{
-					scope.pop();
-				}
-	;
-
 block
 	: statutes
 	;
@@ -175,14 +171,14 @@ statutes
 	;
 
 statute
-	: assignment
-	| write
-	| if_
-	| while_
-	| return_
+	: assignment_statute
+	| write_statute
+	| if_statute
+	| while_statute
+	| return_statute
 	;
 
-assignment
+assignment_statute
 	: ID '=' expression ';'
 				{
 					var var1 = ids.pop();
@@ -196,23 +192,24 @@ assignment
 				}
 	;
 
-write
+write_statute
 	: WRITE '(' expression ')' ';'
 				{
 					yy.quads.push(["write", "", "", ids.pop()]);
 				}
 	;
 
-if_
-	: IF if_condition '{' block '}' else_
+if_statute
+	: IF if_condition if_block else_statute
 	;
 
 if_condition
 	: '(' expression ')'
 				{
 					var type = types.pop();
+					var id = ids.pop();
 					if(type == "boolean") {
-						yy.quads.push(["gotof", ids.pop(), "", ""]);
+						yy.quads.push(["gotof", id, "", ""]);
 						jumps.push(yy.quads.length - 1);
 					} else {
 						alert("Error!");
@@ -220,20 +217,20 @@ if_condition
 				}
 	;
 
-else_
-	: else_code '{' block '}' ';'
-				{
-					var jump = jumps.pop();
-					yy.quads[jump][3] = yy.quads.length;
-				}
- 	| ';'
+if_block
+	: '{' block '}'
+	;
+
+else_statute
+	: else_declaration else_block
+ 	|
 				{
 					var jump = jumps.pop();
 					yy.quads[jump][3] = yy.quads.length;
 				}
 	;
 
-else_code
+else_declaration
 	: ELSE
 				{
 					var jump = jumps.pop();
@@ -243,8 +240,16 @@ else_code
 				}
 	;
 
-while_
-	: WHILE while_condition '{' block '}' ';'
+else_block
+	: '{' block '}'
+				{
+					var jump = jumps.pop();
+					yy.quads[jump][3] = yy.quads.length;
+				}
+	;
+
+while_statute
+	: WHILE while_condition while_block
 				{
 					var jump = jumps.pop();
 					yy.quads[jump][3] = yy.quads.length;
@@ -255,8 +260,9 @@ while_condition
 	: '(' expression ')'
 				{
 					var type = types.pop();
+					var id = ids.pop();
 					if(type == "boolean") {
-						yy.quads.push(["gotof", ids.pop(), "", ""]);
+						yy.quads.push(["gotof", id, "", ""]);
 						jumps.push(yy.quads.length - 1);
 					} else {
 						alert("Error!");
@@ -264,14 +270,18 @@ while_condition
 				}
 	;
 
-return_
+while_block
+	: '{' block '}'
+	;
+
+return_statute
 	: RETURN expression ';'
 				{
 					proc = findProc(yy, scope.stackTop());
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					if (proc.type != "void" && proc.type == var1t)	{
-						yy.quads.push(["return", "", "", var1]);
+					var id = ids.pop();
+					var type = types.pop();
+					if (proc.type != "void" && proc.type == type)	{
+						yy.quads.push(["return", "", "", id]);
 					} else {
 						alert("Error!");
 					}
@@ -279,8 +289,8 @@ return_
 	;
 
 expression
-	: comp
-	| comp logical_ops comp
+	: comparison
+	| comparison logical_ops comparison
 				{
 					var var2 = ids.pop();
 					var var2t = types.pop();
@@ -298,16 +308,12 @@ expression
 
 logical_ops
 	: '&' '&'
-				{
-					ops.push("&&");
-				}
+				{ops.push("&&");}
 	| '|' '|'
-				{
-					ops.push("||");
-				}
+				{ops.push("||");}
 	;
 
-comp
+comparison
 	: exp
 	| exp comparison_ops exp
 				{
@@ -327,41 +333,29 @@ comp
 
 comparison_ops
 	: '<' '='
-				{
-					ops.push("<=");
-				}
+				{ops.push("<=");}
 	| '>' '='
-				{
-					ops.push(">=");
-				}
+				{ops.push(">=");}
 	| '!' '='
-				{
-					ops.push("!=");
-				}
+				{ops.push("!=");}
 	| '=' '='
-				{
-					ops.push("==");
-				}
+				{ops.push("==");}
 	| '>'
-				{
-					ops.push(">");
-				}
+				{ops.push(">");}
 	| '<'
-				{
-					ops.push("<");
-				}
+				{ops.push("<");}
 	;
 
 exp
-	: term end_exp
+	: term exp_exit
 	;
 
-end_exp
-	: validation_exp plusminus exp
-	|	validation_exp
+exp_exit
+	: exp_validation sum_or_minus exp
+	|	exp_validation
 	;
 
-validation_exp
+exp_validation
 	:
 				{
 					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
@@ -380,28 +374,23 @@ validation_exp
 				}
 	;
 
-plusminus
+sum_or_minus
 	: '+'
-				{
-					ops.push($1);
-				}
+				{ops.push($1);}
 	| '-'
-				{
-					ops.push($1);
-				}
-	| '||'
+				{ops.push($1);}
 	;
 
 term
-	: factor end_term
+	: factor term_exit
 	;
 
-end_term
-	: validation_term multidivi term
-	| validation_term
+term_exit
+	: term_validation mult_or_divi term
+	| term_validation
 	;
 
-validation_term
+term_validation
 	:
 				{
 					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
@@ -420,25 +409,18 @@ validation_term
 				}
 	;
 
-multidivi
+mult_or_divi
 	: '*'
-			{
-				ops.push($1);
-			}
+			{ops.push($1);}
 	| '/'
-			{
-				ops.push($1);
-			}
-	| '&&'
+			{ops.push($1);}
 	;
 
 factor
-	: value
-	| id params_exp
+	: constant
+	| id params
 	| "(" add_closure expression")"
-				{
-					ops.pop();
-				}
+				{ops.pop();}
 	;
 
 id
@@ -449,40 +431,40 @@ id
 				}
 	;
 
-params_exp
-	: "(" init_memory inside_params ")"
+params
+	: "(" find_proc params_input ")"
 				{
-					if (paramTemp > procTemp.numParams())
+					if (paramTemp > tempProc.numParams())
 						alert("ERROR");
 
-					yy.quads.push(["gosub",procTemp.name,"",""]);
-					ids.push(procTemp.name);
-					types.push(procTemp.type);
+					yy.quads.push(["gosub",tempProc.name,"",""]);
+					ids.push(tempProc.name);
+					types.push(tempProc.type);
 				}
 	|
 	;
 
-init_memory
+find_proc
 	:
 				{
-						procTemp = findProc(yy, ids.pop());
+						tempProc = findProc(yy, ids.pop());
 						types.pop();
 						paramTemp = 0;
 				}
 	;
 
-inside_params
-	: params_exps
-	|	params_exps ',' inside_params
+params_input
+	: param_expression
+	|	param_expression ',' params_input
 	|
 	;
 
-params_exps
+param_expression
 	: expression
 				{
 					var id = ids.pop();
 					var type = types.pop();
-					if(procTemp.params[paramTemp] == type || (procTemp.params[paramTemp] == "float" && type == "int") )
+					if(tempProc.params[paramTemp] == type || (tempProc.params[paramTemp] == "float" && type == "int") )
 						yy.quads.push(["param", id, "", ++paramTemp]);
 					else
 						alert("Error in param");
@@ -492,13 +474,11 @@ params_exps
 
 add_closure
 	:
-				{
-					ops.push("|");
-				}
+				{ops.push("|");}
 	;
 
 
-value
+constant
 	: I
 				{
 					types.push("int");
@@ -587,7 +567,7 @@ var semanticCube = [
 
 var temp = 1;
 var paramTemp = 1;
-var procTemp = "";
+var tempProc = "";
 
 var Raptor = function() {
 	var raptorLexer = function () {};
