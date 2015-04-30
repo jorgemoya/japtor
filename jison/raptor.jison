@@ -111,14 +111,15 @@ funct
 function_declaration
 	: type ID
 				{
-					var proc = new Proc($ID, $type, dirProc(), [], [], yy.quads.length);
+					var dir = dirProc();
+					var proc = new Proc($ID, $type, dir, [], [], yy.quads.length);
 					yy.procs.push(proc);
 					scope.push($ID);
 
 					if($ID == "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
-						yy.quads.push(["era", $ID, null, null]);
+						yy.quads.push(["era", dir, null, null]);
 					}
 				}
 	;
@@ -201,7 +202,7 @@ assignment_statute
 write_statute
 	: WRITE '(' expression ')' ';'
 				{
-					yy.quads.push(["write", null, null, ids.pop()]);
+					yy.quads.push(["write", null, null, findDir(yy, ids.pop())]);
 				}
 	;
 
@@ -215,7 +216,7 @@ if_condition
 					var type = types.pop();
 					var id = ids.pop();
 					if(type == "boolean") {
-						yy.quads.push(["gotof", id, null, null]);
+						yy.quads.push(["gotof", findDir(yy, id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
 						alert("Error!");
@@ -268,7 +269,7 @@ while_condition
 					var type = types.pop();
 					var id = ids.pop();
 					if(type == "boolean") {
-						yy.quads.push(["gotof", id, null, null]);
+						yy.quads.push(["gotof", findDir(yy,id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
 						alert("Error!");
@@ -287,7 +288,7 @@ return_statute
 					var id = ids.pop();
 					var type = types.pop();
 					if (proc.type != "void" && proc.type == type)	{
-						yy.quads.push(["return", null, null, id]);
+						yy.quads.push(["return", null, null, findDir(yy,id)]);
 					} else {
 						alert("Error!");
 					}
@@ -305,7 +306,7 @@ expression
 					var op = ops.pop();
 					var type = validateSem(op, var1t, var2t);
 					if(type != "x")
-						var op = [op, var1, var2, createTemp(yy, type)];
+						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					else
 						alert("Error in semantics.");
 					yy.quads.push(op);
@@ -330,7 +331,7 @@ comparison
 					var op = ops.pop();
 					var type = validateSem(op, var1t, var2t);
 					if(type != "x")
-						var op = [op, var1, var2, createTemp(yy, type)];
+						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					else
 						alert("Error in semantics.");
 					yy.quads.push(op);
@@ -372,7 +373,7 @@ exp_validation
 						var op = ops.pop();
 						var type = validateSem(op, var1t, var2t);
 						if(type != "x")
-							var op = [op, var1, var2, createTemp(yy, type)];
+							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						else
 							alert("Error in semantics.");
 						yy.quads.push(op);
@@ -407,7 +408,7 @@ term_validation
 						var op = ops.pop();
 						var type = validateSem(op, var1t, var2t);
 						if(type != "x")
-							var op = [op, var1, var2, createTemp(yy, type)];
+							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						else
 							alert("Error in semantics.");;
 						yy.quads.push(op);
@@ -453,9 +454,9 @@ params
 
 					if (tempProc.type != "void") {
 						var temp = createTemp(yy, tempProc.type);
-						yy.quads.push(["gosub",tempProc.name,null,temp]);
+						yy.quads.push(["gosub",tempProc.dir,null,findDir(yy,temp)]);
 					} else {
-						yy.quads.push(["gosub",tempProc.name,null,null]);
+						yy.quads.push(["gosub",tempProc.dir,null,null]);
 					}
 
 					ops.pop();
@@ -473,8 +474,8 @@ find_proc
 	:
 				{
 						var id = ids.pop();
-						yy.quads.push(["era",id,null,null]);
 						tempProc = findProc(yy, id);
+						yy.quads.push(["era",tempProc.dir,null,null]);
 						types.pop();
 						ops.push("|");
 						paramTemp = 0;
@@ -493,7 +494,7 @@ param_expression
 					var id = ids.pop();
 					var type = types.pop();
 					if(tempProc.params[paramTemp] == type || (tempProc.params[paramTemp] == "float" && type == "int") )
-						yy.quads.push(["param", id, null, ++paramTemp]);
+						yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
 					else
 						alert("Error in param");
 					// ops.pop();
@@ -864,20 +865,21 @@ function createTemp(yy, type) {
 
 	var tmp = {
 		dir: assignMemory(type, true, false),
-		name: "tmp__"+temp,
+		id: "tmp__"+temp,
 		type: type
 	}
 
-	ids.push(tmp.name);
+	ids.push(tmp.id);
 	types.push(tmp.type);
 	temp++;
 
 	proc.vars.push(tmp);
 
-	return tmp.name;
+	return tmp.id;
 }
 
 function findDir(yy, id) {
+	// return id;
 	var currentScope = scope.stackTop();
 	var proc = findProc(yy, currentScope);
 
