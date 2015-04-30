@@ -36,7 +36,7 @@
 [0-9]+									{return 'I';}
 "true"|"false"					{return 'B';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
-\"[^\"]*\"|\'[^\']*\		{return 'S';} // """
+\"[^\"]*\"|\'[^\']*\		{return 'S';} // null"
 <<EOF>>									{return 'EOF';}
 
 /lex
@@ -57,7 +57,7 @@ program_declaration
 					var proc = new Proc("global", "void", dirProc(), [], [], null);
 					yy.procs.push(proc);
 					scope.push("global");
-					yy.quads.push(["goto", "", "", ""]);
+					yy.quads.push(["goto", null, null, null]);
 					jumps.push(yy.quads.length - 1);
 				}
 	;
@@ -113,6 +113,7 @@ function_declaration
 					if($ID == "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
+						yy.quads.push(["era", $ID, null, null]);
 					}
 				}
 	;
@@ -125,7 +126,7 @@ function_block
 	:  '{' vars block '}'
 				{
 					if(scope.pop() == "main")
-					 	return;
+					 	return null;
 				}
 	;
 
@@ -186,7 +187,7 @@ assignment_statute
 					var id = $ID;
 					var idt = findTypeId(yy, id);
 					if(var1t == idt || (var1t == "int" && idt == "float"))
-						var op = yy.quads.push([$2, var1, "", id]);
+						var op = yy.quads.push([$2, var1, null, id]);
 					else
 						alert("Error in semantics.");;
 				}
@@ -195,7 +196,7 @@ assignment_statute
 write_statute
 	: WRITE '(' expression ')' ';'
 				{
-					yy.quads.push(["write", "", "", ids.pop()]);
+					yy.quads.push(["write", null, null, ids.pop()]);
 				}
 	;
 
@@ -209,7 +210,7 @@ if_condition
 					var type = types.pop();
 					var id = ids.pop();
 					if(type == "boolean") {
-						yy.quads.push(["gotof", id, "", ""]);
+						yy.quads.push(["gotof", id, null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
 						alert("Error!");
@@ -234,7 +235,7 @@ else_declaration
 	: ELSE
 				{
 					var jump = jumps.pop();
-					yy.quads.push(["goto", "", "", ""]);
+					yy.quads.push(["goto", null, null, null]);
 					yy.quads[jump][3] = yy.quads.length;
 					jumps.push(yy.quads.length - 1);
 				}
@@ -262,7 +263,7 @@ while_condition
 					var type = types.pop();
 					var id = ids.pop();
 					if(type == "boolean") {
-						yy.quads.push(["gotof", id, "", ""]);
+						yy.quads.push(["gotof", id, null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
 						alert("Error!");
@@ -281,7 +282,7 @@ return_statute
 					var id = ids.pop();
 					var type = types.pop();
 					if (proc.type != "void" && proc.type == type)	{
-						yy.quads.push(["return", "", "", id]);
+						yy.quads.push(["return", null, null, id]);
 					} else {
 						alert("Error!");
 					}
@@ -426,29 +427,51 @@ factor
 id
 	: ID
 				{
-					ids.push($ID);
-					types.push(findTypeId(yy, $ID));
+					var proc = findProc(yy, $ID);
+					if(proc !== "undefined") {
+						ids.push($ID);
+						types.push(proc.type);
+						expectingParams = true;
+					} else {
+						ids.push($ID);
+						types.push(findTypeId(yy, $ID));
+						expectingParams = false;
+					}
 				}
 	;
 
 params
 	: "(" find_proc params_input ")"
 				{
-					if (paramTemp > tempProc.numParams())
-						alert("ERROR");
+					if (paramTemp > tempProc.numParams() || paramTemp < tempProc.numParams())
+						alert("Not the correct number of params");
 
-					yy.quads.push(["gosub",tempProc.name,"",""]);
-					ids.push(tempProc.name);
-					types.push(tempProc.type);
+					if (tempProc.type != "void") {
+						var temp = createTemp(yy, tempProc.type);
+						yy.quads.push(["gosub",tempProc.name,null,temp]);
+					} else {
+						yy.quads.push(["gosub",tempProc.name,null,null]);
+					}
+
+					ops.pop();
+					tempProc = null;
+					expectingParams = false;
 				}
 	|
+				{
+					if(expectingParams)
+						alert("Error expecting params");
+				}
 	;
 
 find_proc
 	:
 				{
-						tempProc = findProc(yy, ids.pop());
+						var id = ids.pop();
+						yy.quads.push(["era",id,null,null]);
+						tempProc = findProc(yy, id);
 						types.pop();
+						ops.push("|");
 						paramTemp = 0;
 				}
 	;
@@ -465,7 +488,7 @@ param_expression
 					var id = ids.pop();
 					var type = types.pop();
 					if(tempProc.params[paramTemp] == type || (tempProc.params[paramTemp] == "float" && type == "int") )
-						yy.quads.push(["param", id, "", ++paramTemp]);
+						yy.quads.push(["param", id, null, ++paramTemp]);
 					else
 						alert("Error in param");
 					// ops.pop();
@@ -567,7 +590,8 @@ var semanticCube = [
 
 var temp = 1;
 var paramTemp = 1;
-var tempProc = "";
+var tempProc = null;
+var expectingParams = false;
 
 var Raptor = function() {
 	var raptorLexer = function () {};
@@ -753,12 +777,12 @@ function validateSem(op, var1, var2) {
 }
 
 function findTypeId(yy, id) {
-	for(var i = 0; i < yy.procs.length; i++) {
-		if(id == yy.procs[i].name) {
-			yy.quads.push(["era", id,"",""]);
-			return yy.procs[i].type;
-		}
-	}
+	// for(var i = 0; i < yy.procs.length; i++) {
+	// 	if(id == yy.procs[i].name) {
+	// 		yy.quads.push(["era", id,null,null]);
+	// 		return yy.procs[i].type;
+	// 	}
+	// }
 
 	var currentScope = scope.stackTop();
 	var proc = findProc(yy, currentScope);
@@ -780,6 +804,8 @@ function findProc(yy, name) {
 		if (yy.procs[i].name == name)
 			return yy.procs[i];
 	}
+
+	return "undefined";
 }
 
 function createTemp(yy, type) {

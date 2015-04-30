@@ -130,10 +130,7 @@ function int uno(int c) {
 		return c;
 	}
 }
-
-prorgam test;
 function void main() {
 	a = 20;
-	b = 30;
-	return;
-};
+	b = uno(a);
+}
