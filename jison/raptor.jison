@@ -642,7 +642,89 @@ function Proc(name, type, dir, params, vars, init){
 
 Proc.prototype = {
 	size : function() {
-		return this.vars.length;
+		var int = 0; var float = 0; var string = 0; var boolean = 0;
+		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
+		for(var i = 0; i < this.vars.length; i++) {
+			if(this.vars[i].id.indexOf("tmp__") > -1) {
+				switch(this.vars[i].type) {
+					case 'int':
+						int_t++;
+						break;
+					case 'float':
+						float_t++;
+						break;
+					case 'string':
+						string_t++;
+						break;
+					case 'boolean':
+						boolean_t++;
+						break;
+				}
+			} else {
+				switch(this.vars[i].type) {
+					case 'int':
+						int++;
+						break;
+					case 'float':
+						float++;
+						break;
+					case 'string':
+						string++;
+						break;
+					case 'boolean':
+						boolean++;
+						break;
+				}
+			}
+		}
+
+		return [int, float, string, boolean, int_t, float_t, string_t, boolean_t];
+	},
+	dirs : function() {
+		var int = 0; var float = 0; var string = 0; var boolean = 0;
+		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
+		for(var i = 0; i < this.vars.length; i++) {
+			if(this.vars[i].id.indexOf("tmp__") > -1) {
+				switch(this.vars[i].type) {
+					case 'int':
+						if(int_t == 0)
+							int_t = this.vars[i].dir;
+						break;
+					case 'float':
+						if(float_t == 0)
+							float_t = this.vars[i].dir;
+						break;
+					case 'string':
+						if(string_t == 0)
+							string_t = this.vars[i].dir;
+						break;
+					case 'boolean':
+						if(boolean_t == 0)
+							boolean_t = this.vars[i].dir;
+						break;
+				}
+			} else {
+				switch(this.vars[i].type) {
+					case 'int':
+						if(int == 0)
+							int = this.vars[i].dir;
+						break;
+					case 'float':
+						if(float == 0)
+							float = this.vars[i].dir;
+						break;
+					case 'string':
+						if(string == 0)
+							string = this.vars[i].dir;
+						break;
+					case 'boolean':
+						if(boolean == 0)
+							boolean = this.vars[i].dir;
+						break;
+				}
+			}
+		}
+		return [int, float, string, boolean, int_t, float_t, string_t, boolean_t];
 	},
 	numParams : function() {
 		return this.params.length;
