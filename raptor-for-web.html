@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
   <script src="jison/raptor.js"></script>
+  <script src="js/vm.js"></script>
   <script>
     // var test = raptorParser.parse("program test; var test2 float");
     var parse = function() {
@@ -13,6 +14,7 @@
       for(var i = 0; i < quads.length; i++)
         console.log(i+": ["+quads[i][0]+","+quads[i][1]+","+quads[i][2]+","+quads[i][3]+"]");
       // alert(procs.length);
+      VM(raptorParser.yy);
     }
   </script>
 </head>
