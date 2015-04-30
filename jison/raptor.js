@@ -107,6 +107,13 @@ case 8:
 					proc.vars.push(variable);
 				
 break;
+case 14:
+
+					var main = findProc(yy, "main");
+					if (main === "undefined")
+						alert("Error no main.");
+				
+break;
 case 17:
 
 					var proc = new Proc($$[$0], $$[$0-1], dirProc(), [], [], yy.quads.length);

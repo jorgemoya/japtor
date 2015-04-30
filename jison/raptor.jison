@@ -96,6 +96,11 @@ type
 
 functions
 	: FUNCTION funct functions
+				{
+					var main = findProc(yy, "main");
+					if (main === "undefined")
+						alert("Error no main.");
+				}
 	| EOF
 	;
 
