@@ -8,3 +8,16 @@ function int factorial(int x) {
 function void main() {
 	write(factorial(1));
 }
+
+program factorial;
+function void main() {
+  var int number, int factor, int i;
+  assign number = 1;
+  assign factor = 1;
+  assign i = 1;
+  while(i <= number) {
+    assign factor = factor * i;
+    assign i = i + 1;
+  }
+  write(factor);
+}
