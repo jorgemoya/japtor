@@ -474,9 +474,6 @@ id
 params
 	: "(" find_proc params_input ")"
 				{
-					if (paramTemp > tempProc.numParams() || paramTemp < tempProc.numParams())
-						alert("Not the correct number of params");
-
 					if (tempProc.type != "void") {
 						var temp = createTemp(yy, tempProc.type);
 						yy.quads.push(["gosub",tempProc.init,null,findDir(yy,temp)]);
@@ -518,6 +515,9 @@ param_expression
 				{
 					var id = ids.pop();
 					var type = types.pop();
+					if (paramTemp + 1 > tempProc.numParams() || paramTemp + 1 < tempProc.numParams())
+						alert("Not the correct number of params");
+
 					if(tempProc.params[paramTemp].type == type || (tempProc.params[paramTemp].type == "float" && type == "int") )
 						yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
 					else
