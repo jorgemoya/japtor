@@ -4,6 +4,11 @@
 \s+          						{/* ignore whitespace */;}
 "program"								{return 'PROGRAM';}
 "function"							{return 'FUNCTION';}
+// "-"?[0-9]*"."[0-9]+			{return 'F';}
+[0-9]*"."[0-9]+					{return 'F';}
+// "-"?[0-9]+							{return 'I';}
+[0-9]+									{return 'I';}
+"true"|"false"					{return 'B';}
 ";"											{return ';';}
 ":"											{return ':';}
 "{"											{return '{';}
@@ -32,9 +37,7 @@
 "else"									{return 'ELSE';}
 "while"									{return 'WHILE';}
 "return"								{return 'RETURN';}
-[0-9]*"."[0-9]+					{return 'F';}
-[0-9]+									{return 'I';}
-"true"|"false"					{return 'B';}
+"assign"								{return 'ASSIGN';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
 \"[^\"]*\"|\'[^\']*\		{return 'S';} // "
 <<EOF>>									{return 'EOF';}
@@ -106,6 +109,11 @@ functions
 
 funct
 	: function_declaration function_params function_block
+				{
+					if(scope.stackTop().id != "main") {
+						yy.quads.push(["return", null, null, null]);
+					}
+				}
 	;
 
 function_declaration
@@ -119,7 +127,7 @@ function_declaration
 					if($ID == "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
-						yy.quads.push(["era", dir, null, null]);
+						// yy.quads.push(["era", dir, null, null]);
 					}
 				}
 	;
@@ -152,7 +160,7 @@ vars_params_declaration
 						type: $type
 					}
 					proc.vars.push(variable);
-					proc.params.push($type);
+					proc.params.push(variable);
 				}
 	| ',' type ID
 				{
@@ -164,7 +172,7 @@ vars_params_declaration
 						type: $type
 					}
 					proc.vars.push(variable);
-					proc.params.push($type);
+					proc.params.push(variable);
 				}
 	;
 
@@ -183,17 +191,18 @@ statute
 	| if_statute
 	| while_statute
 	| return_statute
+	| expression_statute
 	;
 
 assignment_statute
-	: ID '=' expression ';'
+	: ASSIGN ID '=' expression ';'
 				{
 					var var1 = ids.pop();
 					var var1t = types.pop();
 					var id = $ID;
 					var idt = findTypeId(yy, id);
 					if(var1t == idt || (var1t == "int" && idt == "float"))
-						var op = yy.quads.push([$2, findDir(yy, var1), null, findDir(yy, id)]);
+						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]);
 					else
 						alert("Error in semantics.");
 				}
@@ -256,10 +265,17 @@ else_block
 	;
 
 while_statute
-	: WHILE while_condition while_block
+	: while_declaration while_condition while_block
 				{
 					var jump = jumps.pop();
 					yy.quads[jump][3] = yy.quads.length;
+				}
+	;
+
+while_declaration
+	: WHILE
+				{
+					jumps.push(yy.quads.length);
 				}
 	;
 
@@ -279,6 +295,11 @@ while_condition
 
 while_block
 	: '{' block '}'
+				{
+					var jump = jumps.pop();
+					yy.quads.push(["goto",null,null,jumps.pop()]);
+					jumps.push(jump);
+				}
 	;
 
 return_statute
@@ -293,6 +314,10 @@ return_statute
 						alert("Error!");
 					}
 				}
+	;
+
+expression_statute
+	: expression ';'
 	;
 
 expression
@@ -454,9 +479,9 @@ params
 
 					if (tempProc.type != "void") {
 						var temp = createTemp(yy, tempProc.type);
-						yy.quads.push(["gosub",tempProc.dir,null,findDir(yy,temp)]);
+						yy.quads.push(["gosub",tempProc.init,null,findDir(yy,temp)]);
 					} else {
-						yy.quads.push(["gosub",tempProc.dir,null,null]);
+						yy.quads.push(["gosub",tempProc.init,null,null]);
 					}
 
 					ops.pop();
@@ -493,7 +518,7 @@ param_expression
 				{
 					var id = ids.pop();
 					var type = types.pop();
-					if(tempProc.params[paramTemp] == type || (tempProc.params[paramTemp] == "float" && type == "int") )
+					if(tempProc.params[paramTemp].type == type || (tempProc.params[paramTemp].type == "float" && type == "int") )
 						yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
 					else
 						alert("Error in param");
