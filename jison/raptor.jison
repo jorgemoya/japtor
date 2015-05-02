@@ -632,12 +632,12 @@ var paramTemp = 1;
 var tempProc = null;
 var expectingParams = false;
 
-var Raptor = function() {
-	var raptorLexer = function () {};
-	raptorLexer.prototype = parser.lexer;
+var Japtor = function() {
+	var japtorLexer = function () {};
+	japtorLexer.prototype = parser.lexer;
 
-	var raptorParser = function () {
-		this.lexer = new raptorLexer();
+	var japtorParser = function () {
+		this.lexer = new japtorLexer();
 		this.yy = {
 			procs: [],
 			quads: [],
@@ -651,8 +651,8 @@ var Raptor = function() {
 			// }
 		};
 	};
-	raptorParser.prototype = parser;
-	var newParser = new raptorParser();
+	japtorParser.prototype = parser;
+	var newParser = new japtorParser();
 	return newParser;
 };
 
@@ -1008,7 +1008,7 @@ function findDir(yy, id) {
 }
 
 if (typeof(window) !== 'undefined') {
-	window.Raptor = Raptor;
+	window.Japtor = Japtor;
 } else {
-	parser.Raptor = Raptor;
+	parser.Japtor = Japtor;
 }

@@ -30,21 +30,21 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="jison/raptor.js"></script>
+    <script src="jison/japtor.js"></script>
     <script src="js/vm.js"></script>
     <script>
-      // var test = raptorParser.parse("program test; var test2 float");
+      // var test = japtorParser.parse("program test; var test2 float");
       var parse = function() {
         var code = editor.getValue();
-        var raptorParser = Raptor();
-        var test = raptorParser.parse(code);
-        var procs = raptorParser.yy.procs;
-        var quads = raptorParser.yy.quads;
-        var consts = raptorParser.yy.consts;
+        var japtorParser = Japtor();
+        var test = japtorParser.parse(code);
+        var procs = japtorParser.yy.procs;
+        var quads = japtorParser.yy.quads;
+        var consts = japtorParser.yy.consts;
         for(var i = 0; i < quads.length; i++)
           console.log(i+": ["+quads[i][0]+","+quads[i][1]+","+quads[i][2]+","+quads[i][3]+"]");
         // alert(procs.length);
-        VM(raptorParser.yy);
+        VM(japtorParser.yy);
       }
     </script>
     <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
