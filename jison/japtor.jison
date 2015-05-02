@@ -102,7 +102,8 @@ functions
 				{
 					var main = findProc(yy, "main");
 					if (main === "undefined") {
-						alert("Error no main.");
+						throw new Error("No main declared. Please declare a void main function.");
+						return;
 					}
 				}
 	| EOF
@@ -206,7 +207,8 @@ assignment_statute
 					if (var1t === idt || (var1t === "int" && idt === "float")) {
 						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]);
 					} else {
-						alert("Error in semantics.");
+						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						return;
 					}
 				}
 	;
@@ -231,7 +233,8 @@ if_condition
 						yy.quads.push(["gotof", findDir(yy, id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
-						alert("Error!");
+						throw new Error("IF statements need a valid boolean condition.");
+						return;
 					}
 				}
 	;
@@ -291,7 +294,8 @@ while_condition
 						yy.quads.push(["gotof", findDir(yy,id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
-						alert("Error!");
+						throw new Error("WHILE statement needs a valid boolean condition.");
+						return;
 					}
 				}
 	;
@@ -336,7 +340,8 @@ expression
 					if (type !== "x") {
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					} else {
-						alert("Error in semantics.");
+						throw new Error("Type " + var1t + " and type " + var2t + " can't be logically compared.");
+						return;
 					}
 					yy.quads.push(op);
 				}
@@ -362,7 +367,8 @@ comparison
 					if (type !== "x") {
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					} else {
-						alert("Error in semantics.");
+						throw new Error("Type " + var1t + " and type " + var2t + " can't be compared.");
+						return;
 					}
 					yy.quads.push(op);
 				}
@@ -402,10 +408,12 @@ exp_validation
 						var var1t = types.pop();
 						var op = ops.pop();
 						var type = validateSem(op, var1t, var2t);
-						if(type !== "x")
+						if(type !== "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
-						else
-							alert("Error in semantics.");
+						} else {
+							throw new Error("Type " + var1t + " and type " + var2t + " can't be sumed/substracted compared.");
+							return;
+						}
 						yy.quads.push(op);
 					}
 				}
@@ -440,7 +448,8 @@ term_validation
 						if (type !== "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
-							alert("Error in semantics.");
+							throw new Error("Type " + var1t + " and type " + var2t + " can't be multiplied/divided compared.");
+							return;
 						}
 						yy.quads.push(op);
 					}
@@ -494,7 +503,8 @@ params
 	|
 				{
 					if (expectingParams) {
-						alert("Error expecting params");
+						throw new Error("Need paramters.");
+						return;
 					}
 				}
 	;
@@ -523,13 +533,15 @@ param_expression
 					var id = ids.pop();
 					var type = types.pop();
 					if (paramTemp + 1 > tempProc.numParams() || paramTemp + 1 < tempProc.numParams()) {
-						alert("Not the correct number of params");
+						throw new Error("Missing parameters for function.");
+						return;
 					}
 
 					if (tempProc.params[paramTemp].type === type || (tempProc.params[paramTemp].type === "float" && type === "int") ) {
 						yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
 					} else {
-						alert("Error in param");
+						throw new Error("Incorrect parameter types.");
+						return;
 					}
 					// ops.pop();
 				}
