@@ -14,6 +14,13 @@ function VM(yy) {
     var globalMem = new Mem(procs[0].dirs());
     mems.push(globalMem);
 
+    for (var i = 0; i < procs.length; i++) {
+        if ("main" === procs[i].name) {
+            var mainMem = new Mem(procs[i].dirs());
+            mems.push(mainMem);
+        }
+    }
+
     while (cont < quads.length) {
         switch (quads[cont][0]) {
             case 'goto':
