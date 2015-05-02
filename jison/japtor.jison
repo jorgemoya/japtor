@@ -592,8 +592,6 @@ var cv_f;
 var cv_st;
 var cv_bool;
 
-initDirs();
-
 var dataStructures = {
     stack : function() {
         var elements = [];
@@ -644,7 +642,7 @@ var expectingParams = false;
 var Japtor = function() {
 	var japtorLexer = function () {};
 	japtorLexer.prototype = parser.lexer;
-
+	initDirs();
 	var japtorParser = function () {
 		this.lexer = new japtorLexer();
 		this.yy = {
