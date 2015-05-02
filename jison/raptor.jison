@@ -1,46 +1,46 @@
 %lex
 
 %%
-\s+          						{/* ignore whitespace */;}
-"program"								{return 'PROGRAM';}
-"function"							{return 'FUNCTION';}
-// "-"?[0-9]*"."[0-9]+			{return 'F';}
-[0-9]*"."[0-9]+					{return 'F';}
-// "-"?[0-9]+							{return 'I';}
-[0-9]+									{return 'I';}
-"true"|"false"					{return 'B';}
-";"											{return ';';}
-":"											{return ':';}
-"{"											{return '{';}
-"}"											{return '}';}
-"("											{return '(';}
-")"											{return ')';}
-"<"											{return '<';}
-">"											{return '>';}
-"!"											{return '!';}
-"="											{return "=";}
-"+"											{return "+";}
-"-"											{return "-";}
-"*"											{return '*';}
-"/"											{return '/';}
-","											{return ',';}
-"&"											{return '&';}
-"|"											{return "|";}
-"var"										{return 'VAR';}
-"int"										{return 'INT';}
-"float"									{return 'FLOAT';}
-"string"								{return 'STRING';}
-"boolean"								{return 'BOOLEAN';}
-"void"									{return 'VOID';}
-"write"									{return 'WRITE';}
-"if"										{return 'IF';}
-"else"									{return 'ELSE';}
-"while"									{return 'WHILE';}
-"return"								{return 'RETURN';}
-"assign"								{return 'ASSIGN';}
+\s+						{/* ignore whitespace */;}
+"program"				{return 'PROGRAM';}
+"function"				{return 'FUNCTION';}
+// "-"?[0-9]*"."[0-9]+	{return 'F';}
+[0-9]*"."[0-9]+			{return 'F';}
+// "-"?[0-9]+			{return 'I';}
+[0-9]+					{return 'I';}
+"true"|"false"			{return 'B';}
+";"						{return ';';}
+":"						{return ':';}
+"{"						{return '{';}
+"}"						{return '}';}
+"("						{return '(';}
+")"						{return ')';}
+"<"						{return '<';}
+">"						{return '>';}
+"!"						{return '!';}
+"="						{return "=";}
+"+"						{return "+";}
+"-"						{return "-";}
+"*"						{return '*';}
+"/"						{return '/';}
+","						{return ',';}
+"&"						{return '&';}
+"|"						{return "|";}
+"var"					{return 'VAR';}
+"int"					{return 'INT';}
+"float"					{return 'FLOAT';}
+"string"				{return 'STRING';}
+"boolean"				{return 'BOOLEAN';}
+"void"					{return 'VOID';}
+"write"					{return 'WRITE';}
+"if"					{return 'IF';}
+"else"					{return 'ELSE';}
+"while"					{return 'WHILE';}
+"return"				{return 'RETURN';}
+"assign"				{return 'ASSIGN';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
-\"[^\"]*\"|\'[^\']*\		{return 'S';} // "
-<<EOF>>									{return 'EOF';}
+\"[^\"]*\"|\'[^\']*\	{return 'S';} // "
+<<EOF>>					{return 'EOF';}
 
 /lex
 
@@ -101,8 +101,9 @@ functions
 	: FUNCTION funct functions
 				{
 					var main = findProc(yy, "main");
-					if (main === "undefined")
+					if (main === "undefined") {
 						alert("Error no main.");
+					}
 				}
 	| EOF
 	;
@@ -110,7 +111,7 @@ functions
 funct
 	: function_declaration function_params function_block
 				{
-					if(scope.stackTop().id != "main") {
+					if (scope.stackTop().id != "main") {
 						yy.quads.push(["return", null, null, null]);
 					}
 				}
@@ -124,7 +125,7 @@ function_declaration
 					yy.procs.push(proc);
 					scope.push($ID);
 
-					if($ID == "main")	{
+					if ($ID == "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
 						// yy.quads.push(["era", dir, null, null]);
@@ -139,8 +140,9 @@ function_params
 function_block
 	:  '{' vars block '}'
 				{
-					if(scope.pop() == "main")
-					 	return null;
+					if (scope.pop() == "main") {
+						return null;
+					}
 				}
 	;
 
@@ -201,10 +203,11 @@ assignment_statute
 					var var1t = types.pop();
 					var id = $ID;
 					var idt = findTypeId(yy, id);
-					if(var1t == idt || (var1t == "int" && idt == "float"))
+					if (var1t == idt || (var1t == "int" && idt == "float")) {
 						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]);
-					else
+					} else {
 						alert("Error in semantics.");
+					}
 				}
 	;
 
@@ -224,7 +227,7 @@ if_condition
 				{
 					var type = types.pop();
 					var id = ids.pop();
-					if(type == "boolean") {
+					if (type == "boolean") {
 						yy.quads.push(["gotof", findDir(yy, id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
@@ -330,10 +333,11 @@ expression
 					var var1t = types.pop();
 					var op = ops.pop();
 					var type = validateSem(op, var1t, var2t);
-					if(type != "x")
+					if (type != "x") {
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
-					else
+					} else {
 						alert("Error in semantics.");
+					}
 					yy.quads.push(op);
 				}
 	;
@@ -355,10 +359,11 @@ comparison
 					var var1t = types.pop();
 					var op = ops.pop();
 					var type = validateSem(op, var1t, var2t);
-					if(type != "x")
+					if (type != "x") {
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
-					else
+					} else {
 						alert("Error in semantics.");
+					}
 					yy.quads.push(op);
 				}
 	;
@@ -432,10 +437,11 @@ term_validation
 						var var1t = types.pop();
 						var op = ops.pop();
 						var type = validateSem(op, var1t, var2t);
-						if(type != "x")
+						if (type != "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
-						else
-							alert("Error in semantics.");;
+						} else {
+							alert("Error in semantics.");
+						}
 						yy.quads.push(op);
 					}
 				}
@@ -459,7 +465,7 @@ id
 	: ID
 				{
 					var proc = findProc(yy, $ID);
-					if(proc !== "undefined") {
+					if (proc !== "undefined") {
 						ids.push($ID);
 						types.push(proc.type);
 						expectingParams = true;
@@ -515,13 +521,15 @@ param_expression
 				{
 					var id = ids.pop();
 					var type = types.pop();
-					if (paramTemp + 1 > tempProc.numParams() || paramTemp + 1 < tempProc.numParams())
+					if (paramTemp + 1 > tempProc.numParams() || paramTemp + 1 < tempProc.numParams()) {
 						alert("Not the correct number of params");
+					}
 
-					if(tempProc.params[paramTemp].type == type || (tempProc.params[paramTemp].type == "float" && type == "int") )
+					if (tempProc.params[paramTemp].type == type || (tempProc.params[paramTemp].type == "float" && type == "int") ) {
 						yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
-					else
+					} else {
 						alert("Error in param");
+					}
 					// ops.pop();
 				}
 	;
@@ -608,24 +616,24 @@ var scope = new dataStructures.stack();
 var jumps = new dataStructures.stack()
 
 var semanticCube = [
-											["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||", "!="],
-										 	["int",	"int", 	"int", 	"int", 	"int", 	"int", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
-											["float", "float", 	"float", 	"float", 	"float", 	"float", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x", "boolean"],
-											["string", "string", 	"string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["boolean", "boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"boolean", "boolean"],
-											["int", "float", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
-											["int", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["int", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["float", "int", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
-											["float", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["float", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["string", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["string", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["string", "boolean", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["boolean", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["boolean", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-											["boolean", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-										];
+["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||", "!="],
+["int",	"int", 	"int", 	"int", 	"int", 	"int", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
+["float", "float", 	"float", 	"float", 	"float", 	"float", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x", "boolean"],
+["string", "string", 	"string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["boolean", "boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"boolean", "boolean"],
+["int", "float", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
+["int", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["int", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["float", "int", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
+["float", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["float", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["string", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["string", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["string", "boolean", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["boolean", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["boolean", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+["boolean", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
+				  ];
 
 var temp = 1;
 var paramTemp = 1;
@@ -669,9 +677,9 @@ Proc.prototype = {
 	size : function() {
 		var int = 0; var float = 0; var string = 0; var boolean = 0;
 		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
-		for(var i = 0; i < this.vars.length; i++) {
-			if(this.vars[i].id.indexOf("tmp__") > -1) {
-				switch(this.vars[i].type) {
+		for (var i = 0; i < this.vars.length; i++) {
+			if (this.vars[i].id.indexOf("tmp__") > -1) {
+				switch (this.vars[i].type) {
 					case 'int':
 						int_t++;
 						break;
@@ -686,7 +694,7 @@ Proc.prototype = {
 						break;
 				}
 			} else {
-				switch(this.vars[i].type) {
+				switch (this.vars[i].type) {
 					case 'int':
 						int++;
 						break;
@@ -708,9 +716,9 @@ Proc.prototype = {
 	dirs : function() {
 		var int = 0; var float = 0; var string = 0; var boolean = 0;
 		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
-		for(var i = 0; i < this.vars.length; i++) {
-			if(this.vars[i].id.indexOf("tmp__") > -1) {
-				switch(this.vars[i].type) {
+		for (var i = 0; i < this.vars.length; i++) {
+			if (this.vars[i].id.indexOf("tmp__") > -1) {
+				switch (this.vars[i].type) {
 					case 'int':
 						if(int_t == 0)
 							int_t = this.vars[i].dir;
@@ -729,7 +737,7 @@ Proc.prototype = {
 						break;
 				}
 			} else {
-				switch(this.vars[i].type) {
+				switch (this.vars[i].type) {
 					case 'int':
 						if(int == 0)
 							int = this.vars[i].dir;
@@ -757,10 +765,11 @@ Proc.prototype = {
 }
 
 function dirProc() {
-	if(dirProcs < 5000)
+	if (dirProcs < 5000) {
 		return dirProcs++;
-	else
+	} else {
 		alert("Out of memory.");
+	}
 }
 
 function assignMemory(type, tmp, cons) {
@@ -771,7 +780,7 @@ function assignMemory(type, tmp, cons) {
 	}
 
 	if (tmp) {
-		switch(type) {
+		switch (type) {
 			case 'int':
 				if (tv_i < 21000) {
 					return tv_i++;
@@ -802,7 +811,7 @@ function assignMemory(type, tmp, cons) {
 				break;
 		}
 	} else if (cons) {
-		switch(type) {
+		switch (type) {
 			case 'int':
 				if (cv_i < 28000) {
 					return cv_i++;
@@ -833,8 +842,8 @@ function assignMemory(type, tmp, cons) {
 				break;
 		}
 	} else {
-		if(isGlobal) {
-			switch(type) {
+		if (isGlobal) {
+			switch (type) {
 				case 'int':
 					if (gv_i < 7000) {
 						return gv_i++;
@@ -865,7 +874,7 @@ function assignMemory(type, tmp, cons) {
 					break;
 			}
 		} else {
-			switch(type) {
+			switch (type) {
 				case 'int':
 					if (lv_i < 14000) {
 						return lv_i++;
@@ -925,9 +934,9 @@ function initDirs() {
 
 function validateSem(op, var1, var2) {
 		for (var i = 0; i < semanticCube.length; i++) {
-			if(semanticCube[i][0] == var1 && semanticCube[i][1] == var2) {
+			if (semanticCube[i][0] == var1 && semanticCube[i][1] == var2) {
 				for (var j = 0; j < semanticCube[0].length; j++) {
-					if(semanticCube[0][j] == op)
+					if (semanticCube[0][j] == op)
 						return semanticCube[i][j];
 				}
 			}
@@ -935,32 +944,30 @@ function validateSem(op, var1, var2) {
 }
 
 function findTypeId(yy, id) {
-	// for(var i = 0; i < yy.procs.length; i++) {
-	// 	if(id == yy.procs[i].name) {
-	// 		yy.quads.push(["era", id,null,null]);
-	// 		return yy.procs[i].type;
-	// 	}
-	// }
-
 	var currentScope = scope.stackTop();
 	var proc = findProc(yy, currentScope);
 
-	for(var i = 0; i < proc.vars.length; i++)
-		if(proc.vars[i].id == id)
+	for (var i = 0; i < proc.vars.length; i++) {
+		if (proc.vars[i].id == id) {
 			return proc.vars[i].type;
+		}
+	}
 
 	proc = findProc(yy, "global");
-	for(var i = 0; i < proc.vars.length; i++)
-		if(proc.vars[i].id == id)
+	for(var i = 0; i < proc.vars.length; i++) {
+		if(proc.vars[i].id == id) {
 			return proc.vars[i].type;
+		}
+	}
 
 	alert("ID not declared.");
 }
 
 function findProc(yy, name) {
 	for (var i = 0; i < yy.procs.length; i++) {
-		if (yy.procs[i].name == name)
+		if (yy.procs[i].name == name) {
 			return yy.procs[i];
+		}
 	}
 
 	return "undefined";
@@ -990,18 +997,24 @@ function findDir(yy, id) {
 	var currentScope = scope.stackTop();
 	var proc = findProc(yy, currentScope);
 
-	for(var i = 0; i < proc.vars.length; i++)
-		if(proc.vars[i].id == id)
+	for (var i = 0; i < proc.vars.length; i++) {
+		if (proc.vars[i].id == id) {
 			return proc.vars[i].dir;
+		}
+	}
 
 	proc = findProc(yy, "global");
-	for(var i = 0; i < proc.vars.length; i++)
-		if(proc.vars[i].id == id)
+	for (var i = 0; i < proc.vars.length; i++) {
+		if (proc.vars[i].id == id) {
 			return proc.vars[i].dir;
+		}
+	}
 
-	for(var i = 0; i < yy.consts.length; i++)
-		if(yy.consts[i][0] == id)
+	for (var i = 0; i < yy.consts.length; i++) {
+		if(yy.consts[i][0] == id) {
 			return yy.consts[i][1];
+		}
+	}
 
 	alert("ID not declared.");
 	return "undefined";
