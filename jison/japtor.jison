@@ -111,7 +111,7 @@ functions
 funct
 	: function_declaration function_params function_block
 				{
-					if (scope.stackTop().id != "main") {
+					if (scope.stackTop().id !== "main") {
 						yy.quads.push(["return", null, null, null]);
 					}
 				}
@@ -125,7 +125,7 @@ function_declaration
 					yy.procs.push(proc);
 					scope.push($ID);
 
-					if ($ID == "main")	{
+					if ($ID === "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
 						// yy.quads.push(["era", dir, null, null]);
@@ -140,7 +140,7 @@ function_params
 function_block
 	:  '{' vars block '}'
 				{
-					if (scope.pop() == "main") {
+					if (scope.pop() === "main") {
 						return null;
 					}
 				}
@@ -203,7 +203,7 @@ assignment_statute
 					var var1t = types.pop();
 					var id = $ID;
 					var idt = findTypeId(yy, id);
-					if (var1t == idt || (var1t == "int" && idt == "float")) {
+					if (var1t === idt || (var1t === "int" && idt === "float")) {
 						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]);
 					} else {
 						alert("Error in semantics.");
@@ -227,7 +227,7 @@ if_condition
 				{
 					var type = types.pop();
 					var id = ids.pop();
-					if (type == "boolean") {
+					if (type === "boolean") {
 						yy.quads.push(["gotof", findDir(yy, id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
@@ -287,7 +287,7 @@ while_condition
 				{
 					var type = types.pop();
 					var id = ids.pop();
-					if(type == "boolean") {
+					if(type === "boolean") {
 						yy.quads.push(["gotof", findDir(yy,id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
@@ -311,7 +311,7 @@ return_statute
 					proc = findProc(yy, scope.stackTop());
 					var id = ids.pop();
 					var type = types.pop();
-					if (proc.type != "void" && proc.type == type)	{
+					if (proc.type !== "void" && proc.type === type)	{
 						yy.quads.push(["return", null, null, findDir(yy,id)]);
 					} else {
 						alert("Error!");
@@ -333,7 +333,7 @@ expression
 					var var1t = types.pop();
 					var op = ops.pop();
 					var type = validateSem(op, var1t, var2t);
-					if (type != "x") {
+					if (type !== "x") {
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					} else {
 						alert("Error in semantics.");
@@ -359,7 +359,7 @@ comparison
 					var var1t = types.pop();
 					var op = ops.pop();
 					var type = validateSem(op, var1t, var2t);
-					if (type != "x") {
+					if (type !== "x") {
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					} else {
 						alert("Error in semantics.");
@@ -395,14 +395,14 @@ exp_exit
 exp_validation
 	:
 				{
-					if (ops.stackTop() == "+" || ops.stackTop() == "-") {
+					if (ops.stackTop() === "+" || ops.stackTop() === "-") {
 						var var2 = ids.pop();
 						var var2t = types.pop();
 						var var1 = ids.pop();
 						var var1t = types.pop();
 						var op = ops.pop();
 						var type = validateSem(op, var1t, var2t);
-						if(type != "x")
+						if(type !== "x")
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						else
 							alert("Error in semantics.");
@@ -430,14 +430,14 @@ term_exit
 term_validation
 	:
 				{
-					if (ops.stackTop() == "*" || ops.stackTop() == "/") {
+					if (ops.stackTop() === "*" || ops.stackTop() === "/") {
 						var var2 = ids.pop();
 						var var2t = types.pop();
 						var var1 = ids.pop();
 						var var1t = types.pop();
 						var op = ops.pop();
 						var type = validateSem(op, var1t, var2t);
-						if (type != "x") {
+						if (type !== "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
 							alert("Error in semantics.");
@@ -480,7 +480,7 @@ id
 params
 	: "(" find_proc params_input ")"
 				{
-					if (tempProc.type != "void") {
+					if (tempProc.type !== "void") {
 						var temp = createTemp(yy, tempProc.type);
 						yy.quads.push(["gosub",tempProc.init,null,findDir(yy,temp)]);
 					} else {
@@ -526,7 +526,7 @@ param_expression
 						alert("Not the correct number of params");
 					}
 
-					if (tempProc.params[paramTemp].type == type || (tempProc.params[paramTemp].type == "float" && type == "int") ) {
+					if (tempProc.params[paramTemp].type === type || (tempProc.params[paramTemp].type === "float" && type === "int") ) {
 						yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
 					} else {
 						alert("Error in param");
@@ -720,38 +720,38 @@ Proc.prototype = {
 			if (this.vars[i].id.indexOf("tmp__") > -1) {
 				switch (this.vars[i].type) {
 					case 'int':
-						if(int_t == 0)
+						if(int_t === 0)
 							int_t = this.vars[i].dir;
 						break;
 					case 'float':
-						if(float_t == 0)
+						if(float_t === 0)
 							float_t = this.vars[i].dir;
 						break;
 					case 'string':
-						if(string_t == 0)
+						if(string_t === 0)
 							string_t = this.vars[i].dir;
 						break;
 					case 'boolean':
-						if(boolean_t == 0)
+						if(boolean_t === 0)
 							boolean_t = this.vars[i].dir;
 						break;
 				}
 			} else {
 				switch (this.vars[i].type) {
 					case 'int':
-						if(int == 0)
+						if(int === 0)
 							int = this.vars[i].dir;
 						break;
 					case 'float':
-						if(float == 0)
+						if(float === 0)
 							float = this.vars[i].dir;
 						break;
 					case 'string':
-						if(string == 0)
+						if(string === 0)
 							string = this.vars[i].dir;
 						break;
 					case 'boolean':
-						if(boolean == 0)
+						if(boolean === 0)
 							boolean = this.vars[i].dir;
 						break;
 				}
@@ -775,7 +775,7 @@ function dirProc() {
 function assignMemory(type, tmp, cons) {
 
 	var isGlobal = false;
-	if (scope.stackTop() == "global") {
+	if (scope.stackTop() === "global") {
 		isGlobal = true;
 	}
 
@@ -934,9 +934,9 @@ function initDirs() {
 
 function validateSem(op, var1, var2) {
 		for (var i = 0; i < semanticCube.length; i++) {
-			if (semanticCube[i][0] == var1 && semanticCube[i][1] == var2) {
+			if (semanticCube[i][0] === var1 && semanticCube[i][1] === var2) {
 				for (var j = 0; j < semanticCube[0].length; j++) {
-					if (semanticCube[0][j] == op)
+					if (semanticCube[0][j] === op)
 						return semanticCube[i][j];
 				}
 			}
@@ -948,14 +948,14 @@ function findTypeId(yy, id) {
 	var proc = findProc(yy, currentScope);
 
 	for (var i = 0; i < proc.vars.length; i++) {
-		if (proc.vars[i].id == id) {
+		if (proc.vars[i].id === id) {
 			return proc.vars[i].type;
 		}
 	}
 
 	proc = findProc(yy, "global");
 	for(var i = 0; i < proc.vars.length; i++) {
-		if(proc.vars[i].id == id) {
+		if(proc.vars[i].id === id) {
 			return proc.vars[i].type;
 		}
 	}
@@ -965,7 +965,7 @@ function findTypeId(yy, id) {
 
 function findProc(yy, name) {
 	for (var i = 0; i < yy.procs.length; i++) {
-		if (yy.procs[i].name == name) {
+		if (yy.procs[i].name === name) {
 			return yy.procs[i];
 		}
 	}
@@ -998,20 +998,20 @@ function findDir(yy, id) {
 	var proc = findProc(yy, currentScope);
 
 	for (var i = 0; i < proc.vars.length; i++) {
-		if (proc.vars[i].id == id) {
+		if (proc.vars[i].id === id) {
 			return proc.vars[i].dir;
 		}
 	}
 
 	proc = findProc(yy, "global");
 	for (var i = 0; i < proc.vars.length; i++) {
-		if (proc.vars[i].id == id) {
+		if (proc.vars[i].id === id) {
 			return proc.vars[i].dir;
 		}
 	}
 
 	for (var i = 0; i < yy.consts.length; i++) {
-		if(yy.consts[i][0] == id) {
+		if(yy.consts[i][0] === id) {
 			return yy.consts[i][1];
 		}
 	}
