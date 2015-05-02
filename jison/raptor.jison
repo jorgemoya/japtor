@@ -616,24 +616,24 @@ var scope = new dataStructures.stack();
 var jumps = new dataStructures.stack()
 
 var semanticCube = [
-["v",	"v",	"+",	"-",	"/",	"*",	"==",	"<",	"<=",	">",	">=",	"&&",	"||", "!="],
-["int",	"int", 	"int", 	"int", 	"int", 	"int", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
-["float", "float", 	"float", 	"float", 	"float", 	"float", 	"b", 	"b", 	"b", 	"b", 	"b", 	"x", 	"x", "boolean"],
-["string", "string", 	"string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["boolean", "boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"boolean", 	"boolean", "boolean"],
-["int", "float", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
-["int", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["int", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["float", "int", 	"float", 	"float", 	"float", 	"float", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"boolean", 	"x", 	"x", "boolean"],
-["float", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["float", "boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["string", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["string", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["string", "boolean", 	"boolean", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["boolean", "int", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["boolean", "float", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-["boolean", "string", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", 	"x", "x"],
-				  ];
+	["v","v","+","-","/","*","==","<","<=",">",">=","&&","||","!="],
+	["int","int","int","int","int","int","boolean","boolean","boolean","boolean","boolean","x","x","boolean"],
+	["float","float","float","float","float","float","b","b","b","b","b","x","x","boolean"],
+	["string","string","string","x","x","x","x","x","x","x","x","x","x","x"],
+	["boolean","boolean","x","x","x","x","boolean","x","x","x","x","boolean","boolean","boolean"],
+	["int","float","float","float","float","float","boolean","boolean","boolean","boolean","boolean","x","x","boolean"],
+	["int","string","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["int","boolean","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["float","int","float","float","float","float","boolean","boolean","boolean","boolean","boolean","x","x","boolean"],
+	["float","string","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["float","boolean","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["string","int","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["string","float","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["string","boolean","boolean","x","x","x","x","x","x","x","x","x","x","x"],
+	["boolean","int","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["boolean","float","x","x","x","x","x","x","x","x","x","x","x","x"],
+	["boolean","string","x","x","x","x","x","x","x","x","x","x","x","x"]
+];
 
 var temp = 1;
 var paramTemp = 1;
