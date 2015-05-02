@@ -1,46 +1,46 @@
 %lex
 
 %%
-\s+						{/* ignore whitespace */;}
-"program"				{return 'PROGRAM';}
-"function"				{return 'FUNCTION';}
-// "-"?[0-9]*"."[0-9]+	{return 'F';}
-[0-9]*"."[0-9]+			{return 'F';}
-// "-"?[0-9]+			{return 'I';}
-[0-9]+					{return 'I';}
-"true"|"false"			{return 'B';}
-";"						{return ';';}
-":"						{return ':';}
-"{"						{return '{';}
-"}"						{return '}';}
-"("						{return '(';}
-")"						{return ')';}
-"<"						{return '<';}
-">"						{return '>';}
-"!"						{return '!';}
-"="						{return "=";}
-"+"						{return "+";}
-"-"						{return "-";}
-"*"						{return '*';}
-"/"						{return '/';}
-","						{return ',';}
-"&"						{return '&';}
-"|"						{return "|";}
-"var"					{return 'VAR';}
-"int"					{return 'INT';}
-"float"					{return 'FLOAT';}
-"string"				{return 'STRING';}
-"boolean"				{return 'BOOLEAN';}
-"void"					{return 'VOID';}
-"write"					{return 'WRITE';}
-"if"					{return 'IF';}
-"else"					{return 'ELSE';}
-"while"					{return 'WHILE';}
-"return"				{return 'RETURN';}
-"assign"				{return 'ASSIGN';}
+\s+								{/* ignore whitespace */;}
+"program"						{return 'PROGRAM';}
+"function"						{return 'FUNCTION';}
+// "-"?[0-9]*"."[0-9]+			{return 'F';}
+[0-9]*"."[0-9]+					{return 'F';}
+// "-"?[0-9]+					{return 'I';}
+[0-9]+							{return 'I';}
+"true"|"false"					{return 'B';}
+";"								{return ';';}
+":"								{return ':';}
+"{"								{return '{';}
+"}"								{return '}';}
+"("								{return '(';}
+")"								{return ')';}
+"<"								{return '<';}
+">"								{return '>';}
+"!"								{return '!';}
+"="								{return "=";}
+"+"								{return "+";}
+"-"								{return "-";}
+"*"								{return '*';}
+"/"								{return '/';}
+","								{return ',';}
+"&"								{return '&';}
+"|"								{return "|";}
+"var"							{return 'VAR';}
+"int"							{return 'INT';}
+"float"							{return 'FLOAT';}
+"string"						{return 'STRING';}
+"boolean"						{return 'BOOLEAN';}
+"void"							{return 'VOID';}
+"write"							{return 'WRITE';}
+"if"							{return 'IF';}
+"else"							{return 'ELSE';}
+"while"							{return 'WHILE';}
+"return"						{return 'RETURN';}
+"assign"						{return 'ASSIGN';}
 ([a-zA-Z][a-zA-Z0-9]*)(-|_)*([a-zA-Z][a-zA-Z0-9]*)*	{return 'ID';}
-\"[^\"]*\"|\'[^\']*\	{return 'S';} // "
-<<EOF>>					{return 'EOF';}
+\"[^\"]*\"|\'[^\']*\			{return 'S';} // "
+<<EOF>>							{return 'EOF';}
 
 /lex
 
@@ -242,7 +242,7 @@ if_block
 
 else_statute
 	: else_declaration else_block
- 	|
+	|
 				{
 					var jump = jumps.pop();
 					yy.quads[jump][3] = yy.quads.length;
@@ -493,8 +493,9 @@ params
 				}
 	|
 				{
-					if(expectingParams)
+					if (expectingParams) {
 						alert("Error expecting params");
+					}
 				}
 	;
 
@@ -710,7 +711,6 @@ Proc.prototype = {
 				}
 			}
 		}
-
 		return [int, float, string, boolean, int_t, float_t, string_t, boolean_t];
 	},
 	dirs : function() {
