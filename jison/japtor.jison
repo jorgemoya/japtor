@@ -216,12 +216,12 @@ statute
 	;
 
 assignment_statute
-	: ASSIGN ID '=' expression ';'
+	: assignment_declaration assignment_array '=' expression ';'
 				{
 					var var1 = ids.pop();
 					var var1t = types.pop();
-					var id = $ID;
-					var idt = findTypeId(yy, id);
+					var id = ids.pop();
+					var idt = types.pop();
 					if (var1t === idt || (var1t === "int" && idt === "float")) {
 						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]);
 					} else {
@@ -229,6 +229,19 @@ assignment_statute
 						return;
 					}
 				}
+	;
+
+assignment_declaration
+	: ASSIGN ID
+				{
+					ids.push($ID);
+					types.push(findTypeId(yy, $ID));
+				}
+	;
+
+assignment_array
+	: array
+	|
 	;
 
 write_statute
@@ -571,8 +584,27 @@ param_expression
 	;
 
 array
-	: "[" expression "]"
-	| "[" expression "]""[" expression "]"
+	: "[" add_closure expression "]"
+				{
+					var id = ids.pop(); //result of exp
+					var type = types.pop();
+					var id_array = ids.pop();
+					var type_array = types.pop();
+
+					var dims = findDim(yy, id_array);
+					if (dims.length == 2 || dims.length == 0) {
+						throw new Error("Incorrect array dimension.")
+					}
+
+					if (type != "int") {
+						throw new Error("Array pointers only handle type int.");
+					}
+
+					yy.quads.push(["verify", findDir(yy, id), 0, dims[0]-1]);
+					yy.quads.push(["++", findDir(yy, id_array), findDir(yy, id), "(" + findDir(yy, createTemp(yy, type_array)) + ")"]);
+					ops.pop();
+				}
+	// | "[" expression "]""[" expression "]"
 	;
 
 add_closure
@@ -1081,6 +1113,24 @@ function findDir(yy, id) {
 
 	alert("ID not declared.");
 	return "undefined";
+}
+
+function findDim(yy, id) {
+	var currentScope = scope.stackTop();
+	var proc = findProc(yy, currentScope);
+
+	for (var i = 0; i < proc.vars.length; i++) {
+		if (proc.vars[i].id === id) {
+			return proc.vars[i].dim;
+		}
+	}
+
+	proc = findProc(yy, "global");
+	for (var i = 0; i < proc.vars.length; i++) {
+		if (proc.vars[i].id === id) {
+			return proc.vars[i].dim;
+		}
+	}
 }
 
 if (typeof(window) !== 'undefined') {

@@ -101,10 +101,29 @@ function VM(yy) {
                 cont++;
                 break;
 
+            case 'verify':
+                var value = findValue(quads[cont][1], false);
+                var lower = quads[cont][2];
+                var upper = quads[cont][3];
+                if (value < lower || value > upper) {
+                    throw new Error("Limits in array are out of bounds.");
+                }
+                cont++;
+                break;
+
             case '=':
                 var value_dir = quads[cont][1];
                 var dir = quads[cont][3];
                 insertValue(dir, findValue(value_dir));
+                cont++;
+                break;
+
+            case '++':
+                var value1 = quads[cont][1];
+                var value2 = findValue(quads[cont][2], false);
+                var dir = parseInt(quads[cont][3].replace(/[()]/g, ''));
+                // insertValue(dir, value1 + value2);
+                mems[mems.length-1].pointers.push([dir, value1 + value2]);
                 cont++;
                 break;
 
@@ -202,6 +221,7 @@ function VM(yy) {
         this.string_t = [];
         this.boolean_t = [];
         this.startDirs = startDirs;
+        this.pointers = [];
     }
 
     function findScope(value) {
@@ -262,6 +282,12 @@ function VM(yy) {
         var dir_scope = findScope(dir);
         var dir_type = findType(dir, dir_scope);
 
+        for (var i = 0; i < mems[mems.length-1].pointers.length; i++) {
+            if (dir == mems[mems.length-1].pointers[i][0]) {
+                return findValue(mems[mems.length-1].pointers[i][1]);
+            }
+        }
+
         if (dir_scope === "constant") {
             for (var i = 0; i < consts.length; i++) {
                 if (consts[i][1] === dir) {
@@ -309,6 +335,13 @@ function VM(yy) {
     function insertValue(dir, value) {
         var dir_scope = findScope(dir);
         var dir_type = findType(dir, dir_scope);
+
+        for (var i = 0; i < mems[mems.length-1].pointers.length; i++) {
+            if (dir == mems[mems.length-1].pointers[i][0]) {
+                insertValue(mems[mems.length-1].pointers[i][1], value);
+                return;
+            }
+        }
 
         if (dir_scope === "local") {
             if (dir_type === "int")
