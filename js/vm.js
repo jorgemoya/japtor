@@ -346,7 +346,7 @@ function VM(yy) {
             else if (dir_type === "string")
                 return mems[mems.length-1].string[dir - mems[mems.length-1].startDirs[2]];
             else if (dir_type === "boolean")
-                return mems[mems.length-1].boolean[mems[dir - mems.length-1].startDirs[3]];
+                return mems[mems.length-1].boolean[dir - mems[mems.length-1].startDirs[3]];
         }
 
         if (dir_scope === "temporal") {

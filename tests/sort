@@ -1,0 +1,44 @@
+program sort;
+function void sort(int array[10]) {
+    var int x;
+    var int j;
+    var boolean flag;
+    var int temp;
+    assign flag = true;
+    assign j = 0;
+
+    while (flag == true) {
+        assign flag = false;
+        while (j < 10 - 1) {
+            if (array[j] > array[j+1]) {
+                assign temp = array[j];
+                assign array[j] = array[j+1];
+                assign array[j+1] = temp;
+                assign flag = true;
+            }
+            assign j = j + 1;
+        }
+        assign j = 0;
+    }
+
+    assign x = 0;
+    while (x < 10) {
+        write(array[x]);
+        assign x = x + 1;
+    }
+}
+function void main() {
+    var int array[10];
+    assign array[0] = 43;
+    assign array[1] = 32;
+    assign array[2] = 4;
+    assign array[3] = 60;
+    assign array[4] = 10;
+    assign array[5] = 23;
+    assign array[6] = 24;
+    assign array[7] = 2;
+    assign array[8] = 13;
+    assign array[9] = 51;
+
+    sort(array);
+}
