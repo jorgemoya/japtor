@@ -15,6 +15,8 @@
 "}"								{return '}';}
 "("								{return '(';}
 ")"								{return ')';}
+"["								{return '[';}
+"]"								{return ']';}
 "<"								{return '<';}
 ">"								{return '>';}
 "!"								{return '!';}
@@ -76,17 +78,33 @@ vars
 	;
 
 var_declaration
-	: type ID
+	: type ID var_array
 				{
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false, false),
+						dir: assignMemory($type, false, false, $var_array),
 						id: $ID,
-						type: $type
+						type: $type,
+						dim: $var_array
 					}
 					proc.vars.push(variable);
 				}
+	;
+
+var_array
+	: "[" I "]"
+			{
+				$$ = [$I];
+			}
+	| "[" I "]" "[" I "]"
+			{
+				$$ = [$2,$5];
+			}
+	|
+			{
+				$$ = [];
+			}
 	;
 
 type
@@ -158,7 +176,7 @@ vars_params_declaration
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false, false),
+						dir: assignMemory($type, false, false, []),
 						id: $ID,
 						type: $type
 					}
@@ -170,7 +188,7 @@ vars_params_declaration
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false, false),
+						dir: assignMemory($type, false, false, []),
 						id: $ID,
 						type: $type
 					}
@@ -465,7 +483,7 @@ mult_or_divi
 
 factor
 	: constant
-	| id params
+	| id options
 	| "(" add_closure expression")"
 				{ops.pop();}
 	;
@@ -486,6 +504,18 @@ id
 				}
 	;
 
+options
+	: params
+	| array
+	|
+				{
+					if (expectingParams) {
+						throw new Error("Need paramters.");
+						return;
+					}
+				}
+	;
+
 params
 	: "(" find_proc params_input ")"
 				{
@@ -499,13 +529,6 @@ params
 					ops.pop();
 					tempProc = null;
 					expectingParams = false;
-				}
-	|
-				{
-					if (expectingParams) {
-						throw new Error("Need paramters.");
-						return;
-					}
 				}
 	;
 
@@ -547,6 +570,11 @@ param_expression
 				}
 	;
 
+array
+	: "[" I "]"
+	| "[" I "]""[" I "]"
+	;
+
 add_closure
 	:
 				{ops.push("|");}
@@ -556,25 +584,25 @@ add_closure
 constant
 	: I
 				{
-					yy.consts.push([parseInt($I), assignMemory("int", false, true)]);
+					yy.consts.push([parseInt($I), assignMemory("int", false, true, [])]);
 					types.push("int");
 					ids.push(parseInt($I));
 				}
 	| F
 				{
-					yy.consts.push([parseFloat($F), assignMemory("float", false, true)]);
+					yy.consts.push([parseFloat($F), assignMemory("float", false, true, [])]);
 					types.push("float");
 					ids.push(parseFloat($F));
 				}
 	| B
 				{
-					yy.consts.push([$B, assignMemory("boolean", false, true)]);
+					yy.consts.push([$B, assignMemory("boolean", false, true, [])]);
 					types.push("boolean");
 					ids.push($B);
 				}
 	| S
 				{
-					yy.consts.push([$S, assignMemory("string", false, true)]);
+					yy.consts.push([$S, assignMemory("string", false, true, [])]);
 					types.push("string");
 					ids.push($S);
 				}
@@ -782,11 +810,20 @@ function dirProc() {
 	}
 }
 
-function assignMemory(type, tmp, cons) {
+function assignMemory(type, tmp, cons, dim) {
+
+	var pointer = 1;
+	var temp = null;
 
 	var isGlobal = false;
 	if (scope.stackTop() === "global") {
 		isGlobal = true;
+	}
+
+	if (dim.length == 2) {
+		pointer = parseInt(dim[0]) * parseInt(dim[1]);
+	} else if (dim.length == 1) {
+		pointer = parseInt(dim[0]);
 	}
 
 	if (tmp) {
@@ -856,28 +893,36 @@ function assignMemory(type, tmp, cons) {
 			switch (type) {
 				case 'int':
 					if (gv_i < 7000) {
-						return gv_i++;
+						temp = gv_i;
+						gv_i = gv_i + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
 					break;
 				case 'float':
 					if (gv_f < 9000) {
-						return gv_f++;
+						temp = gv_f;
+						gv_f = gv_f + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
 					break;
 				case 'string':
 					if (gv_st < 11000) {
-						return gv_st++;
+						temp = gv_st;
+						gv_st = gv_st + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
 					break;
 				case 'boolean':
 					if (gv_bool < 12000) {
-						return gv_bool++;
+						temp = gv_bool;
+						gv_bool = gv_bool + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
@@ -887,28 +932,36 @@ function assignMemory(type, tmp, cons) {
 			switch (type) {
 				case 'int':
 					if (lv_i < 14000) {
-						return lv_i++;
+						temp = lv_i;
+						lv_i = lv_i + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
 					break;
 				case 'float':
 					if (lv_f < 16000) {
-						return lv_f++;
+						temp = lv_f;
+						lv_f = lv_f + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
 					break;
 				case 'string':
 					if (lv_st < 18000) {
-						return lv_st++;
+						temp = lv_st;
+						lv_st = lv_st + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
 					break;
 				case 'boolean':
 					if (lv_bool < 19000) {
-						return lv_bool++;
+						temp = lv_bool;
+						lv_bool = lv_bool + pointer;
+						return temp;
 					} else {
 						alert("Out of memory!");
 					}
@@ -988,7 +1041,7 @@ function createTemp(yy, type) {
 	var proc = findProc(yy, currentScope);
 
 	var tmp = {
-		dir: assignMemory(type, true, false),
+		dir: assignMemory(type, true, false, []),
 		id: "tmp__"+temp,
 		type: type
 	}
