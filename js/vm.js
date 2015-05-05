@@ -10,6 +10,7 @@ function VM(yy) {
     var expectsReturn = [];
     var returns = [];
     var returnedValue = [];
+    var result = ""
 
     var globalMem = new Mem(procs[0].dirs());
     mems.push(globalMem);
@@ -79,14 +80,16 @@ function VM(yy) {
                     if (dir !== false) {
                         insertValue(dir, value);
                     } else {
-                    alert("Error returned value wasn't expecting.");
+                        throw new Error("Expecting a return value.");
+                        return;
                     }
                 } else {
                     mems.pop();
                     cont = returns.pop();
                     dir = expectsReturn.pop();
                     if (dir !== false) {
-                        alert("Error expecting return value.")
+                        throw new Error("Expecting a return value.");
+                        return;
                     }
                 }
                 break;
@@ -94,6 +97,7 @@ function VM(yy) {
             case 'write':
                 var value_dir = quads[cont][3];
                 console.log(findValue(value_dir));
+                result += findValue(value_dir) + "\n";
                 cont++;
                 break;
 
@@ -186,6 +190,8 @@ function VM(yy) {
         }
     }
 
+    return result;
+
     function Mem(startDirs) {
         this.int = [];
         this.float = [];
@@ -208,7 +214,7 @@ function VM(yy) {
         } else if (value >= 26000 && value < 33000) {
             return "constant";
         }
-        return "noscope";
+        throw new Error("No scope for " + value);
     }
 
     function findType(value, scope) {
@@ -249,7 +255,7 @@ function VM(yy) {
             else if (value < 33000)
                 return "boolean";
         }
-        return "notype";
+        throw new Error("No type for " + value);
     }
 
     function findValue(dir) {
@@ -296,6 +302,8 @@ function VM(yy) {
             else if (dir_type === "boolean")
                 return mems[0].boolean[mems[0].startDirs[3]-dir];
         }
+
+        throw new Error("Value not found for dir " + dir);
     }
 
     function insertValue(dir, value) {

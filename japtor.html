@@ -1,58 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Japtor</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-    <nav class="navbar navbar-inverse navbar-static-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Japtor</a>
-            <button type="submit" class="btn btn-primary run-code pull-right" onClick="parse();">Run Code</button>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Japtor</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Japtor</a>
+                    <button type="submit" class="btn btn-primary run-code pull-right" onClick="parse();">Run Code</button>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid content">
+            <div class="row box">
+                <section class="message collapse col-xs-12">
+                    <h5>wasdwasds</h5>
+                </section>
+                <section class="col-xs-12 editor-container no-padding">
+                    <div id="editor"></div>
+                </section>
+            </div>
         </div>
-      </div>
-    </nav>
-    <div class="container-fluid content">
-      <div class="row box">
-        <section class="col-xs-12 editor-container no-padding">
-          <div id="editor"></div>
-        </section>
-      </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="jison/japtor.js"></script>
-    <script src="js/vm.js"></script>
-    <script>
-      // var test = japtorParser.parse("program test; var test2 float");
-      var parse = function() {
-        var code = editor.getValue();
-        var japtorParser = Japtor();
-        try {
-            $(".message").text("");
-            japtorParser.parse(code);
-            var procs = japtorParser.yy.procs;
-            var quads = japtorParser.yy.quads;
-            var consts = japtorParser.yy.consts;
-            for(var i = 0; i < quads.length; i++)
-              console.log(i+": ["+quads[i][0]+","+quads[i][1]+","+quads[i][2]+","+quads[i][3]+"]");
-            VM(japtorParser.yy);
-        } catch (error) {
-            console.log(error);
-            $(".message").text(error.message);
-        }
-      }
-    </script>
-    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script>
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/github");
-        // editor.getSession().setMode("ace/mode/javascript");
-    </script>
-  </body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="jison/japtor.js"></script>
+        <script src="js/vm.js"></script>
+        <script>
+            // var test = japtorParser.parse("program test; var test2 float");
+            var parse = function() {
+                var code = editor.getValue();
+                if(code === "") {
+                    return;
+                }
+                var japtorParser = Japtor();
+                try {
+                    japtorParser.parse(code);
+                    var result = "";
+                    var procs = japtorParser.yy.procs;
+                    var quads = japtorParser.yy.quads;
+                    var consts = japtorParser.yy.consts;
+                    for (var i = 0; i < quads.length; i++)
+                    console.log(i+": ["+quads[i][0]+","+quads[i][1]+","+quads[i][2]+","+quads[i][3]+"]");
+                    try {
+                        var result = VM(japtorParser.yy);
+                        if (result !== "") {
+                            $(".message h5").text(result);
+                            $(".message").addClass("alert-success");
+                            $('.message').collapse("show");
+                        }
+                    } catch (error) {
+                        console.log(error);
+                        $(".message h5").text(error.message);
+                        $(".message").addClass("alert-danger");
+                        $('.message').collapse("show");
+                        // $(".message").slideDown();
+                    }
+                } catch (error) {
+                    console.log(error);
+                    $(".message h5").text(error.message);
+                    $(".message").addClass("alert-danger");
+                    $('.message').collapse("show");
+                    // $(".message").slideDown();
+                }
+            }
+        </script>
+        <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/github");
+            // editor.getSession().setMode("ace/mode/javascript");
+
+            $(".ace_content").on('click', function(){
+                $('.message').collapse("hide");
+                $(".message").removeClass("alert-success alert-danger");
+                $(".message h5").text("");
+            });
+        </script>
+    </body>
 </html>
