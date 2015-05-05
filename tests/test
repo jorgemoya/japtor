@@ -2,8 +2,8 @@ program test;
 var int x;
 function void main(){
 	var int y;
-	x = 10;
-	y = x + 20;
+	assign x = 10;
+	assign y = x + 20;
 	write(x);
 }
 

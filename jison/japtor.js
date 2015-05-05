@@ -139,7 +139,6 @@ case 17:
 					var main = findProc(yy, "main");
 					if (main === "undefined") {
 						throw new Error("No main declared. Please declare a void main function.");
-						return;
 					}
 				
 break;
@@ -195,7 +194,6 @@ case 36:
 						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, id)]);
 					} else {
 						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
-						return;
 					}
 				
 break;
@@ -226,7 +224,6 @@ case 37:
 						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, pointer)]);
 					} else {
 						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
-						return;
 					}
 				
 break;
@@ -270,7 +267,6 @@ case 38:
 						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, pointer)]);
 					} else {
 						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
-						return;
 					}
 				
 break;
@@ -294,7 +290,6 @@ case 44:
 						jumps.push(yy.quads.length - 1);
 					} else {
 						throw new Error("IF statements need a valid boolean condition.");
-						return;
 					}
 				
 break;
@@ -326,7 +321,6 @@ case 52:
 						jumps.push(yy.quads.length - 1);
 					} else {
 						throw new Error("WHILE statement needs a valid boolean condition.");
-						return;
 					}
 				
 break;
@@ -345,7 +339,7 @@ case 54:
 					if (proc.type !== "void" && proc.type === type)	{
 						yy.quads.push(["return", null, null, findDir(yy,id)]);
 					} else {
-						alert("Error!");
+						throw new Error("Expected a return.");
 					}
 				
 break;
@@ -361,7 +355,6 @@ case 57:
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					} else {
 						throw new Error("Type " + var1t + " and type " + var2t + " can't be logically compared.");
-						return;
 					}
 					yy.quads.push(op);
 				
@@ -384,7 +377,6 @@ case 61:
 						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 					} else {
 						throw new Error("Type " + var1t + " and type " + var2t + " can't be compared.");
-						return;
 					}
 					yy.quads.push(op);
 				
@@ -420,7 +412,6 @@ case 71:
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
 							throw new Error("Type " + var1t + " and type " + var2t + " can't be sumed/substracted compared.");
-							return;
 						}
 						yy.quads.push(op);
 					}
@@ -442,7 +433,6 @@ case 77:
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
 							throw new Error("Type " + var1t + " and type " + var2t + " can't be multiplied/divided compared.");
-							return;
 						}
 						yy.quads.push(op);
 					}
@@ -469,7 +459,6 @@ case 86:
 
 					if (expectingParams) {
 						throw new Error("Need paramters.");
-						return;
 					}
 				
 break;
@@ -503,7 +492,6 @@ case 92:
 					var type = types.pop();
 					if (paramTemp >= tempProc.numParams()) {
 						throw new Error("Incorrect paramaters for function.");
-						return;
 					}
 
 					if (tempProc.params[paramTemp].type === type || (tempProc.params[paramTemp].type === "float" && type === "int") ) {
@@ -514,7 +502,6 @@ case 92:
 						}
 					} else {
 						throw new Error("Incorrect parameter types.");
-						return;
 					}
 					// ops.pop();
 				
@@ -537,7 +524,6 @@ case 95:
 
 					yy.quads.push(["verify", findDir(yy, id), 0, dims[0]-1]);
 					yy.quads.push(["++", findDir(yy, id_array), findDir(yy, id), "(" + findDir(yy, createTemp(yy, type_array)) + ")"]);
-					// ops.pop();
 				
 break;
 case 96:
@@ -571,9 +557,6 @@ case 96:
 					var sumpointertype = types.pop();
 
 					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
-
-					// ops.pop();
-					// ops.pop();
 				
 break;
 case 97:
@@ -953,7 +936,7 @@ function dirProc() {
 	if (dirProcs < 5000) {
 		return dirProcs++;
 	} else {
-		alert("Out of memory.");
+		throw new Error("Out of memory.");
 	}
 }
 
@@ -979,28 +962,28 @@ function assignMemory(type, tmp, cons, dim) {
 				if (tv_i < 21000) {
 					return tv_i++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 			case 'float':
 				if (tv_f < 23000) {
 					return tv_f++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 			case 'string':
 				if (tv_st < 25000) {
 					return tv_st++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 			case 'boolean':
 				if (tv_bool < 26000) {
 					return tv_bool++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 		}
@@ -1010,28 +993,28 @@ function assignMemory(type, tmp, cons, dim) {
 				if (cv_i < 28000) {
 					return cv_i++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 			case 'float':
 				if (cv_f < 30000) {
 					return cv_f++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 			case 'string':
 				if (cv_st < 32000) {
 					return cv_st++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 			case 'boolean':
 				if (cv_bool < 33000) {
 					return cv_bool++;
 				} else {
-					alert("Out of memory!");
+					throw new Error("Out of memory.");
 				}
 				break;
 		}
@@ -1044,7 +1027,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_i = gv_i + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 				case 'float':
@@ -1053,7 +1036,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_f = gv_f + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 				case 'string':
@@ -1062,7 +1045,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_st = gv_st + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 				case 'boolean':
@@ -1071,7 +1054,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_bool = gv_bool + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 			}
@@ -1083,7 +1066,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_i = lv_i + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 				case 'float':
@@ -1092,7 +1075,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_f = lv_f + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 				case 'string':
@@ -1101,7 +1084,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_st = lv_st + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 				case 'boolean':
@@ -1110,7 +1093,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_bool = lv_bool + pointer;
 						return temp;
 					} else {
-						alert("Out of memory!");
+						throw new Error("Out of memory.");
 					}
 					break;
 			}
@@ -1170,7 +1153,7 @@ function findTypeId(yy, id) {
 		}
 	}
 
-	alert("ID not declared.");
+	throw new Error("ID " + id + " not declared.");
 }
 
 function findProc(yy, name) {
@@ -1180,7 +1163,7 @@ function findProc(yy, name) {
 		}
 	}
 
-	return "undefined";
+	throw new Error("Undefined function.");
 }
 
 function createTemp(yy, type) {
@@ -1226,8 +1209,7 @@ function findDir(yy, id) {
 		}
 	}
 
-	alert("ID not declared.");
-	return "undefined";
+	throw new Error("ID " + id + " not declared.");
 }
 
 function findDim(yy, id) {
