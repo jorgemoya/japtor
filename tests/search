@@ -1,0 +1,27 @@
+program search;
+var int array[10];
+function int search(int number) {
+    var int x;
+    assign x = 0;
+    while (x < 10) {
+        if (array[x] == number) {
+            return x;
+        }
+        assign x = x + 1;
+    }
+}
+
+function void main() {
+    var int number;
+    var int x;
+
+    assign number = 7;
+    assign x = 0;
+
+    while (x < 10) {
+        assign array[x] = x;
+        assign x = x + 1;
+    }
+
+    write(search(number));
+}

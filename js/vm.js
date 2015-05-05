@@ -123,7 +123,28 @@ function VM(yy) {
                 var value2 = findValue(quads[cont][2], false);
                 var dir = parseInt(quads[cont][3].replace(/[()]/g, ''));
                 // insertValue(dir, value1 + value2);
-                mems[mems.length-1].pointers.push([dir, value1 + value2]);
+                var sum = value1 + value2;
+                var found = false;
+                if (findScope(sum) == "global") {
+                    for(var i = 0; i < mems[0].pointers.length; i++) {
+                        if (mems[0].pointers[i][0] == dir) {
+                            mems[0].pointers[i][1] = sum; //replacing
+                            found = true;
+                        }
+                    }
+
+                    if (!found)
+                        mems[0].pointers.push([dir, value1 + value2]);
+                } else {
+                    for(var i = 0; i < mems[0].pointers.length; i++) {
+                        if (mems[0].pointers[i][0] == dir) {
+                            mems[0].pointers[i][1] = sum; //replacing
+                            found = ture;
+                        }
+                    }
+                    if (!found)
+                        mems[mems.length-1].pointers.push([dir, value1 + value2]);
+                }
                 cont++;
                 break;
 
@@ -288,6 +309,12 @@ function VM(yy) {
             }
         }
 
+        for (var i = 0; i < mems[0].pointers.length; i++) {
+            if (dir == mems[0].pointers[i][0]) {
+                return findValue(mems[0].pointers[i][1]);
+            }
+        }
+
         if (dir_scope === "constant") {
             for (var i = 0; i < consts.length; i++) {
                 if (consts[i][1] === dir) {
@@ -298,35 +325,35 @@ function VM(yy) {
 
         if (dir_scope === "local") {
             if (dir_type === "int")
-                return mems[mems.length-1].int[mems[mems.length-1].startDirs[0]-dir];
+                return mems[mems.length-1].int[dir - mems[mems.length-1].startDirs[0]];
             else if (dir_type === "float")
-                return mems[mems.length-1].float[mems[mems.length-1].startDirs[1]-dir];
+                return mems[mems.length-1].float[dir - mems[mems.length-1].startDirs[1]];
             else if (dir_type === "string")
-                return mems[mems.length-1].string[mems[mems.length-1].startDirs[2]-dir];
+                return mems[mems.length-1].string[dir - mems[mems.length-1].startDirs[2]];
             else if (dir_type === "boolean")
-                return mems[mems.length-1].boolean[mems[mems.length-1].startDirs[3]-dir];
+                return mems[mems.length-1].boolean[mems[dir - mems.length-1].startDirs[3]];
         }
 
         if (dir_scope === "temporal") {
             if (dir_type === "int_t")
-                return mems[mems.length-1].int_t[mems[mems.length-1].startDirs[4]-dir];
+                return mems[mems.length-1].int_t[dir - mems[mems.length-1].startDirs[4]];
             else if (dir_type === "float_t")
-                return mems[mems.length-1].float_t[mems[mems.length-1].startDirs[5]-dir];
+                return mems[mems.length-1].float_t[dir - mems[mems.length-1].startDirs[5]];
             else if (dir_type === "string_t")
-                return mems[mems.length-1].string_t[mems[mems.length-1].startDirs[6]-dir];
+                return mems[mems.length-1].string_t[dir - mems[mems.length-1].startDirs[6]];
             else if (dir_type === "boolean_t")
-                return mems[mems.length-1].boolean_t[mems[mems.length-1].startDirs[7]-dir];
+                return mems[mems.length-1].boolean_t[dir - mems[mems.length-1].startDirs[7]];
         }
 
         if (dir_scope === "global") {
             if (dir_type === "int")
-                return mems[0].int[mems[0].startDirs[0]-dir];
+                return mems[0].int[dir - mems[0].startDirs[0]];
             else if (dir_type === "float")
-                return mems[0].float[mems[0].startDirs[1]-dir];
+                return mems[0].float[dir - mems[0].startDirs[1]];
             else if (dir_type === "string")
-                return mems[0].string[mems[0].startDirs[2]-dir];
+                return mems[0].string[dir - mems[0].startDirs[2]];
             else if (dir_type === "boolean")
-                return mems[0].boolean[mems[0].startDirs[3]-dir];
+                return mems[0].boolean[dir - mems[0].startDirs[3]];
         }
 
         throw new Error("Value not found for dir " + dir);
@@ -345,35 +372,42 @@ function VM(yy) {
 
         if (dir_scope === "local") {
             if (dir_type === "int")
-                mems[mems.length-1].int[mems[mems.length-1].startDirs[0]-dir] = value;
+                mems[mems.length-1].int[dir - mems[mems.length-1].startDirs[0]] = value;
             else if (dir_type === "float")
-                mems[mems.length-1].float[mems[mems.length-1].startDirs[1]-dir] = value;
+                mems[mems.length-1].float[dir - mems[mems.length-1].startDirs[1]] = value;
             else if (dir_type === "string")
-                mems[mems.length-1].string[mems[mems.length-1].startDirs[2]-dir] = value;
+                mems[mems.length-1].string[dir - mems[mems.length-1].startDirs[2]] = value;
             else if (dir_type === "boolean")
-                mems[mems.length-1].boolean[mems[mems.length-1].startDirs[3]-dir] = value;
+                mems[mems.length-1].boolean[dir - mems[mems.length-1].startDirs[3]] = value;
         }
 
         if (dir_scope === "temporal") {
             if (dir_type === "int_t")
-                mems[mems.length-1].int_t[mems[mems.length-1].startDirs[4]-dir] = value;
+                mems[mems.length-1].int_t[dir - mems[mems.length-1].startDirs[4]] = value;
             else if (dir_type === "float_t")
-                mems[mems.length-1].float_t[mems[mems.length-1].startDirs[5]-dir] = value;
+                mems[mems.length-1].float_t[dir - mems[mems.length-1].startDirs[5]] = value;
             else if (dir_type === "string_t")
-                mems[mems.length-1].string_t[mems[mems.length-1].startDirs[6]-dir] = value;
+                mems[mems.length-1].string_t[dir - mems[mems.length-1].startDirs[6]] = value;
             else if (dir_type === "boolean_t")
-                mems[mems.length-1].boolean_t[mems[mems.length-1].startDirs[7]-dir] = value;
+                mems[mems.length-1].boolean_t[dir - mems[mems.length-1].startDirs[7]] = value;
+        }
+
+        for (var i = 0; i < mems[0].pointers.length; i++) {
+            if (dir == mems[0].pointers[i][0]) {
+                insertValue(mems[0].pointers[i][1], value);
+                return;
+            }
         }
 
         if (dir_scope === "global") {
             if (dir_type === "int")
-                mems[0].int[mems[0].startDirs[0]-dir] = value;
+                mems[0].int[dir - mems[0].startDirs[0]] = value;
             else if (dir_type === "float")
-                mems[0].float[mems[0].startDirs[1]-dir] = value;
+                mems[0].float[dir - mems[0].startDirs[1]] = value;
             else if (dir_type === "string")
-                mems[0].string[mems[0].startDirs[2]-dir] = value;
+                mems[0].string[dir - mems[0].startDirs[2]] = value;
             else if (dir_type === "boolean")
-                mems[0].boolean[mems[0].startDirs[3]-dir] = value;
+                mems[0].boolean[dir - mems[0].startDirs[3]] = value;
         }
     }
 }

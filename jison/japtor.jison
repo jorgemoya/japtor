@@ -182,26 +182,28 @@ vars_params
 	;
 
 vars_params_declaration
-	: type ID
+	: type ID var_array
 				{
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false, false, []),
+						dir: assignMemory($type, false, false, $var_array),
 						id: $ID,
-						type: $type
+						type: $type,
+						dim: $var_array
 					}
 					proc.vars.push(variable);
 					proc.params.push(variable);
 				}
-	| ',' type ID
+	| ',' type ID var_array
 				{
 					var currentScope = scope.stackTop();
 					var proc = findProc(yy, currentScope);
 					var variable = {
-						dir: assignMemory($type, false, false, []),
+						dir: assignMemory($type, false, false, $var_array),
 						id: $ID,
-						type: $type
+						type: $type,
+						dim: $var_array
 					}
 					proc.vars.push(variable);
 					proc.params.push(variable);
@@ -652,8 +654,8 @@ param_expression
 				{
 					var id = ids.pop();
 					var type = types.pop();
-					if (paramTemp + 1 > tempProc.numParams() || paramTemp + 1 < tempProc.numParams()) {
-						throw new Error("Missing parameters for function.");
+					if (paramTemp >= tempProc.numParams()) {
+						throw new Error("Incorrect paramaters for function.");
 						return;
 					}
 
@@ -742,7 +744,6 @@ end_closure
 	:
 				{ops.pop();}
 	;
-
 
 constant
 	: I

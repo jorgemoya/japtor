@@ -6,13 +6,13 @@ function int factorial(int x) {
 	return x * factorial(x-1);
 }
 function void main() {
-	write(factorial(1));
+	write(factorial(7));
 }
 
 program factorial;
 function void main() {
   var int number, int factor, int i;
-  assign number = 1;
+  assign number = 7;
   assign factor = 1;
   assign i = 1;
   while(i <= number) {
