@@ -95,10 +95,21 @@ var_declaration
 var_array
 	: "[" I "]"
 			{
+				yy.consts.push([parseInt($I), assignMemory("int", false, true, [])]);
+				types.push("int");
+				ids.push(parseInt($I));
+
 				$$ = [$I];
 			}
 	| "[" I "]" "[" I "]"
 			{
+				yy.consts.push([parseInt($2), assignMemory("int", false, true, [])]);
+				types.push("int");
+				ids.push(parseInt($2));
+
+				yy.consts.push([parseInt($5), assignMemory("int", false, true, [])]);
+				types.push("int");
+				ids.push(parseInt($5));
 				$$ = [$2,$5];
 			}
 	|
@@ -216,14 +227,87 @@ statute
 	;
 
 assignment_statute
-	: assignment_declaration assignment_array '=' expression ';'
+	: ASSIGN ID '=' expression ';'
 				{
 					var var1 = ids.pop();
 					var var1t = types.pop();
-					var id = ids.pop();
-					var idt = types.pop();
+					var id = $ID;
+					var idt = findTypeId(yy, $ID);
 					if (var1t === idt || (var1t === "int" && idt === "float")) {
 						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]);
+					} else {
+						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						return;
+					}
+				}
+	| ASSIGN ID '[' expression ']' '=' expression ';'
+				{
+					var var1 = ids.pop();
+					var var1t = types.pop();
+					var var2 = ids.pop();
+					var var2t = types.pop();
+					var id = $ID;
+					var idt = findTypeId(yy, $ID);
+
+					var dims = findDim(yy, id);
+					if (dims.length != 1) {
+						throw new Error("Incorrect array dimension.")
+					}
+
+					if (var2t != "int") {
+						throw new Error("Array pointers only handle type int.");
+					}
+
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, var2), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+
+					var pointer = ids.pop(); types.pop();
+
+					if (var1t === idt || (var1t === "int" && idt === "float")) {
+						var op = yy.quads.push([$6, findDir(yy, var1), null, findDir(yy, pointer)]);
+					} else {
+						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						return;
+					}
+				}
+	| ASSIGN ID '[' expression ']' '[' expression ']' '=' expression ';'
+				{
+					var var1 = ids.pop();
+					var var1t = types.pop();
+					var var2 = ids.pop();
+					var var2t = types.pop();
+					var var3 = ids.pop();
+					var var3t = types.pop();
+					var id = $ID;
+					var idt = findTypeId(yy, $ID);
+
+					var dims = findDim(yy, id);
+					if (dims.length != 2) {
+						throw new Error("Incorrect array dimension.")
+					}
+
+					if (var2t != "int") {
+						throw new Error("Array pointers only handle type int.");
+					}
+
+					yy.quads.push(["verify", findDir(yy, var3), 0, dims[0]-1]);
+					yy.quads.push(["*", findDir(yy, var3), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var3t))]);
+
+					var multpointer = ids.pop();
+					var multpointertype = types.pop();
+
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[1]-1]);
+					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var2), findDir(yy, createTemp(yy, multpointertype))]);
+
+					var sumpointer = ids.pop();
+					var sumpointertype = types.pop();
+
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+
+					var pointer = ids.pop(); types.pop();
+
+					if (var1t === idt || (var1t === "int" && idt === "float")) {
+						var op = yy.quads.push([$9, findDir(yy, var1), null, findDir(yy, pointer)]);
 					} else {
 						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
 						return;
@@ -584,7 +668,12 @@ param_expression
 	;
 
 array
-	: "[" add_closure expression "]"
+	: vector
+	| matrix
+	;
+
+vector
+	: "[" add_closure expression end_closure "]"
 				{
 					var id = ids.pop(); //result of exp
 					var type = types.pop();
@@ -602,14 +691,56 @@ array
 
 					yy.quads.push(["verify", findDir(yy, id), 0, dims[0]-1]);
 					yy.quads.push(["++", findDir(yy, id_array), findDir(yy, id), "(" + findDir(yy, createTemp(yy, type_array)) + ")"]);
-					ops.pop();
+					// ops.pop();
 				}
-	// | "[" expression "]""[" expression "]"
+	;
+
+matrix
+	: "[" add_closure expression end_closure "]" "[" add_closure expression end_closure"]"
+				{
+					var var1 = ids.pop();
+					var var1t = types.pop();
+					var var2 = ids.pop();
+					var var2t = types.pop();
+					var id = ids.pop();
+					var idt = types.pop();;
+
+					var dims = findDim(yy, id);
+					if (dims.length != 2) {
+						throw new Error("Incorrect array dimension.")
+					}
+
+					if (var2t != "int") {
+						throw new Error("Array pointers only handle type int.");
+					}
+
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);
+					yy.quads.push(["*", findDir(yy, var2), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var2t))]);
+
+					var multpointer = ids.pop();
+					var multpointertype = types.pop();
+
+					yy.quads.push(["verify", findDir(yy, var1), 0, dims[1]-1]);
+					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var1), findDir(yy, createTemp(yy, multpointertype))]);
+
+					var sumpointer = ids.pop();
+					var sumpointertype = types.pop();
+
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+
+					// ops.pop();
+					// ops.pop();
+				}
 	;
 
 add_closure
 	:
 				{ops.push("|");}
+	;
+
+end_closure
+	:
+				{ops.pop();}
 	;
 
 

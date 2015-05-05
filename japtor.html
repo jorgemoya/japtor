@@ -39,7 +39,7 @@
                     return;
                 }
                 var japtorParser = Japtor();
-                try {
+                // try {
                     japtorParser.parse(code);
                     var result = "";
                     var procs = japtorParser.yy.procs;
@@ -54,13 +54,13 @@
                             $(".message").addClass("alert-success");
                             $('.message').collapse("show");
                         }
-                    } catch (error) {
-                        console.log(error);
-                        $(".message h5").text(error.message);
-                        $(".message").addClass("alert-danger");
-                        $('.message').collapse("show");
-                        // $(".message").slideDown();
-                    }
+                    // } catch (error) {
+                    //     console.log(error);
+                    //     $(".message h5").text(error.message);
+                    //     $(".message").addClass("alert-danger");
+                    //     $('.message').collapse("show");
+                    //     // $(".message").slideDown();
+                    // }
                 } catch (error) {
                     console.log(error);
                     $(".message h5").text(error.message);
