@@ -507,7 +507,11 @@ case 92:
 					}
 
 					if (tempProc.params[paramTemp].type === type || (tempProc.params[paramTemp].type === "float" && type === "int") ) {
-						yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
+						if (tempProc.params[paramTemp].dim > 0) {
+							yy.quads.push(["param", "(" + findDir(yy, id) + "," + tempProc.params[paramTemp].dim + ")", null, ++paramTemp]);
+						} else {
+							yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
+						}
 					} else {
 						throw new Error("Incorrect parameter types.");
 						return;

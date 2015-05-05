@@ -1,3 +1,5 @@
+//global
+
 program search;
 var int array[10];
 function int search(int number) {
@@ -15,13 +17,43 @@ function void main() {
     var int number;
     var int x;
 
-    assign number = 7;
+    assign number = 30;
     assign x = 0;
 
     while (x < 10) {
-        assign array[x] = x;
+        assign array[x] = x * 5;
         assign x = x + 1;
     }
 
     write(search(number));
+}
+
+// local
+
+program search;
+function int search(int number, int array[10]) {
+    var int x;
+    assign x = 0;
+    while (x < 10) {
+        if (array[x] == number) {
+            return x;
+        }
+        assign x = x + 1;
+    }
+}
+
+function void main() {
+    var int number;
+    var int x;
+    var int array[10];
+
+    assign number = 30;
+    assign x = 0;
+
+    while (x < 10) {
+        assign array[x] = x * 5;
+        assign x = x + 1;
+    }
+
+    write(search(number, array));
 }

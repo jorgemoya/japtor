@@ -50,15 +50,30 @@ function VM(yy) {
 
             case 'param':
                 var dir = quads[cont][1];
-                params.push(findValue(dir));
+
+                if (typeof dir === "string") {
+                    var param = dir.replace(/[()]/g, '');
+                    param = param.split(",");
+                    for(var i = 0; i < parseInt(param[1]); i++) {
+                        params.push(findValue(parseInt(param[0]) + i));
+                    }
+                } else {
+                    params.push(findValue(dir));
+                }
                 cont++;
                 break;
 
             case 'gosub':
                 mems.push(tempProc);
                 tempProc = null;
-                for (var i = 0; i <  params.length; i++) {
-                    insertValue(paramsProc[i].dir, params[i]);
+                for (var i = 0; i <  paramsProc.length; i++) {
+                    if (paramsProc[i].dim > 0) {
+                        for(var y = 0; y < paramsProc[i].dim; y++) {
+                            insertValue(paramsProc[i].dir + y, params[y + i]);
+                        }
+                    } else {
+                        insertValue(paramsProc[i].dir, params[i]);
+                    }
                 }
 
                 if (quads[cont][3] !== null) {
@@ -136,10 +151,10 @@ function VM(yy) {
                     if (!found)
                         mems[0].pointers.push([dir, value1 + value2]);
                 } else {
-                    for(var i = 0; i < mems[0].pointers.length; i++) {
-                        if (mems[0].pointers[i][0] == dir) {
-                            mems[0].pointers[i][1] = sum; //replacing
-                            found = ture;
+                    for(var i = 0; i < mems[mems.length-1].pointers.length; i++) {
+                        if (mems[mems.length-1].pointers[i][0] == dir) {
+                            mems[mems.length-1].pointers[i][1] = sum; //replacing
+                            found = true;
                         }
                     }
                     if (!found)
