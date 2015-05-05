@@ -571,8 +571,8 @@ param_expression
 	;
 
 array
-	: "[" I "]"
-	| "[" I "]""[" I "]"
+	: "[" expression "]"
+	| "[" expression "]""[" expression "]"
 	;
 
 add_closure
