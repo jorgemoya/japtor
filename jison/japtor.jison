@@ -1,3 +1,12 @@
+/*****
+	Japtor
+	Developed by Jorge Moya
+*****/
+
+/**
+	Lexical Rules
+**/
+
 %lex
 
 %%
@@ -46,6 +55,11 @@
 
 /lex
 
+
+/**
+	Token to start program
+**/
+
 %start program
 
 %%
@@ -56,20 +70,28 @@ program
 	| program_declaration program_block
 	;
 
+/**
+	PRORGRAM
+**/
+
 program_declaration
 	: PROGRAM ID ';'
 				{
-					var proc = new Proc("global", "void", dirProc(), [], [], null);
-					yy.procs.push(proc);
-					scope.push("global");
-					yy.quads.push(["goto", null, null, null]);
-					jumps.push(yy.quads.length - 1);
+					var proc = new Proc("global", "void", dirProc(), [], [], null); // Creates global proc
+					yy.procs.push(proc); // Pushes scope to procs
+					scope.push("global"); // Makes global current scope
+					yy.quads.push(["goto", null, null, null]); // Expects goto main
+					jumps.push(yy.quads.length - 1); // Expects main return
 				}
 	;
 
 program_block
 	: vars functions
 	;
+
+/**
+	VARS
+**/
 
 vars
 	: VAR var_declaration vars ';' vars
@@ -80,43 +102,51 @@ vars
 var_declaration
 	: type ID var_array
 				{
-					var currentScope = scope.stackTop();
-					var proc = findProc(yy, currentScope);
+					var currentScope = scope.stackTop(); // Looks for scope (global, main, function1..)
+					var proc = findProc(yy, currentScope); // Finds current process
 					var variable = {
-						dir: assignMemory($type, false, false, $var_array),
+						dir: assignMemory($type, false, false, $var_array), // Assigns memory depending on type and if is an array
 						id: $ID,
 						type: $type,
-						dim: $var_array
+						dim: $var_array // Array with dimensions of array or empty
 					}
-					proc.vars.push(variable);
+					proc.vars.push(variable); // Pushes to process
 				}
 	;
 
 var_array
 	: "[" I "]"
 			{
-				yy.consts.push([parseInt($I), assignMemory("int", false, true, [])]);
+				yy.consts.push([parseInt($I), assignMemory("int", false, true, [])]); // Adds I to constants
+
+				// Pushes I to stacks
 				types.push("int");
 				ids.push(parseInt($I));
 
-				$$ = [$I];
+				$$ = [$I]; // Returns an array with I for var_declaration
 			}
 	| "[" I "]" "[" I "]"
 			{
-				yy.consts.push([parseInt($2), assignMemory("int", false, true, [])]);
+				yy.consts.push([parseInt($2), assignMemory("int", false, true, [])]); // Adds I to constants
+				// Pushes I to stacks
 				types.push("int");
-				ids.push(parseInt($2));
+				ids.push(parseInt($2)); // Returns an array with I for var_declaration
 
-				yy.consts.push([parseInt($5), assignMemory("int", false, true, [])]);
+				yy.consts.push([parseInt($5), assignMemory("int", false, true, [])]); // Adds I to constants
+				// Pushes I to stacks
 				types.push("int");
-				ids.push(parseInt($5));
+				ids.push(parseInt($5)); // Returns an array with I for var_declaration
 				$$ = [$2,$5];
 			}
 	|
 			{
-				$$ = [];
+				$$ = []; // Returns an empty array
 			}
 	;
+
+/**
+	TYPE
+**/
 
 type
 	: INT
@@ -126,12 +156,17 @@ type
 	| VOID
 	;
 
+/**
+	FUNCTION
+**/
+
 functions
 	: FUNCTION funct functions
 				{
+					// After the creation of all functions, if no main was declared, return error.
 					var main = findProc(yy, "main");
 					if (main === "undefined") {
-						throw new Error("No main declared. Please declare a void main function.");
+						throw new Error("NO MAIN DECLARED.");
 					}
 				}
 	| EOF
@@ -140,7 +175,8 @@ functions
 funct
 	: function_declaration function_params function_block
 				{
-					if (scope.stackTop().id !== "main") {
+					// Functions always generate a return unless main
+					if (scope.stackTop().id !== "main") { // Scope is a stack with functions
 						yy.quads.push(["return", null, null, null]);
 					}
 				}
@@ -149,11 +185,12 @@ funct
 function_declaration
 	: type ID
 				{
-					var dir = dirProc();
-					var proc = new Proc($ID, $type, dir, [], [], yy.quads.length);
-					yy.procs.push(proc);
-					scope.push($ID);
+					var dir = dirProc(); // Returns the next avaiable Proc dir
+					var proc = new Proc($ID, $type, dir, [], [], yy.quads.length); // Created a new Process with ID, type, and dir
+					yy.procs.push(proc); // Pushes to procs array
+					scope.push($ID); // Pushes to scope stack
 
+					// If id == main, returns the position of the quads for the initial goto
 					if ($ID === "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
@@ -168,11 +205,16 @@ function_params
 function_block
 	:  '{' vars block '}'
 				{
+					// Main must be the last declared function. No other function will run after main.
 					if (scope.pop() === "main") {
 						return null;
 					}
 				}
 	;
+
+/**
+	FUNCTION PARAMS
+**/
 
 vars_params
 	: vars_params_declaration vars_params
@@ -182,35 +224,43 @@ vars_params
 vars_params_declaration
 	: type ID var_array
 				{
-					var currentScope = scope.stackTop();
-					var proc = findProc(yy, currentScope);
+					var currentScope = scope.stackTop(); // Looks for scope (global, main, function1..)
+					var proc = findProc(yy, currentScope); // Finds current process
 					var variable = {
-						dir: assignMemory($type, false, false, $var_array),
+						dir: assignMemory($type, false, false, $var_array), // Assigns memory depending on type and if is an array
 						id: $ID,
 						type: $type,
-						dim: $var_array
+						dim: $var_array // Array with dimensions of array or empty
 					}
-					proc.vars.push(variable);
-					proc.params.push(variable);
+					proc.vars.push(variable); // Pushes to process vars
+					proc.params.push(variable); // Pushes to params to know it is a param
 				}
 	| ',' type ID var_array
 				{
-					var currentScope = scope.stackTop();
-					var proc = findProc(yy, currentScope);
+					var currentScope = scope.stackTop(); // Looks for scope (global, main, function1..)
+					var proc = findProc(yy, currentScope); // Finds current process
 					var variable = {
-						dir: assignMemory($type, false, false, $var_array),
+						dir: assignMemory($type, false, false, $var_array), // Assigns memory depending on type and if is an array
 						id: $ID,
 						type: $type,
-						dim: $var_array
+						dim: $var_array  // Array with dimensions of array or empty
 					}
-					proc.vars.push(variable);
-					proc.params.push(variable);
+					proc.vars.push(variable); // Pushes to process vars
+					proc.params.push(variable); // Pushes to params to know it is a param
 				}
 	;
+
+/**
+	BLOCK
+**/
 
 block
 	: statutes
 	;
+
+/**
+	STATUTES
+**/
 
 statutes
 	: statute statutes
@@ -226,88 +276,92 @@ statute
 	| expression_statute
 	;
 
+/**
+	ASSIGNMENT
+**/
+
 assignment_statute
 	: ASSIGN ID '=' expression ';'
 				{
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var id = $ID;
-					var idt = findTypeId(yy, $ID);
-					if (var1t === idt || (var1t === "int" && idt === "float")) {
-						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]);
+					var var1 = ids.pop(); // Pops from stack expression id
+					var var1t = types.pop(); // Pops from stack expression type
+					var id = $ID; // ID
+					var idt = findTypeId(yy, $ID); //Type of ID
+					if (var1t === idt || (var1t === "int" && idt === "float")) { // If equals types or int && float
+						var op = yy.quads.push([$3, findDir(yy, var1), null, findDir(yy, id)]); // Creates quad and finds the dir of each of the vars
 					} else {
-						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						throw new Error("INCOMPATIBLE TYPES");
 					}
 				}
 	| ASSIGN ID '[' expression ']' '=' expression ';'
 				{
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var id = $ID;
-					var idt = findTypeId(yy, $ID);
+					var var1 = ids.pop(); // Pops from stack second expression id
+					var var1t = types.pop(); // Pops from stack second expression type
+					var var2 = ids.pop(); // Pops from stack first expression id
+					var var2t = types.pop(); // Pops from stack first expression type
+					var id = $ID; // ID
+					var idt = findTypeId(yy, $ID); // Type of ID
 
-					var dims = findDim(yy, id);
-					if (dims.length != 1) {
-						throw new Error("Incorrect array dimension.")
+					var dims = findDim(yy, id); // Returns the dimension of ID
+					if (dims.length != 1) { // If Not ID[]
+						throw new Error("INCORRECT ARRAY DIMENSION")
 					}
 
-					if (var2t != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (var2t != "int") { // Type of the first expression must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);
-					yy.quads.push(["++", findDir(yy, id), findDir(yy, var2), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]); // Adds verify to quads with dir of vars, and the limit from 0 to dim[0]
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, var2), "(" + findDir(yy, createTemp(yy, idt)) + ")"]); // DirBase + S1
 
 					var pointer = ids.pop(); types.pop();
 
 					if (var1t === idt || (var1t === "int" && idt === "float")) {
-						var op = yy.quads.push([$6, findDir(yy, var1), null, findDir(yy, pointer)]);
+						var op = yy.quads.push([$6, findDir(yy, var1), null, findDir(yy, pointer)]); // Assign
 					} else {
-						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						throw new Error("INCOMPATIBLE TYPES");
 					}
 				}
 	| ASSIGN ID '[' expression ']' '[' expression ']' '=' expression ';'
 				{
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var var3 = ids.pop();
-					var var3t = types.pop();
-					var id = $ID;
-					var idt = findTypeId(yy, $ID);
+					var var1 = ids.pop(); // Pops from stack third expression id
+					var var1t = types.pop();// Pops from stack third expression type
+					var var2 = ids.pop(); // Pops from stack second expression id
+					var var2t = types.pop(); // Pops from stack second expression type
+					var var3 = ids.pop(); // Pops from stack first expression id
+					var var3t = types.pop(); // Pops from stack first expression type
+					var id = $ID; // ID
+					var idt = findTypeId(yy, $ID); // Type of ID
 
-					var dims = findDim(yy, id);
-					if (dims.length != 2) {
-						throw new Error("Incorrect array dimension.")
+					var dims = findDim(yy, id); // Returns the dimension of ID
+					if (dims.length != 2) { // If Not ID[][]
+						throw new Error("INCORRECT ARRAY DIMENSION")
 					}
 
-					if (var2t != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (var2t != "int") { // Type of the second expression must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, var3), 0, dims[0]-1]);
-					yy.quads.push(["*", findDir(yy, var3), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var3t))]);
+					yy.quads.push(["verify", findDir(yy, var3), 0, dims[0]-1]); // Adds verify to quads with dir of vars, and the limit from 0 to dim[0]
+					yy.quads.push(["*", findDir(yy, var3), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var3t))]); // m1 * s1
 
 					var multpointer = ids.pop();
 					var multpointertype = types.pop();
 
-					yy.quads.push(["verify", findDir(yy, var2), 0, dims[1]-1]);
-					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var2), findDir(yy, createTemp(yy, multpointertype))]);
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[1]-1]); // Adds verify to quads with dir of vars, and the limit from 0 to dim[1]
+					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var2), findDir(yy, createTemp(yy, multpointertype))]); // (m1 * s1) + s2
 
 					var sumpointer = ids.pop();
 					var sumpointertype = types.pop();
 
-					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]); // DirBase + S
 
 					var pointer = ids.pop(); types.pop();
 
 					if (var1t === idt || (var1t === "int" && idt === "float")) {
-						var op = yy.quads.push([$9, findDir(yy, var1), null, findDir(yy, pointer)]);
+						var op = yy.quads.push([$9, findDir(yy, var1), null, findDir(yy, pointer)]); // Assign
 					} else {
-						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						throw new Error("INCOMPATIBLE TYPES");
 					}
 				}
 	;
@@ -315,22 +369,25 @@ assignment_statute
 assignment_declaration
 	: ASSIGN ID
 				{
-					ids.push($ID);
-					types.push(findTypeId(yy, $ID));
+					ids.push($ID); // Pushes ID to stack
+					types.push(findTypeId(yy, $ID)); // Pushes type to stack
 				}
 	;
 
-assignment_array
-	: array
-	|
-	;
+/**
+	WRITE
+**/
 
 write_statute
 	: WRITE '(' expression ')' ';'
 				{
-					yy.quads.push(["write", null, null, findDir(yy, ids.pop())]);
+					yy.quads.push(["write", null, null, findDir(yy, ids.pop())]); // Quad that prints the ID in dir
 				}
 	;
+
+/**
+	IF
+**/
 
 if_statute
 	: IF if_condition if_block else_statute
@@ -339,13 +396,13 @@ if_statute
 if_condition
 	: '(' expression ')'
 				{
-					var type = types.pop();
-					var id = ids.pop();
-					if (type === "boolean") {
-						yy.quads.push(["gotof", findDir(yy, id), null, null]);
-						jumps.push(yy.quads.length - 1);
+					var type = types.pop(); // Pops from stack
+					var id = ids.pop(); // Pops from stack
+					if (type === "boolean") { // Verify expression is boolean
+						yy.quads.push(["gotof", findDir(yy, id), null, null]); // GotoF
+						jumps.push(yy.quads.length - 1); // Adds position to jump stack
 					} else {
-						throw new Error("IF statements need a valid boolean condition.");
+						throw new Error("INVALID IF STATEMENT");
 					}
 				}
 	;
@@ -358,17 +415,17 @@ else_statute
 	: else_declaration else_block
 	|
 				{
-					var jump = jumps.pop();
-					yy.quads[jump][3] = yy.quads.length;
+					var jump = jumps.pop(); // Pops from stack
+					yy.quads[jump][3] = yy.quads.length; // Adds position to jump value
 				}
 	;
 
 else_declaration
 	: ELSE
 				{
-					var jump = jumps.pop();
+					var jump = jumps.pop(); // Pops from stack
 					yy.quads.push(["goto", null, null, null]);
-					yy.quads[jump][3] = yy.quads.length;
+					yy.quads[jump][3] = yy.quads.length; // Adds position to jump value
 					jumps.push(yy.quads.length - 1);
 				}
 	;
@@ -376,16 +433,16 @@ else_declaration
 else_block
 	: '{' block '}'
 				{
-					var jump = jumps.pop();
-					yy.quads[jump][3] = yy.quads.length;
+					var jump = jumps.pop(); // Pops from stack
+					yy.quads[jump][3] = yy.quads.length;  // Adds position to jump value
 				}
 	;
 
 while_statute
 	: while_declaration while_condition while_block
 				{
-					var jump = jumps.pop();
-					yy.quads[jump][3] = yy.quads.length;
+					var jump = jumps.pop(); // Pops from stack
+					yy.quads[jump][3] = yy.quads.length; // Adds position to jump value
 				}
 	;
 
@@ -405,33 +462,45 @@ while_condition
 						yy.quads.push(["gotof", findDir(yy,id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
-						throw new Error("WHILE statement needs a valid boolean condition.");
+						throw new Error("INVALID WHILE STATEMENT");
 					}
 				}
 	;
+
+/**
+	WHILE
+**/
 
 while_block
 	: '{' block '}'
 				{
-					var jump = jumps.pop();
-					yy.quads.push(["goto",null,null,jumps.pop()]);
-					jumps.push(jump);
+					var jump = jumps.pop(); // Pops from stack
+					yy.quads.push(["goto",null,null,jumps.pop()]); //Goto quad jump value
+					jumps.push(jump); // Readds jump to stack
 				}
 	;
+
+/**
+	RETURN
+**/
 
 return_statute
 	: RETURN expression ';'
 				{
-					proc = findProc(yy, scope.stackTop());
-					var id = ids.pop();
-					var type = types.pop();
-					if (proc.type !== "void" && proc.type === type)	{
-						yy.quads.push(["return", null, null, findDir(yy,id)]);
+					proc = findProc(yy, scope.stackTop()); // Find proc being used (first in stack)
+					var id = ids.pop(); // Pop from stack
+					var type = types.pop(); // Pop from stack
+					if (proc.type !== "void" && proc.type === type)	{ // If not void and if equal types
+						yy.quads.push(["return", null, null, findDir(yy,id)]); // Return the result of te function to the dir of the id
 					} else {
-						throw new Error("Expected a return.");
+						throw new Error("EXPECTED RETURN");
 					}
 				}
 	;
+
+/**
+	EXPRESSION
+**/
 
 expression_statute
 	: expression ';'
@@ -441,16 +510,16 @@ expression
 	: comparison
 	| comparison logical_ops comparison
 				{
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var op = ops.pop();
-					var type = validateSem(op, var1t, var2t);
-					if (type !== "x") {
-						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
+					var var2 = ids.pop(); // Pop comparison2 id
+					var var2t = types.pop(); // Pop comparison2 type
+					var var1 = ids.pop(); // Pop comparison1 id
+					var var1t = types.pop(); // Pop comparison1 type
+					var op = ops.pop(); // Pop op
+					var type = validateSem(op, var1t, var2t); // Validates types are compatible
+					if (type !== "x") { // If compatible
+						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))]; // Adds logical_ops quad
 					} else {
-						throw new Error("Type " + var1t + " and type " + var2t + " can't be logically compared.");
+						throw new Error("ILLOGICAL COMPARISON");
 					}
 					yy.quads.push(op);
 				}
@@ -458,25 +527,25 @@ expression
 
 logical_ops
 	: '&' '&'
-				{ops.push("&&");}
+				{ops.push("&&");} // Pushes to stack
 	| '|' '|'
-				{ops.push("||");}
+				{ops.push("||");} // Pushes to stack
 	;
 
 comparison
 	: exp
 	| exp comparison_ops exp
 				{
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var op = ops.pop();
-					var type = validateSem(op, var1t, var2t);
-					if (type !== "x") {
-						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
+					var var2 = ids.pop(); // Pop exp2 id
+					var var2t = types.pop(); // Pop exp2 type
+					var var1 = ids.pop(); // Pop exp1 id
+					var var1t = types.pop(); // Pop exp1 type
+					var op = ops.pop(); // Pop op
+					var type = validateSem(op, var1t, var2t); // Validates types are compatible
+					if (type !== "x") { // If compatible
+						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))]; // Adds comparison quad
 					} else {
-						throw new Error("Type " + var1t + " and type " + var2t + " can't be compared.");
+						throw new Error("ILLOGICAL COMPARISON");
 					}
 					yy.quads.push(op);
 				}
@@ -484,17 +553,17 @@ comparison
 
 comparison_ops
 	: '<' '='
-				{ops.push("<=");}
+				{ops.push("<=");} // Pushes to stack
 	| '>' '='
-				{ops.push(">=");}
+				{ops.push(">=");} // Pushes to stack
 	| '!' '='
-				{ops.push("!=");}
+				{ops.push("!=");} // Pushes to stack
 	| '=' '='
-				{ops.push("==");}
+				{ops.push("==");} // Pushes to stack
 	| '>'
-				{ops.push(">");}
+				{ops.push(">");} // Pushes to stack
 	| '<'
-				{ops.push("<");}
+				{ops.push("<");} // Pushes to stack
 	;
 
 exp
@@ -509,28 +578,28 @@ exp_exit
 exp_validation
 	:
 				{
-					if (ops.stackTop() === "+" || ops.stackTop() === "-") {
-						var var2 = ids.pop();
-						var var2t = types.pop();
-						var var1 = ids.pop();
-						var var1t = types.pop();
-						var op = ops.pop();
-						var type = validateSem(op, var1t, var2t);
+					if (ops.stackTop() === "+" || ops.stackTop() === "-") { // If first from ops stack is + or -
+						var var2 = ids.pop(); // Pop value2 id
+						var var2t = types.pop(); // Pop value2 type
+						var var1 = ids.pop(); // Pop value1 id
+						var var1t = types.pop(); // Pop value1 type
+						var op = ops.pop(); // Pop ops
+						var type = validateSem(op, var1t, var2t); // Validates types are compatible
 						if(type !== "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
-							throw new Error("Type " + var1t + " and type " + var2t + " can't be sumed/substracted compared.");
+							throw new Error("INVALID TYPES");
 						}
-						yy.quads.push(op);
+						yy.quads.push(op); // Adds + or - quad
 					}
 				}
 	;
 
 sum_or_minus
 	: '+'
-				{ops.push($1);}
+				{ops.push($1);} // Push to stack
 	| '-'
-				{ops.push($1);}
+				{ops.push($1);} // Push to stack
 	;
 
 term
@@ -545,28 +614,28 @@ term_exit
 term_validation
 	:
 				{
-					if (ops.stackTop() === "*" || ops.stackTop() === "/") {
-						var var2 = ids.pop();
-						var var2t = types.pop();
-						var var1 = ids.pop();
-						var var1t = types.pop();
-						var op = ops.pop();
-						var type = validateSem(op, var1t, var2t);
+					if (ops.stackTop() === "*" || ops.stackTop() === "/") { // If first from ops stack is * or /
+						var var2 = ids.pop(); // Pop value2 id
+						var var2t = types.pop(); // Pop value2 type
+						var var1 = ids.pop(); // Pop value1 id
+						var var1t = types.pop(); // Pop value1 type
+						var op = ops.pop(); // Pop ops
+						var type = validateSem(op, var1t, var2t); // Validates types are compatible
 						if (type !== "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
-							throw new Error("Type " + var1t + " and type " + var2t + " can't be multiplied/divided compared.");
+							throw new Error("INVALID TYPES");
 						}
-						yy.quads.push(op);
+						yy.quads.push(op); // Adds * or / quad
 					}
 				}
 	;
 
 mult_or_divi
 	: '*'
-			{ops.push($1);}
+			{ops.push($1);} // Push to stack
 	| '/'
-			{ops.push($1);}
+			{ops.push($1);} // Push to stack
 	;
 
 factor
@@ -597,7 +666,7 @@ options
 	|
 				{
 					if (expectingParams) {
-						throw new Error("Need paramters.");
+						throw new Error("NEED PARAMETERS");
 					}
 				}
 	;
@@ -639,24 +708,28 @@ params_input
 param_expression
 	: expression
 				{
-					var id = ids.pop();
-					var type = types.pop();
-					if (paramTemp >= tempProc.numParams()) {
-						throw new Error("Incorrect paramaters for function.");
+					var id = ids.pop(); // Pop from stack
+					var type = types.pop(); // Pop from stack
+					if (paramTemp >= tempProc.numParams()) { // If the numbers of params is higher than what is expected
+						throw new Error("INCORRECT PARAMETERS");
 					}
 
 					if (tempProc.params[paramTemp].type === type || (tempProc.params[paramTemp].type === "float" && type === "int") ) {
-						if (tempProc.params[paramTemp].dim > 0) {
+						if (tempProc.params[paramTemp].dim > 0) { // if there are many params
 							yy.quads.push(["param", "(" + findDir(yy, id) + "," + tempProc.params[paramTemp].dim + ")", null, ++paramTemp]);
 						} else {
 							yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
 						}
 					} else {
-						throw new Error("Incorrect parameter types.");
+						throw new Error("INVALID TYPES");
 					}
 					// ops.pop();
 				}
 	;
+
+/**
+	ARRAY
+**/
 
 array
 	: vector
@@ -666,98 +739,109 @@ array
 vector
 	: "[" add_closure expression end_closure "]"
 				{
-					var id = ids.pop(); //result of exp
-					var type = types.pop();
-					var id_array = ids.pop();
-					var type_array = types.pop();
+					var id = ids.pop(); // Pop exp id
+					var type = types.pop(); // Pop exp type
+					var id_array = ids.pop();  // Pop array id
+					var type_array = types.pop(); // Pop array type
 
-					var dims = findDim(yy, id_array);
+					var dims = findDim(yy, id_array); // Find dim size
 					if (dims.length == 2 || dims.length == 0) {
-						throw new Error("Incorrect array dimension.")
+						throw new Error("INCORRECT ARRAY DIMENSION"); // Incorrect size
 					}
 
-					if (type != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (type != "int") { // Must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, id), 0, dims[0]-1]);
-					yy.quads.push(["++", findDir(yy, id_array), findDir(yy, id), "(" + findDir(yy, createTemp(yy, type_array)) + ")"]);
+					yy.quads.push(["verify", findDir(yy, id), 0, dims[0]-1]); // Pushes verify to quad from 0 to dims[0]-1
+					yy.quads.push(["++", findDir(yy, id_array), findDir(yy, id), "(" + findDir(yy, createTemp(yy, type_array)) + ")"]); // DirBase + s1
 				}
 	;
 
 matrix
 	: "[" add_closure expression end_closure "]" "[" add_closure expression end_closure"]"
 				{
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var id = ids.pop();
-					var idt = types.pop();;
+					var var1 = ids.pop(); // Pop exp2 id
+					var var1t = types.pop(); // Pop exp2 type
+					var var2 = ids.pop(); // Pop exp1 id
+					var var2t = types.pop(); // Pop exp1 type
+					var id = ids.pop(); // Pop array id
+					var idt = types.pop();; // Pop array type
 
-					var dims = findDim(yy, id);
+					var dims = findDim(yy, id); // Find dim size
 					if (dims.length != 2) {
-						throw new Error("Incorrect array dimension.")
+						throw new Error("INCORRECT ARRAY DIMENSION") // Incorrect size
 					}
 
-					if (var2t != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (var2t != "int") { // Must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);
-					yy.quads.push(["*", findDir(yy, var2), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var2t))]);
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);  // Pushes verify to quad from 0 to dims[0]-1
+					yy.quads.push(["*", findDir(yy, var2), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var2t))]); // s1 * m1
 
 					var multpointer = ids.pop();
 					var multpointertype = types.pop();
 
-					yy.quads.push(["verify", findDir(yy, var1), 0, dims[1]-1]);
-					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var1), findDir(yy, createTemp(yy, multpointertype))]);
+					yy.quads.push(["verify", findDir(yy, var1), 0, dims[1]-1]);  // Pushes verify to quad from 0 to dims[1]-1
+					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var1), findDir(yy, createTemp(yy, multpointertype))]); // (s1 * m1) + s2
 
 					var sumpointer = ids.pop();
 					var sumpointertype = types.pop();
 
-					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]); // DirBase + s
 				}
 	;
 
 add_closure
 	:
-				{ops.push("|");}
+				{ops.push("|");} // Adds fondo
 	;
 
 end_closure
 	:
-				{ops.pop();}
+				{ops.pop();} // Removes fondo
 	;
 
 constant
 	: I
 				{
+					// Add INT to constant
 					yy.consts.push([parseInt($I), assignMemory("int", false, true, [])]);
+					// Pushes to stack
 					types.push("int");
 					ids.push(parseInt($I));
 				}
 	| F
 				{
+					// Add FLOAT to constant
 					yy.consts.push([parseFloat($F), assignMemory("float", false, true, [])]);
 					types.push("float");
 					ids.push(parseFloat($F));
 				}
 	| B
 				{
+					// Add BOOLEAN to constant
 					yy.consts.push([$B, assignMemory("boolean", false, true, [])]);
+					// Pushes to stack
 					types.push("boolean");
 					ids.push($B);
 				}
 	| S
 				{
+					// Add STRING to constant
 					yy.consts.push([$S, assignMemory("string", false, true, [])]);
+					// Pushes to stack
 					types.push("string");
 					ids.push($S);
 				}
 	;
 
 %%
+
+/**
+	VARS
+**/
 
 var dirProcs;
 
@@ -781,6 +865,10 @@ var cv_f;
 var cv_st;
 var cv_bool;
 
+/**
+	Data Structures definiton that let me pop, push, and stackTop
+**/
+
 var dataStructures = {
     stack : function() {
         var elements = [];
@@ -797,11 +885,19 @@ var dataStructures = {
     }
 }
 
-var ids = new dataStructures.stack();
-var types = new dataStructures.stack();
-var ops = new dataStructures.stack();
-var scope = new dataStructures.stack();
-var jumps = new dataStructures.stack()
+/**
+	Create new data structures (stacks)
+**/
+
+var ids = new dataStructures.stack(); // Ids
+var types = new dataStructures.stack(); // Types
+var ops = new dataStructures.stack(); // Ops
+var scope = new dataStructures.stack(); // Scope
+var jumps = new dataStructures.stack() // Jumps
+
+/**
+	Semantic Cube
+**/
 
 var semanticCube = [
 	["v","v","+","-","/","*","==","<","<=",">",">=","&&","||","!="],
@@ -817,16 +913,24 @@ var semanticCube = [
 	["float","boolean","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["string","int","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["string","float","x","x","x","x","x","x","x","x","x","x","x","x"],
-	["string","boolean","boolean","x","x","x","x","x","x","x","x","x","x","x"],
+	["string","boolean","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["boolean","int","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["boolean","float","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["boolean","string","x","x","x","x","x","x","x","x","x","x","x","x"]
 ];
 
-var temp = 1;
-var paramTemp = 1;
-var tempProc = null;
-var expectingParams = false;
+/**
+	Initialze variables.
+**/
+
+var temp = 1; // Temp var
+var paramTemp = 1; // Temp parameter
+var tempProc = null; // Temp proc
+var expectingParams = false; // Epecting params
+
+/**
+	Japtor main definition. This is what is returned when parsed in the HTML.
+**/
 
 var Japtor = function() {
 	var japtorLexer = function () {};
@@ -835,22 +939,19 @@ var Japtor = function() {
 	var japtorParser = function () {
 		this.lexer = new japtorLexer();
 		this.yy = {
-			procs: [],
-			quads: [],
-			consts: []
-			// parseError: function(msg, hash) {
-			// 	this.done = true;
-			// 	var result = new String();
-			// 	result.html = '<pre>' + msg + '</pre>';
-			// 	result.hash = hash;
-			// 	return result;
-			// }
+			procs: [], // Procs
+			quads: [], // Quads
+			consts: [] // Consts
 		};
 	};
 	japtorParser.prototype = parser;
 	var newParser = new japtorParser();
 	return newParser;
 };
+
+/**
+	Proc definition. Each function has a proc, where it stores vars, params, etc..
+**/
 
 function Proc(name, type, dir, params, vars, init){
 	this.name = name;
@@ -861,8 +962,12 @@ function Proc(name, type, dir, params, vars, init){
 	this.init = init;
 };
 
+/**
+	Extra proc definition
+**/
+
 Proc.prototype = {
-	size : function() {
+	size : function() { // Returns the size of the proc by counting vars
 		var int = 0; var float = 0; var string = 0; var boolean = 0;
 		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
 		for (var i = 0; i < this.vars.length; i++) {
@@ -900,7 +1005,7 @@ Proc.prototype = {
 		}
 		return [int, float, string, boolean, int_t, float_t, string_t, boolean_t];
 	},
-	dirs : function() {
+	dirs : function() { // Returns dir
 		var int = 0; var float = 0; var string = 0; var boolean = 0;
 		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
 		for (var i = 0; i < this.vars.length; i++) {
@@ -946,99 +1051,113 @@ Proc.prototype = {
 		}
 		return [int, float, string, boolean, int_t, float_t, string_t, boolean_t];
 	},
-	numParams : function() {
+	numParams : function() { // Returns number of params
 		return this.params.length;
 	}
 }
+
+/**
+	Dir Proc
+	Returns the next available proc.
+**/
 
 function dirProc() {
 	if (dirProcs < 5000) {
 		return dirProcs++;
 	} else {
-		throw new Error("Out of memory.");
+		throw new Error("OUT OF MEMORY");
 	}
 }
+
+/**
+	Assign Memory
+	Assigns a var with a dir depending on type and it tmp or const or dim.
+**/
 
 function assignMemory(type, tmp, cons, dim) {
 
 	var pointer = 1;
 	var temp = null;
 
+	// If global
 	var isGlobal = false;
 	if (scope.stackTop() === "global") {
 		isGlobal = true;
 	}
 
+	//If Matrix
 	if (dim.length == 2) {
 		pointer = parseInt(dim[0]) * parseInt(dim[1]) + parseInt(dim[0]);
+	//If Array
 	} else if (dim.length == 1) {
 		pointer = parseInt(dim[0]);
 	}
 
+	// If temporal
 	if (tmp) {
 		switch (type) {
 			case 'int':
 				if (tv_i < 21000) {
 					return tv_i++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'float':
 				if (tv_f < 23000) {
 					return tv_f++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'string':
 				if (tv_st < 25000) {
 					return tv_st++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'boolean':
 				if (tv_bool < 26000) {
 					return tv_bool++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 		}
-	} else if (cons) {
+	} else if (cons) { // If constant
 		switch (type) {
 			case 'int':
 				if (cv_i < 28000) {
 					return cv_i++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'float':
 				if (cv_f < 30000) {
 					return cv_f++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'string':
 				if (cv_st < 32000) {
 					return cv_st++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'boolean':
 				if (cv_bool < 33000) {
 					return cv_bool++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 		}
 	} else {
-		if (isGlobal) {
+		if (isGlobal) { // If global
 			switch (type) {
 				case 'int':
 					if (gv_i < 7000) {
@@ -1046,7 +1165,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_i = gv_i + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'float':
@@ -1055,7 +1174,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_f = gv_f + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'string':
@@ -1064,7 +1183,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_st = gv_st + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'boolean':
@@ -1073,11 +1192,11 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_bool = gv_bool + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 			}
-		} else {
+		} else { // If local
 			switch (type) {
 				case 'int':
 					if (lv_i < 14000) {
@@ -1085,7 +1204,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_i = lv_i + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'float':
@@ -1094,7 +1213,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_f = lv_f + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'string':
@@ -1103,7 +1222,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_st = lv_st + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'boolean':
@@ -1112,13 +1231,17 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_bool = lv_bool + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 			}
 		}
 	}
 }
+
+/**
+	Initialize directories
+**/
 
 function initDirs() {
 	dirProcs = 2000;
@@ -1144,6 +1267,11 @@ function initDirs() {
 	cv_bool = 32000;
 }
 
+/**
+	Validate Semantic
+	Validates the types are compatible and returns type.
+**/
+
 function validateSem(op, var1, var2) {
 		for (var i = 0; i < semanticCube.length; i++) {
 			if (semanticCube[i][0] === var1 && semanticCube[i][1] === var2) {
@@ -1154,6 +1282,11 @@ function validateSem(op, var1, var2) {
 			}
 		}
 }
+
+/**
+	Find Type By Id.
+	Finds the type of an id in the given local scope, and if not found, global.
+**/
 
 function findTypeId(yy, id) {
 	var currentScope = scope.stackTop();
@@ -1172,8 +1305,13 @@ function findTypeId(yy, id) {
 		}
 	}
 
-	throw new Error("ID " + id + " not declared.");
+	throw new Error("ID NOT DECLARED");
 }
+
+/**
+	Find Proc
+	Finds and returns the proc by id.
+**/
 
 function findProc(yy, name) {
 	for (var i = 0; i < yy.procs.length; i++) {
@@ -1184,6 +1322,11 @@ function findProc(yy, name) {
 
 	return "undefined";
 }
+
+/**
+	Create Temp
+	Creates a temp var dependant on type.
+**/
 
 function createTemp(yy, type) {
 	var currentScope = scope.stackTop();
@@ -1203,6 +1346,11 @@ function createTemp(yy, type) {
 
 	return tmp.id;
 }
+
+/**
+	Find dir
+	Returns the dir of the id.
+**/
 
 function findDir(yy, id) {
 	// return id;
@@ -1228,8 +1376,13 @@ function findDir(yy, id) {
 		}
 	}
 
-	throw new Error("ID " + id + " not declared.");
+	throw new Error("ID NOT DECLARED");
 }
+
+/**
+	Find dim
+	Returns the dim of the id
+**/
 
 function findDim(yy, id) {
 	var currentScope = scope.stackTop();

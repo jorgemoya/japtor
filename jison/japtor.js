@@ -72,12 +72,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[4,25],$V1=[2,7],$V2=[1,7],$V3=[1,8],$V4=[1,12],$V5=[1,11],$V6=[1,15],$V7=[1,16],$V8=[1,17],$V9=[1,18],$Va=[1,19],$Vb=[4,8,9,18,25,30,35,45,51,52,62,63,96,97,98],$Vc=[4,8,9,12,14,18,25,30,35,45,51,52,62,63,96,97,98],$Vd=[2,11],$Ve=[1,34],$Vf=[1,40],$Vg=[2,24],$Vh=[8,18,30,35,45,51,52,62,63,96,97,98],$Vi=[1,76],$Vj=[1,72],$Vk=[1,71],$Vl=[2,29],$Vm=[1,58],$Vn=[1,59],$Vo=[1,60],$Vp=[1,64],$Vq=[1,62],$Vr=[1,73],$Vs=[1,74],$Vt=[1,75],$Vu=[14,20,21,22,23,24,32],$Vv=[4,8,9,12,14,18,20,21,22,23,24,25,30,32,35,45,51,52,62,63,96,97,98],$Vw=[9,14,19,32],$Vx=[9,14,19,32,66,67],$Vy=[9,14,19,32,46,66,67,70,71,72,77,78],$Vz=[9,14,19,32,46,66,67,70,71,72,77,78,83,84],$VA=[8,18,30,96,97,98],$VB=[2,97],$VC=[9,14,19,32,46,66,67,70,71,72],$VD=[2,91],$VE=[2,98];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[4,25],$V1=[2,7],$V2=[1,7],$V3=[1,8],$V4=[1,12],$V5=[1,11],$V6=[1,15],$V7=[1,16],$V8=[1,17],$V9=[1,18],$Va=[1,19],$Vb=[4,8,9,18,25,30,35,45,49,50,60,61,95,96,97],$Vc=[4,8,9,12,14,18,25,30,35,45,49,50,60,61,95,96,97],$Vd=[2,11],$Ve=[1,34],$Vf=[1,40],$Vg=[2,24],$Vh=[8,18,30,35,45,49,50,60,61,95,96,97],$Vi=[1,76],$Vj=[1,72],$Vk=[1,71],$Vl=[2,29],$Vm=[1,58],$Vn=[1,59],$Vo=[1,60],$Vp=[1,64],$Vq=[1,62],$Vr=[1,73],$Vs=[1,74],$Vt=[1,75],$Vu=[14,20,21,22,23,24,32],$Vv=[4,8,9,12,14,18,20,21,22,23,24,25,30,32,35,45,49,50,60,61,95,96,97],$Vw=[9,14,19,32],$Vx=[9,14,19,32,64,65],$Vy=[9,14,19,32,46,64,65,68,69,70,75,76],$Vz=[9,14,19,32,46,64,65,68,69,70,75,76,81,82],$VA=[8,18,30,95,96,97],$VB=[2,95],$VC=[9,14,19,32,46,64,65,68,69,70],$VD=[2,89],$VE=[2,96];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"program":3,"EOF":4,"program_declaration":5,"program_block":6,"PROGRAM":7,"ID":8,";":9,"vars":10,"functions":11,"VAR":12,"var_declaration":13,",":14,"type":15,"var_array":16,"[":17,"I":18,"]":19,"INT":20,"FLOAT":21,"STRING":22,"BOOLEAN":23,"VOID":24,"FUNCTION":25,"funct":26,"function_declaration":27,"function_params":28,"function_block":29,"(":30,"vars_params":31,")":32,"{":33,"block":34,"}":35,"vars_params_declaration":36,"statutes":37,"statute":38,"assignment_statute":39,"write_statute":40,"if_statute":41,"while_statute":42,"return_statute":43,"expression_statute":44,"ASSIGN":45,"=":46,"expression":47,"assignment_declaration":48,"assignment_array":49,"array":50,"WRITE":51,"IF":52,"if_condition":53,"if_block":54,"else_statute":55,"else_declaration":56,"else_block":57,"ELSE":58,"while_declaration":59,"while_condition":60,"while_block":61,"WHILE":62,"RETURN":63,"comparison":64,"logical_ops":65,"&":66,"|":67,"exp":68,"comparison_ops":69,"<":70,">":71,"!":72,"term":73,"exp_exit":74,"exp_validation":75,"sum_or_minus":76,"+":77,"-":78,"factor":79,"term_exit":80,"term_validation":81,"mult_or_divi":82,"*":83,"/":84,"constant":85,"id":86,"options":87,"add_closure":88,"end_closure":89,"params":90,"find_proc":91,"params_input":92,"param_expression":93,"vector":94,"matrix":95,"F":96,"B":97,"S":98,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"EOF",7:"PROGRAM",8:"ID",9:";",12:"VAR",14:",",17:"[",18:"I",19:"]",20:"INT",21:"FLOAT",22:"STRING",23:"BOOLEAN",24:"VOID",25:"FUNCTION",30:"(",32:")",33:"{",35:"}",45:"ASSIGN",46:"=",51:"WRITE",52:"IF",58:"ELSE",62:"WHILE",63:"RETURN",66:"&",67:"|",70:"<",71:">",72:"!",77:"+",78:"-",83:"*",84:"/",96:"F",97:"B",98:"S"},
-productions_: [0,[3,1],[3,2],[5,3],[6,2],[10,5],[10,3],[10,0],[13,3],[16,3],[16,6],[16,0],[15,1],[15,1],[15,1],[15,1],[15,1],[11,3],[11,1],[26,3],[27,2],[28,3],[29,4],[31,2],[31,0],[36,3],[36,4],[34,1],[37,2],[37,0],[38,1],[38,1],[38,1],[38,1],[38,1],[38,1],[39,5],[39,8],[39,11],[48,2],[49,1],[49,0],[40,5],[41,4],[53,3],[54,3],[55,2],[55,0],[56,1],[57,3],[42,3],[59,1],[60,3],[61,3],[43,3],[44,2],[47,1],[47,3],[65,2],[65,2],[64,1],[64,3],[69,2],[69,2],[69,2],[69,2],[69,1],[69,1],[68,2],[74,3],[74,1],[75,0],[76,1],[76,1],[73,2],[80,3],[80,1],[81,0],[82,1],[82,1],[79,1],[79,2],[79,5],[86,1],[87,1],[87,1],[87,0],[90,4],[91,0],[92,1],[92,3],[92,0],[93,1],[50,1],[50,1],[94,5],[95,10],[88,0],[89,0],[85,1],[85,1],[85,1],[85,1]],
+symbols_: {"error":2,"program":3,"EOF":4,"program_declaration":5,"program_block":6,"PROGRAM":7,"ID":8,";":9,"vars":10,"functions":11,"VAR":12,"var_declaration":13,",":14,"type":15,"var_array":16,"[":17,"I":18,"]":19,"INT":20,"FLOAT":21,"STRING":22,"BOOLEAN":23,"VOID":24,"FUNCTION":25,"funct":26,"function_declaration":27,"function_params":28,"function_block":29,"(":30,"vars_params":31,")":32,"{":33,"block":34,"}":35,"vars_params_declaration":36,"statutes":37,"statute":38,"assignment_statute":39,"write_statute":40,"if_statute":41,"while_statute":42,"return_statute":43,"expression_statute":44,"ASSIGN":45,"=":46,"expression":47,"assignment_declaration":48,"WRITE":49,"IF":50,"if_condition":51,"if_block":52,"else_statute":53,"else_declaration":54,"else_block":55,"ELSE":56,"while_declaration":57,"while_condition":58,"while_block":59,"WHILE":60,"RETURN":61,"comparison":62,"logical_ops":63,"&":64,"|":65,"exp":66,"comparison_ops":67,"<":68,">":69,"!":70,"term":71,"exp_exit":72,"exp_validation":73,"sum_or_minus":74,"+":75,"-":76,"factor":77,"term_exit":78,"term_validation":79,"mult_or_divi":80,"*":81,"/":82,"constant":83,"id":84,"options":85,"add_closure":86,"end_closure":87,"params":88,"array":89,"find_proc":90,"params_input":91,"param_expression":92,"vector":93,"matrix":94,"F":95,"B":96,"S":97,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"EOF",7:"PROGRAM",8:"ID",9:";",12:"VAR",14:",",17:"[",18:"I",19:"]",20:"INT",21:"FLOAT",22:"STRING",23:"BOOLEAN",24:"VOID",25:"FUNCTION",30:"(",32:")",33:"{",35:"}",45:"ASSIGN",46:"=",49:"WRITE",50:"IF",56:"ELSE",60:"WHILE",61:"RETURN",64:"&",65:"|",68:"<",69:">",70:"!",75:"+",76:"-",81:"*",82:"/",95:"F",96:"B",97:"S"},
+productions_: [0,[3,1],[3,2],[5,3],[6,2],[10,5],[10,3],[10,0],[13,3],[16,3],[16,6],[16,0],[15,1],[15,1],[15,1],[15,1],[15,1],[11,3],[11,1],[26,3],[27,2],[28,3],[29,4],[31,2],[31,0],[36,3],[36,4],[34,1],[37,2],[37,0],[38,1],[38,1],[38,1],[38,1],[38,1],[38,1],[39,5],[39,8],[39,11],[48,2],[40,5],[41,4],[51,3],[52,3],[53,2],[53,0],[54,1],[55,3],[42,3],[57,1],[58,3],[59,3],[43,3],[44,2],[47,1],[47,3],[63,2],[63,2],[62,1],[62,3],[67,2],[67,2],[67,2],[67,2],[67,1],[67,1],[66,2],[72,3],[72,1],[73,0],[74,1],[74,1],[71,2],[78,3],[78,1],[79,0],[80,1],[80,1],[77,1],[77,2],[77,5],[84,1],[85,1],[85,1],[85,0],[88,4],[90,0],[91,1],[91,3],[91,0],[92,1],[89,1],[89,1],[93,5],[94,10],[86,0],[87,0],[83,1],[83,1],[83,1],[83,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -88,74 +88,81 @@ return null;
 break;
 case 3:
 
-					var proc = new Proc("global", "void", dirProc(), [], [], null);
-					yy.procs.push(proc);
-					scope.push("global");
-					yy.quads.push(["goto", null, null, null]);
-					jumps.push(yy.quads.length - 1);
+					var proc = new Proc("global", "void", dirProc(), [], [], null); // Creates global proc
+					yy.procs.push(proc); // Pushes scope to procs
+					scope.push("global"); // Makes global current scope
+					yy.quads.push(["goto", null, null, null]); // Expects goto main
+					jumps.push(yy.quads.length - 1); // Expects main return
 				
 break;
 case 8:
 
-					var currentScope = scope.stackTop();
-					var proc = findProc(yy, currentScope);
+					var currentScope = scope.stackTop(); // Looks for scope (global, main, function1..)
+					var proc = findProc(yy, currentScope); // Finds current process
 					var variable = {
-						dir: assignMemory($$[$0-2], false, false, $$[$0]),
+						dir: assignMemory($$[$0-2], false, false, $$[$0]), // Assigns memory depending on type and if is an array
 						id: $$[$0-1],
 						type: $$[$0-2],
-						dim: $$[$0]
+						dim: $$[$0] // Array with dimensions of array or empty
 					}
-					proc.vars.push(variable);
+					proc.vars.push(variable); // Pushes to process
 				
 break;
 case 9:
 
-				yy.consts.push([parseInt($$[$0-1]), assignMemory("int", false, true, [])]);
+				yy.consts.push([parseInt($$[$0-1]), assignMemory("int", false, true, [])]); // Adds I to constants
+
+				// Pushes I to stacks
 				types.push("int");
 				ids.push(parseInt($$[$0-1]));
 
-				this.$ = [$$[$0-1]];
+				this.$ = [$$[$0-1]]; // Returns an array with I for var_declaration
 			
 break;
 case 10:
 
-				yy.consts.push([parseInt($$[$0-4]), assignMemory("int", false, true, [])]);
+				yy.consts.push([parseInt($$[$0-4]), assignMemory("int", false, true, [])]); // Adds I to constants
+				// Pushes I to stacks
 				types.push("int");
-				ids.push(parseInt($$[$0-4]));
+				ids.push(parseInt($$[$0-4])); // Returns an array with I for var_declaration
 
-				yy.consts.push([parseInt($$[$0-1]), assignMemory("int", false, true, [])]);
+				yy.consts.push([parseInt($$[$0-1]), assignMemory("int", false, true, [])]); // Adds I to constants
+				// Pushes I to stacks
 				types.push("int");
-				ids.push(parseInt($$[$0-1]));
+				ids.push(parseInt($$[$0-1])); // Returns an array with I for var_declaration
 				this.$ = [$$[$0-4],$$[$0-1]];
 			
 break;
 case 11:
 
-				this.$ = [];
+				this.$ = []; // Returns an empty array
 			
 break;
 case 17:
 
+					// After the creation of all functions, if no main was declared, return error.
 					var main = findProc(yy, "main");
 					if (main === "undefined") {
-						throw new Error("No main declared. Please declare a void main function.");
+						throw new Error("NO MAIN DECLARED.");
 					}
 				
 break;
 case 19:
 
-					if (scope.stackTop().id !== "main") {
+					// Functions always generate a return unless main
+					if (scope.stackTop().id !== "main") { // Scope is a stack with functions
 						yy.quads.push(["return", null, null, null]);
 					}
 				
 break;
 case 20:
 
-					var dir = dirProc();
-					var proc = new Proc($$[$0], $$[$0-1], dir, [], [], yy.quads.length);
-					yy.procs.push(proc);
-					scope.push($$[$0]);
+					var dir = dirProc(); // Returns the next avaiable Proc dir
+					var proc = new Proc($$[$0], $$[$0-1], dir, [], [], yy.quads.length); // Created a new Process with ID, type, and dir
+					yy.procs.push(proc); // Pushes to procs array
+					scope.push($$[$0]); // Pushes to scope stack
 
+					// If id == main, returns the position of the quads for the initial goto
 					if ($$[$0] === "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
@@ -164,154 +171,175 @@ case 20:
 break;
 case 22:
 
+					// Main must be the last declared function. No other function will run after main.
 					if (scope.pop() === "main") {
 						return null;
 					}
 				
 break;
-case 25: case 26:
+case 25:
 
-					var currentScope = scope.stackTop();
-					var proc = findProc(yy, currentScope);
+					var currentScope = scope.stackTop(); // Looks for scope (global, main, function1..)
+					var proc = findProc(yy, currentScope); // Finds current process
 					var variable = {
-						dir: assignMemory($$[$0-2], false, false, $$[$0]),
+						dir: assignMemory($$[$0-2], false, false, $$[$0]), // Assigns memory depending on type and if is an array
 						id: $$[$0-1],
 						type: $$[$0-2],
-						dim: $$[$0]
+						dim: $$[$0] // Array with dimensions of array or empty
 					}
-					proc.vars.push(variable);
-					proc.params.push(variable);
+					proc.vars.push(variable); // Pushes to process vars
+					proc.params.push(variable); // Pushes to params to know it is a param
+				
+break;
+case 26:
+
+					var currentScope = scope.stackTop(); // Looks for scope (global, main, function1..)
+					var proc = findProc(yy, currentScope); // Finds current process
+					var variable = {
+						dir: assignMemory($$[$0-2], false, false, $$[$0]), // Assigns memory depending on type and if is an array
+						id: $$[$0-1],
+						type: $$[$0-2],
+						dim: $$[$0]  // Array with dimensions of array or empty
+					}
+					proc.vars.push(variable); // Pushes to process vars
+					proc.params.push(variable); // Pushes to params to know it is a param
 				
 break;
 case 36:
 
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var id = $$[$0-3];
-					var idt = findTypeId(yy, $$[$0-3]);
-					if (var1t === idt || (var1t === "int" && idt === "float")) {
-						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, id)]);
+					var var1 = ids.pop(); // Pops from stack expression id
+					var var1t = types.pop(); // Pops from stack expression type
+					var id = $$[$0-3]; // ID
+					var idt = findTypeId(yy, $$[$0-3]); //Type of ID
+					if (var1t === idt || (var1t === "int" && idt === "float")) { // If equals types or int && float
+						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, id)]); // Creates quad and finds the dir of each of the vars
 					} else {
-						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						throw new Error("INCOMPATIBLE TYPES");
 					}
 				
 break;
 case 37:
 
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var id = $$[$0-6];
-					var idt = findTypeId(yy, $$[$0-6]);
+					var var1 = ids.pop(); // Pops from stack second expression id
+					var var1t = types.pop(); // Pops from stack second expression type
+					var var2 = ids.pop(); // Pops from stack first expression id
+					var var2t = types.pop(); // Pops from stack first expression type
+					var id = $$[$0-6]; // ID
+					var idt = findTypeId(yy, $$[$0-6]); // Type of ID
 
-					var dims = findDim(yy, id);
-					if (dims.length != 1) {
-						throw new Error("Incorrect array dimension.")
+					var dims = findDim(yy, id); // Returns the dimension of ID
+					if (dims.length != 1) { // If Not ID[]
+						throw new Error("INCORRECT ARRAY DIMENSION")
 					}
 
-					if (var2t != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (var2t != "int") { // Type of the first expression must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);
-					yy.quads.push(["++", findDir(yy, id), findDir(yy, var2), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]); // Adds verify to quads with dir of vars, and the limit from 0 to dim[0]
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, var2), "(" + findDir(yy, createTemp(yy, idt)) + ")"]); // DirBase + S1
 
 					var pointer = ids.pop(); types.pop();
 
 					if (var1t === idt || (var1t === "int" && idt === "float")) {
-						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, pointer)]);
+						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, pointer)]); // Assign
 					} else {
-						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						throw new Error("INCOMPATIBLE TYPES");
 					}
 				
 break;
 case 38:
 
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var var3 = ids.pop();
-					var var3t = types.pop();
-					var id = $$[$0-9];
-					var idt = findTypeId(yy, $$[$0-9]);
+					var var1 = ids.pop(); // Pops from stack third expression id
+					var var1t = types.pop();// Pops from stack third expression type
+					var var2 = ids.pop(); // Pops from stack second expression id
+					var var2t = types.pop(); // Pops from stack second expression type
+					var var3 = ids.pop(); // Pops from stack first expression id
+					var var3t = types.pop(); // Pops from stack first expression type
+					var id = $$[$0-9]; // ID
+					var idt = findTypeId(yy, $$[$0-9]); // Type of ID
 
-					var dims = findDim(yy, id);
-					if (dims.length != 2) {
-						throw new Error("Incorrect array dimension.")
+					var dims = findDim(yy, id); // Returns the dimension of ID
+					if (dims.length != 2) { // If Not ID[][]
+						throw new Error("INCORRECT ARRAY DIMENSION")
 					}
 
-					if (var2t != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (var2t != "int") { // Type of the second expression must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, var3), 0, dims[0]-1]);
-					yy.quads.push(["*", findDir(yy, var3), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var3t))]);
+					yy.quads.push(["verify", findDir(yy, var3), 0, dims[0]-1]); // Adds verify to quads with dir of vars, and the limit from 0 to dim[0]
+					yy.quads.push(["*", findDir(yy, var3), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var3t))]); // m1 * s1
 
 					var multpointer = ids.pop();
 					var multpointertype = types.pop();
 
-					yy.quads.push(["verify", findDir(yy, var2), 0, dims[1]-1]);
-					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var2), findDir(yy, createTemp(yy, multpointertype))]);
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[1]-1]); // Adds verify to quads with dir of vars, and the limit from 0 to dim[1]
+					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var2), findDir(yy, createTemp(yy, multpointertype))]); // (m1 * s1) + s2
 
 					var sumpointer = ids.pop();
 					var sumpointertype = types.pop();
 
-					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]); // DirBase + S
 
 					var pointer = ids.pop(); types.pop();
 
 					if (var1t === idt || (var1t === "int" && idt === "float")) {
-						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, pointer)]);
+						var op = yy.quads.push([$$[$0-2], findDir(yy, var1), null, findDir(yy, pointer)]); // Assign
 					} else {
-						throw new Error(var1 + " and " + id + " are incompatible types " + var1t + " and " + idt + " for assignment.");
+						throw new Error("INCOMPATIBLE TYPES");
 					}
 				
 break;
 case 39:
 
-					ids.push($$[$0]);
-					types.push(findTypeId(yy, $$[$0]));
+					ids.push($$[$0]); // Pushes ID to stack
+					types.push(findTypeId(yy, $$[$0])); // Pushes type to stack
+				
+break;
+case 40:
+
+					yy.quads.push(["write", null, null, findDir(yy, ids.pop())]); // Quad that prints the ID in dir
 				
 break;
 case 42:
 
-					yy.quads.push(["write", null, null, findDir(yy, ids.pop())]);
-				
-break;
-case 44:
-
-					var type = types.pop();
-					var id = ids.pop();
-					if (type === "boolean") {
-						yy.quads.push(["gotof", findDir(yy, id), null, null]);
-						jumps.push(yy.quads.length - 1);
+					var type = types.pop(); // Pops from stack
+					var id = ids.pop(); // Pops from stack
+					if (type === "boolean") { // Verify expression is boolean
+						yy.quads.push(["gotof", findDir(yy, id), null, null]); // GotoF
+						jumps.push(yy.quads.length - 1); // Adds position to jump stack
 					} else {
-						throw new Error("IF statements need a valid boolean condition.");
+						throw new Error("INVALID IF STATEMENT");
 					}
 				
 break;
-case 47: case 49: case 50:
+case 45: case 48:
 
-					var jump = jumps.pop();
-					yy.quads[jump][3] = yy.quads.length;
+					var jump = jumps.pop(); // Pops from stack
+					yy.quads[jump][3] = yy.quads.length; // Adds position to jump value
 				
 break;
-case 48:
+case 46:
 
-					var jump = jumps.pop();
+					var jump = jumps.pop(); // Pops from stack
 					yy.quads.push(["goto", null, null, null]);
-					yy.quads[jump][3] = yy.quads.length;
+					yy.quads[jump][3] = yy.quads.length; // Adds position to jump value
 					jumps.push(yy.quads.length - 1);
 				
 break;
-case 51:
+case 47:
+
+					var jump = jumps.pop(); // Pops from stack
+					yy.quads[jump][3] = yy.quads.length;  // Adds position to jump value
+				
+break;
+case 49:
 
 					jumps.push(yy.quads.length);
 				
 break;
-case 52:
+case 50:
 
 					var type = types.pop();
 					var id = ids.pop();
@@ -319,125 +347,125 @@ case 52:
 						yy.quads.push(["gotof", findDir(yy,id), null, null]);
 						jumps.push(yy.quads.length - 1);
 					} else {
-						throw new Error("WHILE statement needs a valid boolean condition.");
+						throw new Error("INVALID WHILE STATEMENT");
 					}
 				
 break;
-case 53:
+case 51:
 
-					var jump = jumps.pop();
-					yy.quads.push(["goto",null,null,jumps.pop()]);
-					jumps.push(jump);
+					var jump = jumps.pop(); // Pops from stack
+					yy.quads.push(["goto",null,null,jumps.pop()]); //Goto quad jump value
+					jumps.push(jump); // Readds jump to stack
 				
 break;
-case 54:
+case 52:
 
-					proc = findProc(yy, scope.stackTop());
-					var id = ids.pop();
-					var type = types.pop();
-					if (proc.type !== "void" && proc.type === type)	{
-						yy.quads.push(["return", null, null, findDir(yy,id)]);
+					proc = findProc(yy, scope.stackTop()); // Find proc being used (first in stack)
+					var id = ids.pop(); // Pop from stack
+					var type = types.pop(); // Pop from stack
+					if (proc.type !== "void" && proc.type === type)	{ // If not void and if equal types
+						yy.quads.push(["return", null, null, findDir(yy,id)]); // Return the result of te function to the dir of the id
 					} else {
-						throw new Error("Expected a return.");
+						throw new Error("EXPECTED RETURN");
 					}
 				
 break;
-case 57:
+case 55:
 
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var op = ops.pop();
-					var type = validateSem(op, var1t, var2t);
-					if (type !== "x") {
-						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
+					var var2 = ids.pop(); // Pop comparison2 id
+					var var2t = types.pop(); // Pop comparison2 type
+					var var1 = ids.pop(); // Pop comparison1 id
+					var var1t = types.pop(); // Pop comparison1 type
+					var op = ops.pop(); // Pop op
+					var type = validateSem(op, var1t, var2t); // Validates types are compatible
+					if (type !== "x") { // If compatible
+						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))]; // Adds logical_ops quad
 					} else {
-						throw new Error("Type " + var1t + " and type " + var2t + " can't be logically compared.");
+						throw new Error("ILLOGICAL COMPARISON");
 					}
 					yy.quads.push(op);
 				
 break;
-case 58:
+case 56:
 ops.push("&&");
 break;
-case 59:
+case 57:
 ops.push("||");
 break;
-case 61:
+case 59:
 
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var op = ops.pop();
-					var type = validateSem(op, var1t, var2t);
-					if (type !== "x") {
-						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
+					var var2 = ids.pop(); // Pop exp2 id
+					var var2t = types.pop(); // Pop exp2 type
+					var var1 = ids.pop(); // Pop exp1 id
+					var var1t = types.pop(); // Pop exp1 type
+					var op = ops.pop(); // Pop op
+					var type = validateSem(op, var1t, var2t); // Validates types are compatible
+					if (type !== "x") { // If compatible
+						var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))]; // Adds comparison quad
 					} else {
-						throw new Error("Type " + var1t + " and type " + var2t + " can't be compared.");
+						throw new Error("ILLOGICAL COMPARISON");
 					}
 					yy.quads.push(op);
 				
 break;
-case 62:
+case 60:
 ops.push("<=");
 break;
-case 63:
+case 61:
 ops.push(">=");
 break;
-case 64:
+case 62:
 ops.push("!=");
 break;
-case 65:
+case 63:
 ops.push("==");
 break;
-case 66:
+case 64:
 ops.push(">");
 break;
-case 67:
+case 65:
 ops.push("<");
 break;
-case 71:
+case 69:
 
-					if (ops.stackTop() === "+" || ops.stackTop() === "-") {
-						var var2 = ids.pop();
-						var var2t = types.pop();
-						var var1 = ids.pop();
-						var var1t = types.pop();
-						var op = ops.pop();
-						var type = validateSem(op, var1t, var2t);
+					if (ops.stackTop() === "+" || ops.stackTop() === "-") { // If first from ops stack is + or -
+						var var2 = ids.pop(); // Pop value2 id
+						var var2t = types.pop(); // Pop value2 type
+						var var1 = ids.pop(); // Pop value1 id
+						var var1t = types.pop(); // Pop value1 type
+						var op = ops.pop(); // Pop ops
+						var type = validateSem(op, var1t, var2t); // Validates types are compatible
 						if(type !== "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
-							throw new Error("Type " + var1t + " and type " + var2t + " can't be sumed/substracted compared.");
+							throw new Error("INVALID TYPES");
 						}
-						yy.quads.push(op);
+						yy.quads.push(op); // Adds + or - quad
 					}
 				
 break;
-case 72: case 73: case 78: case 79:
+case 70: case 71: case 76: case 77:
 ops.push($$[$0]);
 break;
-case 77:
+case 75:
 
-					if (ops.stackTop() === "*" || ops.stackTop() === "/") {
-						var var2 = ids.pop();
-						var var2t = types.pop();
-						var var1 = ids.pop();
-						var var1t = types.pop();
-						var op = ops.pop();
-						var type = validateSem(op, var1t, var2t);
+					if (ops.stackTop() === "*" || ops.stackTop() === "/") { // If first from ops stack is * or /
+						var var2 = ids.pop(); // Pop value2 id
+						var var2t = types.pop(); // Pop value2 type
+						var var1 = ids.pop(); // Pop value1 id
+						var var1t = types.pop(); // Pop value1 type
+						var op = ops.pop(); // Pop ops
+						var type = validateSem(op, var1t, var2t); // Validates types are compatible
 						if (type !== "x") {
 							var op = [op, findDir(yy, var1), findDir(yy, var2), findDir(yy, createTemp(yy, type))];
 						} else {
-							throw new Error("Type " + var1t + " and type " + var2t + " can't be multiplied/divided compared.");
+							throw new Error("INVALID TYPES");
 						}
-						yy.quads.push(op);
+						yy.quads.push(op); // Adds * or / quad
 					}
 				
 break;
-case 83:
+case 81:
 
 					var proc = findProc(yy, $$[$0]);
 					if (proc !== "undefined") {
@@ -451,14 +479,14 @@ case 83:
 					}
 				
 break;
-case 86:
+case 84:
 
 					if (expectingParams) {
-						throw new Error("Need paramters.");
+						throw new Error("NEED PARAMETERS");
 					}
 				
 break;
-case 87:
+case 85:
 
 					if (tempProc.type !== "void") {
 						var temp = createTemp(yy, tempProc.type);
@@ -472,7 +500,7 @@ case 87:
 					expectingParams = false;
 				
 break;
-case 88:
+case 86:
 
 						var id = ids.pop();
 						tempProc = findProc(yy, id);
@@ -482,117 +510,124 @@ case 88:
 						paramTemp = 0;
 				
 break;
-case 92:
+case 90:
 
-					var id = ids.pop();
-					var type = types.pop();
-					if (paramTemp >= tempProc.numParams()) {
-						throw new Error("Incorrect paramaters for function.");
+					var id = ids.pop(); // Pop from stack
+					var type = types.pop(); // Pop from stack
+					if (paramTemp >= tempProc.numParams()) { // If the numbers of params is higher than what is expected
+						throw new Error("INCORRECT PARAMETERS");
 					}
 
 					if (tempProc.params[paramTemp].type === type || (tempProc.params[paramTemp].type === "float" && type === "int") ) {
-						if (tempProc.params[paramTemp].dim > 0) {
+						if (tempProc.params[paramTemp].dim > 0) { // if there are many params
 							yy.quads.push(["param", "(" + findDir(yy, id) + "," + tempProc.params[paramTemp].dim + ")", null, ++paramTemp]);
 						} else {
 							yy.quads.push(["param", findDir(yy, id), null, ++paramTemp]);
 						}
 					} else {
-						throw new Error("Incorrect parameter types.");
+						throw new Error("INVALID TYPES");
 					}
 					// ops.pop();
 				
 break;
-case 95:
+case 93:
 
-					var id = ids.pop(); //result of exp
-					var type = types.pop();
-					var id_array = ids.pop();
-					var type_array = types.pop();
+					var id = ids.pop(); // Pop exp id
+					var type = types.pop(); // Pop exp type
+					var id_array = ids.pop();  // Pop array id
+					var type_array = types.pop(); // Pop array type
 
-					var dims = findDim(yy, id_array);
+					var dims = findDim(yy, id_array); // Find dim size
 					if (dims.length == 2 || dims.length == 0) {
-						throw new Error("Incorrect array dimension.")
+						throw new Error("INCORRECT ARRAY DIMENSION"); // Incorrect size
 					}
 
-					if (type != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (type != "int") { // Must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, id), 0, dims[0]-1]);
-					yy.quads.push(["++", findDir(yy, id_array), findDir(yy, id), "(" + findDir(yy, createTemp(yy, type_array)) + ")"]);
+					yy.quads.push(["verify", findDir(yy, id), 0, dims[0]-1]); // Pushes verify to quad from 0 to dims[0]-1
+					yy.quads.push(["++", findDir(yy, id_array), findDir(yy, id), "(" + findDir(yy, createTemp(yy, type_array)) + ")"]); // DirBase + s1
 				
 break;
-case 96:
+case 94:
 
-					var var1 = ids.pop();
-					var var1t = types.pop();
-					var var2 = ids.pop();
-					var var2t = types.pop();
-					var id = ids.pop();
-					var idt = types.pop();;
+					var var1 = ids.pop(); // Pop exp2 id
+					var var1t = types.pop(); // Pop exp2 type
+					var var2 = ids.pop(); // Pop exp1 id
+					var var2t = types.pop(); // Pop exp1 type
+					var id = ids.pop(); // Pop array id
+					var idt = types.pop();; // Pop array type
 
-					var dims = findDim(yy, id);
+					var dims = findDim(yy, id); // Find dim size
 					if (dims.length != 2) {
-						throw new Error("Incorrect array dimension.")
+						throw new Error("INCORRECT ARRAY DIMENSION") // Incorrect size
 					}
 
-					if (var2t != "int") {
-						throw new Error("Array pointers only handle type int.");
+					if (var2t != "int") { // Must be int
+						throw new Error("ARRAY POINTERS ONLY HANDLE INTS");
 					}
 
-					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);
-					yy.quads.push(["*", findDir(yy, var2), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var2t))]);
+					yy.quads.push(["verify", findDir(yy, var2), 0, dims[0]-1]);  // Pushes verify to quad from 0 to dims[0]-1
+					yy.quads.push(["*", findDir(yy, var2), findDir(yy, parseInt(dims[0])), findDir(yy, createTemp(yy, var2t))]); // s1 * m1
 
 					var multpointer = ids.pop();
 					var multpointertype = types.pop();
 
-					yy.quads.push(["verify", findDir(yy, var1), 0, dims[1]-1]);
-					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var1), findDir(yy, createTemp(yy, multpointertype))]);
+					yy.quads.push(["verify", findDir(yy, var1), 0, dims[1]-1]);  // Pushes verify to quad from 0 to dims[1]-1
+					yy.quads.push(["+", findDir(yy, multpointer), findDir(yy, var1), findDir(yy, createTemp(yy, multpointertype))]); // (s1 * m1) + s2
 
 					var sumpointer = ids.pop();
 					var sumpointertype = types.pop();
 
-					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]);
+					yy.quads.push(["++", findDir(yy, id), findDir(yy, sumpointer), "(" + findDir(yy, createTemp(yy, idt)) + ")"]); // DirBase + s
 				
 break;
-case 97:
+case 95:
 ops.push("|");
 break;
-case 98:
+case 96:
 ops.pop();
 break;
-case 99:
+case 97:
 
+					// Add INT to constant
 					yy.consts.push([parseInt($$[$0]), assignMemory("int", false, true, [])]);
+					// Pushes to stack
 					types.push("int");
 					ids.push(parseInt($$[$0]));
 				
 break;
-case 100:
+case 98:
 
+					// Add FLOAT to constant
 					yy.consts.push([parseFloat($$[$0]), assignMemory("float", false, true, [])]);
 					types.push("float");
 					ids.push(parseFloat($$[$0]));
 				
 break;
-case 101:
+case 99:
 
+					// Add BOOLEAN to constant
 					yy.consts.push([$$[$0], assignMemory("boolean", false, true, [])]);
+					// Pushes to stack
 					types.push("boolean");
 					ids.push($$[$0]);
 				
 break;
-case 102:
+case 100:
 
+					// Add STRING to constant
 					yy.consts.push([$$[$0], assignMemory("string", false, true, [])]);
+					// Pushes to stack
 					types.push("string");
 					ids.push($$[$0]);
 				
 break;
 }
 },
-table: [{3:1,4:[1,2],5:3,7:[1,4]},{1:[3]},{1:[2,1]},o($V0,$V1,{6:5,10:6,12:$V2,14:$V3}),{8:[1,9]},{1:[2,2]},{4:$V4,11:10,25:$V5},{13:13,15:14,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va},{13:20,15:14,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va},{9:[1,21]},{1:[2,4]},{15:24,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,26:22,27:23},{1:[2,18]},{9:$V1,10:25,12:$V2,14:$V3},{8:[1,26]},{8:[2,12]},{8:[2,13]},{8:[2,14]},{8:[2,15]},{8:[2,16]},o($Vb,$V1,{10:27,12:$V2,14:$V3}),o([4,12,14,25],[2,3]),{4:$V4,11:28,25:$V5},{28:29,30:[1,30]},{8:[1,31]},{9:[1,32]},o($Vc,$Vd,{16:33,17:$Ve}),o($Vb,[2,6]),{1:[2,17]},{29:35,33:[1,36]},{14:$Vf,15:39,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,31:37,32:$Vg,36:38},{30:[2,20]},o($Vb,$V1,{10:41,12:$V2,14:$V3}),o($Vc,[2,8]),{18:[1,42]},o($V0,[2,19]),o($Vh,$V1,{10:43,12:$V2,14:$V3}),{32:[1,44]},{14:$Vf,15:39,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,31:45,32:$Vg,36:38},{8:[1,46]},{15:47,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va},o($Vb,[2,5]),{19:[1,48]},{8:$Vi,18:$Vj,30:$Vk,34:49,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,51:$Vn,52:$Vo,59:61,62:$Vp,63:$Vq,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{33:[2,21]},{32:[2,23]},o($Vu,$Vd,{16:77,17:$Ve}),{8:[1,78]},o($Vv,[2,9],{17:[1,79]}),{35:[1,80]},{35:[2,27]},{8:$Vi,18:$Vj,30:$Vk,35:$Vl,37:81,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,51:$Vn,52:$Vo,59:61,62:$Vp,63:$Vq,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},o($Vh,[2,30]),o($Vh,[2,31]),o($Vh,[2,32]),o($Vh,[2,33]),o($Vh,[2,34]),o($Vh,[2,35]),{8:[1,82]},{30:[1,83]},{30:[1,85],53:84},{30:[1,87],60:86},{8:$Vi,18:$Vj,30:$Vk,47:88,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{9:[1,89]},{30:[2,51]},o($Vw,[2,56],{65:90,66:[1,91],67:[1,92]}),o($Vx,[2,60],{69:93,46:[1,97],70:[1,94],71:[1,95],72:[1,96]}),o($Vy,[2,71],{74:98,75:99}),o($Vz,[2,77],{80:100,81:101}),o($Vz,[2,80]),o($Vz,[2,86],{87:102,90:103,50:104,94:106,95:107,17:[1,108],30:[1,105]}),o($VA,$VB,{88:109}),o($Vz,[2,99]),o($Vz,[2,100]),o($Vz,[2,101]),o($Vz,[2,102]),o([9,14,17,19,30,32,46,66,67,70,71,72,77,78,83,84],[2,83]),o($Vu,[2,25]),o($Vu,$Vd,{16:110,17:$Ve}),{18:[1,111]},o($V0,[2,22]),{35:[2,28]},{17:[1,113],46:[1,112]},{8:$Vi,18:$Vj,30:$Vk,47:114,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{33:[1,116],54:115},{8:$Vi,18:$Vj,30:$Vk,47:117,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{33:[1,119],61:118},{8:$Vi,18:$Vj,30:$Vk,47:120,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{9:[1,121]},o($Vh,[2,55]),{8:$Vi,18:$Vj,30:$Vk,64:122,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{66:[1,123]},{67:[1,124]},{8:$Vi,18:$Vj,30:$Vk,68:125,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},o($VA,[2,67],{46:[1,126]}),o($VA,[2,66],{46:[1,127]}),{46:[1,128]},{46:[1,129]},o($VC,[2,68]),o($VC,[2,70],{76:130,77:[1,131],78:[1,132]}),o($Vy,[2,74]),o($Vy,[2,76],{82:133,83:[1,134],84:[1,135]}),o($Vz,[2,81]),o($Vz,[2,84]),o($Vz,[2,85]),o([8,18,30,32,96,97,98],[2,88],{91:136}),o($Vz,[2,93]),o($Vz,[2,94]),o($VA,$VB,{88:137}),{8:$Vi,18:$Vj,30:$Vk,47:138,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},o($Vu,[2,26]),{19:[1,139]},{8:$Vi,18:$Vj,30:$Vk,47:140,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:141,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{32:[1,142]},o($Vh,[2,47],{55:143,56:144,58:[1,145]}),{8:$Vi,18:$Vj,30:$Vk,34:146,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,51:$Vn,52:$Vo,59:61,62:$Vp,63:$Vq,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{32:[1,147]},o($Vh,[2,50]),{8:$Vi,18:$Vj,30:$Vk,34:148,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,51:$Vn,52:$Vo,59:61,62:$Vp,63:$Vq,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{32:[1,149]},o($Vh,[2,54]),o($Vw,[2,57]),o($VA,[2,58]),o($VA,[2,59]),o($Vx,[2,61]),o($VA,[2,62]),o($VA,[2,63]),o($VA,[2,64]),o($VA,[2,65]),{8:$Vi,18:$Vj,30:$Vk,68:150,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},o($VA,[2,72]),o($VA,[2,73]),{8:$Vi,18:$Vj,30:$Vk,73:151,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},o($VA,[2,78]),o($VA,[2,79]),{8:$Vi,18:$Vj,30:$Vk,32:$VD,47:154,64:65,68:66,73:67,79:68,85:69,86:70,92:152,93:153,96:$Vr,97:$Vs,98:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:155,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{32:$VE,89:156},o($Vv,[2,10]),{9:[1,157]},{19:[1,158]},{9:[1,159]},o($Vh,[2,43]),{33:[1,161],57:160},{33:[2,48]},{35:[1,162]},{33:[2,44]},{35:[1,163]},{33:[2,52]},o($VC,[2,69]),o($Vy,[2,75]),{32:[1,164]},{14:[1,165],32:[2,89]},o([14,32],[2,92]),{19:$VE,89:166},{32:[1,167]},o($Vh,[2,36]),{17:[1,169],46:[1,168]},o($Vh,[2,42]),o($Vh,[2,46]),{8:$Vi,18:$Vj,30:$Vk,34:170,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,51:$Vn,52:$Vo,59:61,62:$Vp,63:$Vq,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},o([8,18,30,35,45,51,52,58,62,63,96,97,98],[2,45]),o($Vh,[2,53]),o($Vz,[2,87]),{8:$Vi,18:$Vj,30:$Vk,32:$VD,47:154,64:65,68:66,73:67,79:68,85:69,86:70,92:171,93:153,96:$Vr,97:$Vs,98:$Vt},{19:[1,172]},o($Vz,[2,82]),{8:$Vi,18:$Vj,30:$Vk,47:173,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:174,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{35:[1,175]},{32:[2,90]},o($Vz,[2,95],{17:[1,176]}),{9:[1,177]},{19:[1,178]},o($Vh,[2,49]),o($VA,$VB,{88:179}),o($Vh,[2,37]),{46:[1,180]},{8:$Vi,18:$Vj,30:$Vk,47:181,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:182,64:65,68:66,73:67,79:68,85:69,86:70,96:$Vr,97:$Vs,98:$Vt},{19:$VE,89:183},{9:[1,184]},{19:[1,185]},o($Vh,[2,38]),o($Vz,[2,96])],
-defaultActions: {2:[2,1],5:[2,2],10:[2,4],12:[2,18],15:[2,12],16:[2,13],17:[2,14],18:[2,15],19:[2,16],28:[2,17],31:[2,20],44:[2,21],45:[2,23],50:[2,27],64:[2,51],81:[2,28],145:[2,48],147:[2,44],149:[2,52],171:[2,90]},
+table: [{3:1,4:[1,2],5:3,7:[1,4]},{1:[3]},{1:[2,1]},o($V0,$V1,{6:5,10:6,12:$V2,14:$V3}),{8:[1,9]},{1:[2,2]},{4:$V4,11:10,25:$V5},{13:13,15:14,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va},{13:20,15:14,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va},{9:[1,21]},{1:[2,4]},{15:24,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,26:22,27:23},{1:[2,18]},{9:$V1,10:25,12:$V2,14:$V3},{8:[1,26]},{8:[2,12]},{8:[2,13]},{8:[2,14]},{8:[2,15]},{8:[2,16]},o($Vb,$V1,{10:27,12:$V2,14:$V3}),o([4,12,14,25],[2,3]),{4:$V4,11:28,25:$V5},{28:29,30:[1,30]},{8:[1,31]},{9:[1,32]},o($Vc,$Vd,{16:33,17:$Ve}),o($Vb,[2,6]),{1:[2,17]},{29:35,33:[1,36]},{14:$Vf,15:39,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,31:37,32:$Vg,36:38},{30:[2,20]},o($Vb,$V1,{10:41,12:$V2,14:$V3}),o($Vc,[2,8]),{18:[1,42]},o($V0,[2,19]),o($Vh,$V1,{10:43,12:$V2,14:$V3}),{32:[1,44]},{14:$Vf,15:39,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va,31:45,32:$Vg,36:38},{8:[1,46]},{15:47,20:$V6,21:$V7,22:$V8,23:$V9,24:$Va},o($Vb,[2,5]),{19:[1,48]},{8:$Vi,18:$Vj,30:$Vk,34:49,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,49:$Vn,50:$Vo,57:61,60:$Vp,61:$Vq,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{33:[2,21]},{32:[2,23]},o($Vu,$Vd,{16:77,17:$Ve}),{8:[1,78]},o($Vv,[2,9],{17:[1,79]}),{35:[1,80]},{35:[2,27]},{8:$Vi,18:$Vj,30:$Vk,35:$Vl,37:81,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,49:$Vn,50:$Vo,57:61,60:$Vp,61:$Vq,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},o($Vh,[2,30]),o($Vh,[2,31]),o($Vh,[2,32]),o($Vh,[2,33]),o($Vh,[2,34]),o($Vh,[2,35]),{8:[1,82]},{30:[1,83]},{30:[1,85],51:84},{30:[1,87],58:86},{8:$Vi,18:$Vj,30:$Vk,47:88,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{9:[1,89]},{30:[2,49]},o($Vw,[2,54],{63:90,64:[1,91],65:[1,92]}),o($Vx,[2,58],{67:93,46:[1,97],68:[1,94],69:[1,95],70:[1,96]}),o($Vy,[2,69],{72:98,73:99}),o($Vz,[2,75],{78:100,79:101}),o($Vz,[2,78]),o($Vz,[2,84],{85:102,88:103,89:104,93:106,94:107,17:[1,108],30:[1,105]}),o($VA,$VB,{86:109}),o($Vz,[2,97]),o($Vz,[2,98]),o($Vz,[2,99]),o($Vz,[2,100]),o([9,14,17,19,30,32,46,64,65,68,69,70,75,76,81,82],[2,81]),o($Vu,[2,25]),o($Vu,$Vd,{16:110,17:$Ve}),{18:[1,111]},o($V0,[2,22]),{35:[2,28]},{17:[1,113],46:[1,112]},{8:$Vi,18:$Vj,30:$Vk,47:114,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{33:[1,116],52:115},{8:$Vi,18:$Vj,30:$Vk,47:117,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{33:[1,119],59:118},{8:$Vi,18:$Vj,30:$Vk,47:120,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{9:[1,121]},o($Vh,[2,53]),{8:$Vi,18:$Vj,30:$Vk,62:122,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{64:[1,123]},{65:[1,124]},{8:$Vi,18:$Vj,30:$Vk,66:125,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},o($VA,[2,65],{46:[1,126]}),o($VA,[2,64],{46:[1,127]}),{46:[1,128]},{46:[1,129]},o($VC,[2,66]),o($VC,[2,68],{74:130,75:[1,131],76:[1,132]}),o($Vy,[2,72]),o($Vy,[2,74],{80:133,81:[1,134],82:[1,135]}),o($Vz,[2,79]),o($Vz,[2,82]),o($Vz,[2,83]),o([8,18,30,32,95,96,97],[2,86],{90:136}),o($Vz,[2,91]),o($Vz,[2,92]),o($VA,$VB,{86:137}),{8:$Vi,18:$Vj,30:$Vk,47:138,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},o($Vu,[2,26]),{19:[1,139]},{8:$Vi,18:$Vj,30:$Vk,47:140,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:141,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{32:[1,142]},o($Vh,[2,45],{53:143,54:144,56:[1,145]}),{8:$Vi,18:$Vj,30:$Vk,34:146,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,49:$Vn,50:$Vo,57:61,60:$Vp,61:$Vq,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{32:[1,147]},o($Vh,[2,48]),{8:$Vi,18:$Vj,30:$Vk,34:148,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,49:$Vn,50:$Vo,57:61,60:$Vp,61:$Vq,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{32:[1,149]},o($Vh,[2,52]),o($Vw,[2,55]),o($VA,[2,56]),o($VA,[2,57]),o($Vx,[2,59]),o($VA,[2,60]),o($VA,[2,61]),o($VA,[2,62]),o($VA,[2,63]),{8:$Vi,18:$Vj,30:$Vk,66:150,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},o($VA,[2,70]),o($VA,[2,71]),{8:$Vi,18:$Vj,30:$Vk,71:151,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},o($VA,[2,76]),o($VA,[2,77]),{8:$Vi,18:$Vj,30:$Vk,32:$VD,47:154,62:65,66:66,71:67,77:68,83:69,84:70,91:152,92:153,95:$Vr,96:$Vs,97:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:155,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{32:$VE,87:156},o($Vv,[2,10]),{9:[1,157]},{19:[1,158]},{9:[1,159]},o($Vh,[2,41]),{33:[1,161],55:160},{33:[2,46]},{35:[1,162]},{33:[2,42]},{35:[1,163]},{33:[2,50]},o($VC,[2,67]),o($Vy,[2,73]),{32:[1,164]},{14:[1,165],32:[2,87]},o([14,32],[2,90]),{19:$VE,87:166},{32:[1,167]},o($Vh,[2,36]),{17:[1,169],46:[1,168]},o($Vh,[2,40]),o($Vh,[2,44]),{8:$Vi,18:$Vj,30:$Vk,34:170,35:$Vl,37:50,38:51,39:52,40:53,41:54,42:55,43:56,44:57,45:$Vm,47:63,49:$Vn,50:$Vo,57:61,60:$Vp,61:$Vq,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},o([8,18,30,35,45,49,50,56,60,61,95,96,97],[2,43]),o($Vh,[2,51]),o($Vz,[2,85]),{8:$Vi,18:$Vj,30:$Vk,32:$VD,47:154,62:65,66:66,71:67,77:68,83:69,84:70,91:171,92:153,95:$Vr,96:$Vs,97:$Vt},{19:[1,172]},o($Vz,[2,80]),{8:$Vi,18:$Vj,30:$Vk,47:173,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:174,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{35:[1,175]},{32:[2,88]},o($Vz,[2,93],{17:[1,176]}),{9:[1,177]},{19:[1,178]},o($Vh,[2,47]),o($VA,$VB,{86:179}),o($Vh,[2,37]),{46:[1,180]},{8:$Vi,18:$Vj,30:$Vk,47:181,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{8:$Vi,18:$Vj,30:$Vk,47:182,62:65,66:66,71:67,77:68,83:69,84:70,95:$Vr,96:$Vs,97:$Vt},{19:$VE,87:183},{9:[1,184]},{19:[1,185]},o($Vh,[2,38]),o($Vz,[2,94])],
+defaultActions: {2:[2,1],5:[2,2],10:[2,4],12:[2,18],15:[2,12],16:[2,13],17:[2,14],18:[2,15],19:[2,16],28:[2,17],31:[2,20],44:[2,21],45:[2,23],50:[2,27],64:[2,49],81:[2,28],145:[2,46],147:[2,42],149:[2,50],171:[2,88]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -739,6 +774,10 @@ parse: function parse(input) {
 }};
 
 
+/**
+	VARS
+**/
+
 var dirProcs;
 
 var gv_i;
@@ -761,6 +800,10 @@ var cv_f;
 var cv_st;
 var cv_bool;
 
+/**
+	Data Structures definiton that let me pop, push, and stackTop
+**/
+
 var dataStructures = {
     stack : function() {
         var elements = [];
@@ -777,11 +820,19 @@ var dataStructures = {
     }
 }
 
-var ids = new dataStructures.stack();
-var types = new dataStructures.stack();
-var ops = new dataStructures.stack();
-var scope = new dataStructures.stack();
-var jumps = new dataStructures.stack()
+/**
+	Create new data structures (stacks)
+**/
+
+var ids = new dataStructures.stack(); // Ids
+var types = new dataStructures.stack(); // Types
+var ops = new dataStructures.stack(); // Ops
+var scope = new dataStructures.stack(); // Scope
+var jumps = new dataStructures.stack() // Jumps
+
+/**
+	Semantic Cube
+**/
 
 var semanticCube = [
 	["v","v","+","-","/","*","==","<","<=",">",">=","&&","||","!="],
@@ -797,16 +848,24 @@ var semanticCube = [
 	["float","boolean","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["string","int","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["string","float","x","x","x","x","x","x","x","x","x","x","x","x"],
-	["string","boolean","boolean","x","x","x","x","x","x","x","x","x","x","x"],
+	["string","boolean","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["boolean","int","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["boolean","float","x","x","x","x","x","x","x","x","x","x","x","x"],
 	["boolean","string","x","x","x","x","x","x","x","x","x","x","x","x"]
 ];
 
-var temp = 1;
-var paramTemp = 1;
-var tempProc = null;
-var expectingParams = false;
+/**
+	Initialze variables.
+**/
+
+var temp = 1; // Temp var
+var paramTemp = 1; // Temp parameter
+var tempProc = null; // Temp proc
+var expectingParams = false; // Epecting params
+
+/**
+	Japtor main definition. This is what is returned when parsed in the HTML.
+**/
 
 var Japtor = function() {
 	var japtorLexer = function () {};
@@ -815,22 +874,19 @@ var Japtor = function() {
 	var japtorParser = function () {
 		this.lexer = new japtorLexer();
 		this.yy = {
-			procs: [],
-			quads: [],
-			consts: []
-			// parseError: function(msg, hash) {
-			// 	this.done = true;
-			// 	var result = new String();
-			// 	result.html = '<pre>' + msg + '</pre>';
-			// 	result.hash = hash;
-			// 	return result;
-			// }
+			procs: [], // Procs
+			quads: [], // Quads
+			consts: [] // Consts
 		};
 	};
 	japtorParser.prototype = parser;
 	var newParser = new japtorParser();
 	return newParser;
 };
+
+/**
+	Proc definition. Each function has a proc, where it stores vars, params, etc..
+**/
 
 function Proc(name, type, dir, params, vars, init){
 	this.name = name;
@@ -841,8 +897,12 @@ function Proc(name, type, dir, params, vars, init){
 	this.init = init;
 };
 
+/**
+	Extra proc definition
+**/
+
 Proc.prototype = {
-	size : function() {
+	size : function() { // Returns the size of the proc by counting vars
 		var int = 0; var float = 0; var string = 0; var boolean = 0;
 		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
 		for (var i = 0; i < this.vars.length; i++) {
@@ -880,7 +940,7 @@ Proc.prototype = {
 		}
 		return [int, float, string, boolean, int_t, float_t, string_t, boolean_t];
 	},
-	dirs : function() {
+	dirs : function() { // Returns dir
 		var int = 0; var float = 0; var string = 0; var boolean = 0;
 		var int_t = 0; var float_t = 0; var string_t = 0; var boolean_t = 0;
 		for (var i = 0; i < this.vars.length; i++) {
@@ -926,99 +986,113 @@ Proc.prototype = {
 		}
 		return [int, float, string, boolean, int_t, float_t, string_t, boolean_t];
 	},
-	numParams : function() {
+	numParams : function() { // Returns number of params
 		return this.params.length;
 	}
 }
+
+/**
+	Dir Proc
+	Returns the next available proc.
+**/
 
 function dirProc() {
 	if (dirProcs < 5000) {
 		return dirProcs++;
 	} else {
-		throw new Error("Out of memory.");
+		throw new Error("OUT OF MEMORY");
 	}
 }
+
+/**
+	Assign Memory
+	Assigns a var with a dir depending on type and it tmp or const or dim.
+**/
 
 function assignMemory(type, tmp, cons, dim) {
 
 	var pointer = 1;
 	var temp = null;
 
+	// If global
 	var isGlobal = false;
 	if (scope.stackTop() === "global") {
 		isGlobal = true;
 	}
 
+	//If Matrix
 	if (dim.length == 2) {
 		pointer = parseInt(dim[0]) * parseInt(dim[1]) + parseInt(dim[0]);
+	//If Array
 	} else if (dim.length == 1) {
 		pointer = parseInt(dim[0]);
 	}
 
+	// If temporal
 	if (tmp) {
 		switch (type) {
 			case 'int':
 				if (tv_i < 21000) {
 					return tv_i++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'float':
 				if (tv_f < 23000) {
 					return tv_f++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'string':
 				if (tv_st < 25000) {
 					return tv_st++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'boolean':
 				if (tv_bool < 26000) {
 					return tv_bool++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 		}
-	} else if (cons) {
+	} else if (cons) { // If constant
 		switch (type) {
 			case 'int':
 				if (cv_i < 28000) {
 					return cv_i++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'float':
 				if (cv_f < 30000) {
 					return cv_f++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'string':
 				if (cv_st < 32000) {
 					return cv_st++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 			case 'boolean':
 				if (cv_bool < 33000) {
 					return cv_bool++;
 				} else {
-					throw new Error("Out of memory.");
+					throw new Error("OUT OF MEMORY");
 				}
 				break;
 		}
 	} else {
-		if (isGlobal) {
+		if (isGlobal) { // If global
 			switch (type) {
 				case 'int':
 					if (gv_i < 7000) {
@@ -1026,7 +1100,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_i = gv_i + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'float':
@@ -1035,7 +1109,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_f = gv_f + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'string':
@@ -1044,7 +1118,7 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_st = gv_st + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'boolean':
@@ -1053,11 +1127,11 @@ function assignMemory(type, tmp, cons, dim) {
 						gv_bool = gv_bool + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 			}
-		} else {
+		} else { // If local
 			switch (type) {
 				case 'int':
 					if (lv_i < 14000) {
@@ -1065,7 +1139,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_i = lv_i + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'float':
@@ -1074,7 +1148,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_f = lv_f + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'string':
@@ -1083,7 +1157,7 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_st = lv_st + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 				case 'boolean':
@@ -1092,13 +1166,17 @@ function assignMemory(type, tmp, cons, dim) {
 						lv_bool = lv_bool + pointer;
 						return temp;
 					} else {
-						throw new Error("Out of memory.");
+						throw new Error("OUT OF MEMORY");
 					}
 					break;
 			}
 		}
 	}
 }
+
+/**
+	Initialize directories
+**/
 
 function initDirs() {
 	dirProcs = 2000;
@@ -1124,6 +1202,11 @@ function initDirs() {
 	cv_bool = 32000;
 }
 
+/**
+	Validate Semantic
+	Validates the types are compatible and returns type.
+**/
+
 function validateSem(op, var1, var2) {
 		for (var i = 0; i < semanticCube.length; i++) {
 			if (semanticCube[i][0] === var1 && semanticCube[i][1] === var2) {
@@ -1134,6 +1217,11 @@ function validateSem(op, var1, var2) {
 			}
 		}
 }
+
+/**
+	Find Type By Id.
+	Finds the type of an id in the given local scope, and if not found, global.
+**/
 
 function findTypeId(yy, id) {
 	var currentScope = scope.stackTop();
@@ -1152,8 +1240,13 @@ function findTypeId(yy, id) {
 		}
 	}
 
-	throw new Error("ID " + id + " not declared.");
+	throw new Error("ID NOT DECLARED");
 }
+
+/**
+	Find Proc
+	Finds and returns the proc by id.
+**/
 
 function findProc(yy, name) {
 	for (var i = 0; i < yy.procs.length; i++) {
@@ -1164,6 +1257,11 @@ function findProc(yy, name) {
 
 	return "undefined";
 }
+
+/**
+	Create Temp
+	Creates a temp var dependant on type.
+**/
 
 function createTemp(yy, type) {
 	var currentScope = scope.stackTop();
@@ -1183,6 +1281,11 @@ function createTemp(yy, type) {
 
 	return tmp.id;
 }
+
+/**
+	Find dir
+	Returns the dir of the id.
+**/
 
 function findDir(yy, id) {
 	// return id;
@@ -1208,8 +1311,13 @@ function findDir(yy, id) {
 		}
 	}
 
-	throw new Error("ID " + id + " not declared.");
+	throw new Error("ID NOT DECLARED");
 }
+
+/**
+	Find dim
+	Returns the dim of the id
+**/
 
 function findDim(yy, id) {
 	var currentScope = scope.stackTop();
@@ -1568,11 +1676,11 @@ case 1:return 7;
 break;
 case 2:return 25;
 break;
-case 3:return 96;
+case 3:return 95;
 break;
 case 4:return 18;
 break;
-case 5:return 97;
+case 5:return 96;
 break;
 case 6:return 9;
 break;
@@ -1590,11 +1698,11 @@ case 12:return 17;
 break;
 case 13:return 19;
 break;
-case 14:return 70;
+case 14:return 68;
 break;
-case 15:return 71;
+case 15:return 69;
 break;
-case 16:return 72;
+case 16:return 70;
 break;
 case 17:return "=";
 break;
@@ -1602,13 +1710,13 @@ case 18:return "+";
 break;
 case 19:return "-";
 break;
-case 20:return 83;
+case 20:return 81;
 break;
-case 21:return 84;
+case 21:return 82;
 break;
 case 22:return 14;
 break;
-case 23:return 66;
+case 23:return 64;
 break;
 case 24:return "|";
 break;
@@ -1624,21 +1732,21 @@ case 29:return 23;
 break;
 case 30:return 24;
 break;
-case 31:return 51;
+case 31:return 49;
 break;
-case 32:return 52;
+case 32:return 50;
 break;
-case 33:return 58;
+case 33:return 56;
 break;
-case 34:return 62;
+case 34:return 60;
 break;
-case 35:return 63;
+case 35:return 61;
 break;
 case 36:return 45;
 break;
 case 37:return 8;
 break;
-case 38:return 98;
+case 38:return 97;
 break;
 case 39:return 4;
 break;
