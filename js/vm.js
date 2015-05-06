@@ -1,10 +1,14 @@
 function VM(yy) {
-    var mems = [];
-    var procs = yy.procs;
-    var quads = yy.quads;
-    var consts = yy.consts;
+    /**
+    	Initialize vars
+    **/
+
+    var mems = []; // Array with mems
+    var procs = yy.procs; // Procs from compilation
+    var quads = yy.quads; // Quads from compilation
+    var consts = yy.consts; // Consts from compilation
     var cont = 0;
-    var params = [];
+    var params = []; //  Array used for params
     var paramsProc = [];
     var tempProc = null;
     var expectsReturn = [];
@@ -12,9 +16,11 @@ function VM(yy) {
     var returnedValue = [];
     var result = ""
 
+    // Creates a global mem and adds to stack
     var globalMem = new Mem(procs[0].dirs());
     mems.push(globalMem);
 
+    // Finds the main function and creates mem and adds to stack
     for (var i = 0; i < procs.length; i++) {
         if ("main" === procs[i].name) {
             var mainMem = new Mem(procs[i].dirs());
@@ -22,22 +28,23 @@ function VM(yy) {
         }
     }
 
+    // Reads quads
     while (cont < quads.length) {
         switch (quads[cont][0]) {
             case 'goto':
-                cont = quads[cont][3];
+                cont = quads[cont][3]; // Change cont to new value
                 break;
 
             case 'gotof':
                 var bool = findValue(quads[cont][1]);
-                if (typeof bool === 'string') {
+                if (typeof bool === 'string') { // If string converto to bool
                     bool = (bool === 'true');
                 }
 
                 if (bool) {
-                    cont++;
+                    cont++; // Continue
                 } else {
-                    cont = quads[cont][3];
+                    cont = quads[cont][3]; // Change cont to new value
                 }
                 break;
 
@@ -45,6 +52,7 @@ function VM(yy) {
                 var proc_dir = quads[cont][1];
                 for (var i = 0; i < procs.length; i++) {
                     if (proc_dir === procs[i].dir) {
+                        // Created new temp proc (not yet added to mems stack)
                         tempProc = new Mem(procs[i].dirs());
                         paramsProc = procs[i].params;
                     }
@@ -56,11 +64,11 @@ function VM(yy) {
             case 'param':
                 var dir = quads[cont][1];
 
-                if (typeof dir === "string") {
+                if (typeof dir === "string") { // If param is an array
                     var param = dir.replace(/[()]/g, '');
-                    param = param.split(",");
+                    param = param.split(","); // Splits the returned value
                     for(var i = 0; i < parseInt(param[1]); i++) {
-                        params.push(findValue(parseInt(param[0]) + i));
+                        params.push(findValue(parseInt(param[0]) + i)); // Adds all the params for the array
                     }
                 } else {
                     params.push(findValue(dir));
@@ -69,10 +77,10 @@ function VM(yy) {
                 break;
 
             case 'gosub':
-                mems.push(tempProc);
+                mems.push(tempProc); // Pushes tempProc to mems
                 tempProc = null;
-                for (var i = 0; i <  paramsProc.length; i++) {
-                    if (paramsProc[i].dim > 0) {
+                for (var i = 0; i <  paramsProc.length; i++) { // For each param
+                    if (paramsProc[i].dim > 0) { // If array
                         for(var y = 0; y < paramsProc[i].dim; y++) {
                             insertValue(paramsProc[i].dir + y, params[y + i]);
                         }
@@ -81,7 +89,7 @@ function VM(yy) {
                     }
                 }
 
-                if (quads[cont][3] !== null) {
+                if (quads[cont][3] !== null) { // If expects return
                     expectsReturn.push(quads[cont][3]);
                 } else {
                     expectsReturn.push(false);
@@ -92,23 +100,23 @@ function VM(yy) {
 
             case 'return':
                 var dir = quads[cont][3];
-                if (dir !== null) {
-                    var value = findValue(dir);
-                    mems.pop();
+                if (dir !== null) { // If returning something
+                    var value = findValue(dir); // Value of return
+                    mems.pop(); // Exits scope
                     cont = returns.pop();
                     dir = expectsReturn.pop();
                     if (dir !== false) {
-                        insertValue(dir, value);
+                        insertValue(dir, value); // Inserts value
                     } else {
-                        throw new Error("Expecting a return value.");
+                        throw new Error("EXPECTED RETURN");
                         return;
                     }
-                } else {
-                    mems.pop();
+                } else { // No return expected
+                    mems.pop(); // Exit scope
                     cont = returns.pop();
                     dir = expectsReturn.pop();
                     if (dir !== false) {
-                        throw new Error("Expecting a return value.");
+                        throw new Error("EXPECTED RETURN");
                         return;
                     }
                 }
@@ -117,7 +125,7 @@ function VM(yy) {
             case 'write':
                 var value_dir = quads[cont][3];
                 console.log(findValue(value_dir));
-                result += findValue(value_dir) + "\n";
+                result += findValue(value_dir) + "\n"; // Prints the result
                 cont++;
                 break;
 
@@ -125,8 +133,8 @@ function VM(yy) {
                 var value = findValue(quads[cont][1], false);
                 var lower = quads[cont][2];
                 var upper = quads[cont][3];
-                if (value < lower || value > upper) {
-                    throw new Error("Limits in array are out of bounds.");
+                if (value < lower || value > upper) { // Verifies the limits
+                    throw new Error("OUT OF BOUNDS");
                 }
                 cont++;
                 break;
@@ -145,20 +153,20 @@ function VM(yy) {
                 // insertValue(dir, value1 + value2);
                 var sum = value1 + value2;
                 var found = false;
-                if (findScope(sum) == "global") {
+                if (findScope(sum) == "global") { // If global
                     for(var i = 0; i < mems[0].pointers.length; i++) {
-                        if (mems[0].pointers[i][0] == dir) {
-                            mems[0].pointers[i][1] = sum; //replacing
+                        if (mems[0].pointers[i][0] == dir) { // Finds pointer
+                            mems[0].pointers[i][1] = sum; // Replace pointer with new value
                             found = true;
                         }
                     }
 
                     if (!found)
                         mems[0].pointers.push([dir, value1 + value2]);
-                } else {
+                } else { // If local
                     for(var i = 0; i < mems[mems.length-1].pointers.length; i++) {
-                        if (mems[mems.length-1].pointers[i][0] == dir) {
-                            mems[mems.length-1].pointers[i][1] = sum; //replacing
+                        if (mems[mems.length-1].pointers[i][0] == dir) { // Finds pointer
+                            mems[mems.length-1].pointers[i][1] = sum; // Replace pointer with new value
                             found = true;
                         }
                     }
@@ -172,7 +180,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 + value2);
+                insertValue(dir, value1 + value2); // Inserts value of +
                 cont++;
                 break;
 
@@ -180,7 +188,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 - value2);
+                insertValue(dir, value1 - value2); // Inserts value of -
                 cont++;
                 break;
 
@@ -188,7 +196,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 * value2);
+                insertValue(dir, value1 * value2); // Inserts value of *
                 cont++;
                 break;
 
@@ -196,7 +204,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 / value2);
+                insertValue(dir, value1 / value2); // Inserts value of /
                 cont++;
                 break;
 
@@ -204,7 +212,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 === value2);
+                insertValue(dir, value1 === value2); // Inserts value of ==
                 cont++;
                 break;
 
@@ -212,7 +220,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 >= value2);
+                insertValue(dir, value1 >= value2); // Inserts value of >=
                 cont++;
                 break;
 
@@ -220,7 +228,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 <= value2);
+                insertValue(dir, value1 <= value2); // Inserts value of <=
                 cont++;
                 break;
 
@@ -228,7 +236,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 !== value2);
+                insertValue(dir, value1 !== value2); // Inserts value of !=
                 cont++;
                 break;
 
@@ -236,7 +244,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 > value2);
+                insertValue(dir, value1 > value2); // Inserts value of >
                 cont++;
                 break;
 
@@ -244,7 +252,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 < value2);
+                insertValue(dir, value1 < value2); // Inserts value of <
                 cont++;
                 break;
 
@@ -252,7 +260,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 && value2);
+                insertValue(dir, value1 && value2); // Inserts value of &&
                 cont++;
                 break;
 
@@ -260,13 +268,17 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
-                insertValue(dir, value1 || value2);
+                insertValue(dir, value1 || value2); // Inserts value of ||
                 cont++;
                 break;
         }
     }
 
-    return result;
+    return result; // returns the result
+
+    /**
+    	Mem Class
+    **/
 
     function Mem(startDirs) {
         this.int = [];
@@ -281,6 +293,10 @@ function VM(yy) {
         this.pointers = [];
     }
 
+    /**
+        Find the scope depending on dir
+    **/
+
     function findScope(value) {
         if (value >= 5000 && value < 12000) {
             return "global";
@@ -291,8 +307,12 @@ function VM(yy) {
         } else if (value >= 26000 && value < 33000) {
             return "constant";
         }
-        throw new Error("No scope for " + value);
+        throw new Error("NOT FOUND");
     }
+
+    /**
+        Find type depending on scope and dir
+    **/
 
     function findType(value, scope) {
         if (scope === "global") {
@@ -332,25 +352,33 @@ function VM(yy) {
             else if (value < 33000)
                 return "boolean";
         }
-        throw new Error("No type for " + value);
+        throw new Error("NOT FOUND");
     }
+
+    /**
+    	Finds value from dir in mems.
+        Always checks local scope (mems[mems.length-1]) or global (mems[0])
+    **/
 
     function findValue(dir) {
         var dir_scope = findScope(dir);
         var dir_type = findType(dir, dir_scope);
 
+        // Verifies if it is a pointer
         for (var i = 0; i < mems[mems.length-1].pointers.length; i++) {
             if (dir == mems[mems.length-1].pointers[i][0]) {
-                return findValue(mems[mems.length-1].pointers[i][1]);
+                return findValue(mems[mems.length-1].pointers[i][1]); // If pointer find the true value
             }
         }
 
+        // Verifies global pointers
         for (var i = 0; i < mems[0].pointers.length; i++) {
             if (dir == mems[0].pointers[i][0]) {
                 return findValue(mems[0].pointers[i][1]);
             }
         }
 
+        // Checks constants
         if (dir_scope === "constant") {
             for (var i = 0; i < consts.length; i++) {
                 if (consts[i][1] === dir) {
@@ -392,16 +420,23 @@ function VM(yy) {
                 return mems[0].boolean[dir - mems[0].startDirs[3]];
         }
 
-        throw new Error("Value not found for dir " + dir);
+        throw new Error("NOT FOUND");
     }
+
+    /**
+        Insert Value
+        Inserts value in dir.
+        Always checks local scope (mems[mems.length-1]) or global (mems[0])
+    **/
 
     function insertValue(dir, value) {
         var dir_scope = findScope(dir);
         var dir_type = findType(dir, dir_scope);
 
+        // Verifies if it is a pointer
         for (var i = 0; i < mems[mems.length-1].pointers.length; i++) {
             if (dir == mems[mems.length-1].pointers[i][0]) {
-                insertValue(mems[mems.length-1].pointers[i][1], value);
+                insertValue(mems[mems.length-1].pointers[i][1], value); // Insert value in true pointer dir
                 return;
             }
         }
@@ -428,6 +463,7 @@ function VM(yy) {
                 mems[mems.length-1].boolean_t[dir - mems[mems.length-1].startDirs[7]] = value;
         }
 
+        // Verifies if it is a global pointer
         for (var i = 0; i < mems[0].pointers.length; i++) {
             if (dir == mems[0].pointers[i][0]) {
                 insertValue(mems[0].pointers[i][1], value);
