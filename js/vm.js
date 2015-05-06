@@ -172,6 +172,7 @@ function VM(yy) {
                 var value1 = findValue(quads[cont][1]);
                 var value2 = findValue(quads[cont][2]);
                 var dir = quads[cont][3];
+                alert(value1 + " " + value2);
                 insertValue(dir, value1 + value2);
                 cont++;
                 break;

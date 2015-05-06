@@ -1,9 +1,6 @@
 program sort;
 function void sort(int array[10]) {
-    var int x;
-    var int j;
-    var boolean flag;
-    var int temp;
+    var int x, int j, boolean flag, int temp;
     assign flag = true;
     assign j = 0;
 

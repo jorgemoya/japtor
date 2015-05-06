@@ -65,33 +65,33 @@ program test;
 function void main() {
 	var int x, int y;
 	if(true) {
-		x = 10 + 20;
+		assign x = 10 + 20;
 		if(x > 0)	{
-			x = 50 * (20 - 10);
+			assign x = 50 * (20 - 10);
 		} else {
-			y = x + (30 / 4);
+			assign y = x + (30 / 4);
 		}
 	}
-	x = 30 + 40;
+	assign x = 30 + 40;
 }
 
 program test;
 function void main() {
 	var int x;
-	x = 10;
+	assign x = 10;
 	while(x > 0) {
 		write(x);
-		x = x - 1;
+		assign x = x - 1;
 	}
 }
 
 program test;
 function void main() {
 	var int x;
-	x = 10;
+	assign x = 10;
 	while(x > 0) {
 		if(x == x) {
-				x = x - 1;
+			assign x = x - 1;
 		}
 	}
 	write(x);
@@ -100,11 +100,11 @@ function void main() {
 program test;
 function void main() {
 	var int x;
-	x = 10;
+	assign x = 10;
 	while(x > 0) {
 		if((x == x)) {
-				write(x);
-				x = x - 1;
+			write(x);
+			assign x = x - 1;
 		}
 	}
 }
@@ -113,27 +113,28 @@ program test;
 var int a, int b, float f;
 function int uno(int c) {
 	if(c > 10) {
-		c = 10;
+		assign c = 10;
 		return c;
 	}
 }
 function void main() {
-	a = 20;
-	b = uno(a);
+	assign a = 20;
+	assign b = uno(a);
+	write(b);
 }
 
 program test;
 var int a;
 function int uno(int c) {
 	if(c > 10) {
-		c = 10 + a;
+		assign c = 10 + a;
 		return c;
 	}
 }
 function void main() {
 var int b;
-	a = 20;
-	b = uno(a);
+	assign a = 20;
+	assign b = uno(a);
 }
 
 program test;
@@ -145,7 +146,6 @@ function void uno(int c) {
 	}
 	return c;
 }
-
 function void main() {
 var int b;
 	assign a = 20;

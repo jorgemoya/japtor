@@ -12,10 +12,8 @@ function int search(int number) {
         assign x = x + 1;
     }
 }
-
 function void main() {
-    var int number;
-    var int x;
+    var int number, int x;
 
     assign number = 30;
     assign x = 0;
@@ -41,11 +39,8 @@ function int search(int number, int array[10]) {
         assign x = x + 1;
     }
 }
-
 function void main() {
-    var int number;
-    var int x;
-    var int array[10];
+    var int number, int x, int array[10];
 
     assign number = 30;
     assign x = 0;

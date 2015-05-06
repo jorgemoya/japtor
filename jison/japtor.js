@@ -950,7 +950,7 @@ function assignMemory(type, tmp, cons, dim) {
 	}
 
 	if (dim.length == 2) {
-		pointer = parseInt(dim[0]) * parseInt(dim[1]);
+		pointer = parseInt(dim[0]) * parseInt(dim[1]) + parseInt(dim[0]);
 	} else if (dim.length == 1) {
 		pointer = parseInt(dim[0]);
 	}

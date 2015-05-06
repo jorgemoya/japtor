@@ -1,0 +1,62 @@
+program multiply;
+function void main() {
+    var int m1[4][3], int m2[3][3], int c, int d, int k, int m, int n, int p, int q, int mf[4][3], int sum;
+
+    assign m1[0][0] = 1;
+    assign m1[0][1] = 2;
+    assign m1[0][2] = 3;
+    assign m1[1][0] = 4;
+    assign m1[1][1] = 5;
+    assign m1[1][2] = 6;
+    assign m1[2][0] = 7;
+    assign m1[2][1] = 8;
+    assign m1[2][2] = 9;
+    assign m1[3][0] = 10;
+    assign m1[3][1] = 11;
+    assign m1[3][2] = 12;
+
+    assign m2[0][0] = 1;
+    assign m2[0][1] = 2;
+    assign m2[0][2] = 3;
+    assign m2[1][0] = 4;
+    assign m2[1][1] = 5;
+    assign m2[1][2] = 6;
+    assign m2[2][0] = 7;
+    assign m2[2][1] = 8;
+    assign m2[2][2] = 9;
+
+    assign m = 4;
+    assign n = 3;
+    assign p = 3;
+    assign q = 3;
+
+    assign c = 0;
+    assign d = 0;
+    assign k = 0;
+    assign sum = 0;
+
+    while(c < m) {
+        assign d = 0;
+        while(d < q) {
+            assign k = 0;
+            while(k < p) {
+                assign sum = sum + m1[c][k] * m2[k][d];
+                assign k = k + 1;
+            }
+            assign mf[c][d] = sum;
+            assign sum = 0;
+            assign d = d + 1;
+        }
+        assign c = c + 1;
+    }
+
+    assign c = 0;
+    while (c < m) {
+        assign d = 0;
+        while(d < q) {
+            write(mf[c][d]);
+            assign d = d + 1;
+        }
+        assign c = c + 1;
+    }
+}
