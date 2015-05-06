@@ -8,62 +8,45 @@ function void main(){
 }
 
 program test;
-var int xx;
-var int yy;
-function void main(int zz) {
-	var int kk;
-	xx = zz + 10 * 20;
-	yy = 40;
-	kk = xx + 30;
-}
-
-program test;
 var int xx, int yy;
-function void main(int zz, float aa) {
-	var int kk, int bb;
-	xx = zz + 10 * 20;
-	yy = 40;
-	kk = xx + 30;
-}
-
-program test;
-var int xx, int yy, int hello;
-function void main(int zz, float aa) {
-	var int kk, int bb, float yellow;
-	xx = zz + 10 * 20;
-	yy = hello + yellow;
-	kk = xx + 30;
+function void main() {
+	var int kk;
+	assign xx = 80 + 10 * 20;
+	assign yy = 40;
+	assign kk = xx + 30;
+	write(kk);
 }
 
 program test;
 var int xx;
 function void main(int zz, float aa) {
-	xx = 10 * 30 - 20;
+	assign xx = 10 * 30 - 20;
 	write(xx);
 }
 
 program test;
 function void main() {
 	var int x;
-	x = 10;
+	assign x = 10;
+	write(x);
 }
 
 program test;
 var int xx;
 function void main() {
 	var int zz;
-	zz = 30;
-	xx = (zz + 10) * 20;
+	assign zz = 30;
+	assign xx = (zz + 10) * 20;
+	write(xx);
 }
-
 
 program test;
 function void main() {
 	var int x;
 	if(true) {
-		x = 10 + 20;
+		assign x = 10 + 20;
 	}
-	x = 30 + 40;
+	write(x);
 }
 
 program test;

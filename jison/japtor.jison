@@ -157,7 +157,6 @@ function_declaration
 					if ($ID === "main")	{
 						var jump = jumps.pop();
 						yy.quads[jump][3] = yy.quads.length;
-						// yy.quads.push(["era", dir, null, null]);
 					}
 				}
 	;
@@ -573,8 +572,7 @@ mult_or_divi
 factor
 	: constant
 	| id options
-	| "(" add_closure expression")"
-				{ops.pop();}
+	| "(" add_closure expression end_closure")"
 	;
 
 id
@@ -1184,7 +1182,7 @@ function findProc(yy, name) {
 		}
 	}
 
-	throw new Error("Undefined function.");
+	return "undefined";
 }
 
 function createTemp(yy, type) {

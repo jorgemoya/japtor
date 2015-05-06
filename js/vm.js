@@ -29,7 +29,12 @@ function VM(yy) {
                 break;
 
             case 'gotof':
-                if (findValue(quads[cont][1])) {
+                var bool = findValue(quads[cont][1]);
+                if (typeof bool === 'string') {
+                    bool = (bool === 'true');
+                }
+
+                if (bool) {
                     cont++;
                 } else {
                     cont = quads[cont][3];
