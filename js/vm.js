@@ -248,6 +248,22 @@ function VM(yy) {
                 insertValue(dir, value1 < value2);
                 cont++;
                 break;
+
+            case '&&':
+                var value1 = findValue(quads[cont][1]);
+                var value2 = findValue(quads[cont][2]);
+                var dir = quads[cont][3];
+                insertValue(dir, value1 && value2);
+                cont++;
+                break;
+
+            case '||':
+                var value1 = findValue(quads[cont][1]);
+                var value2 = findValue(quads[cont][2]);
+                var dir = quads[cont][3];
+                insertValue(dir, value1 || value2);
+                cont++;
+                break;
         }
     }
 
